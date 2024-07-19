@@ -39,7 +39,8 @@
    - 其他的配置项大家应该可以看懂是什么。
 
 3. 启动：
-   保持NTQQ的运行状态，然后双击启动`Qbot.exe`即可完成启动。
+   安装必要的库 pip install -r requirements.txt \n
+   保持NTQQ的运行状态，然后使用 python Qbot.py 即可完成启动。
 
    （遇到问题可以联系开发者幻日QQ：2141073363）
 
