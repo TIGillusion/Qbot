@@ -12,6 +12,7 @@ import socket
 import re
 from threading import Thread
 import base64
+import jieba.analyse
 # os.system('start cqhttp')
 # print('程序启动中...')
 # time.sleep(10)
@@ -21,6 +22,101 @@ import base64
 # print('启动backnew辅助程序中...')
 # os.system('start /min backnews.exe')
 # time.sleep(1)
+def merge_contents(data):
+    # 初始化一个新的列表来存储处理后的数据
+    data=[data[0]]+[{"role":"user","content":" "}]+data[1:]
+    new_data = []
+    # 用于临时存储连续相同role的内容
+    temp_content = ""
+    # 上一个role的值
+    prev_role = None
+
+    for item in data:
+        current_role = item['role']
+        current_content = item['content']
+
+        # 如果当前content为空，则将其改为空格
+        if not current_content.replace(" ",''):
+            current_content = "呜呜呜...遇到未知错误..."
+
+        # 如果当前role与上一个role相同，则合并content
+        if current_role == prev_role:
+            temp_content += current_content
+        else:
+            # 如果临时内容不为空，则将其作为一个新条目添加到新数据列表中
+            if temp_content:
+                new_data.append({'role': prev_role, 'content': temp_content})
+            # 更新临时内容和上一个role的值
+            temp_content = current_content
+            prev_role = current_role
+
+    # 添加最后一个临时内容（如果有）
+    if temp_content:
+        new_data.append({'role': prev_role, 'content': temp_content})
+
+    return new_data
+def get_memory(file_path, keywords, match_n=500, time_n=500, radius=100):
+    """
+    读取整个文件，搜索关键词，合并重叠文段，并返回两个排序的文段列表：
+    1. 包含关键词个数排名前五的文段。
+    2. 越靠近文段末尾的排在前面，同样返回五个，且不与第一个列表重复。
+
+    :param file_path: 文件路径
+    :param keywords: 关键词列表
+    :param radius: 关键词附近要返回的文本字数
+    :return: 关键词匹配记忆
+    """
+    # 读取整个文件内容
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    # 构建正则表达式，用于匹配任意一个关键词
+    keywords_pattern = '|'.join(map(re.escape, keywords))
+    matches = list(re.finditer(keywords_pattern, content))
+
+    # 合并重叠的文段
+    merged_blocks = []
+    for match in matches:
+        start_index = max(match.start() - radius, 0)
+        end_index = min(match.end() + radius, len(content))
+        # 检查是否与现有文段重叠
+        overlap = False
+        for block in merged_blocks:
+            if start_index < block['end'] and end_index > block['start']:
+                # 合并文段
+                block['start'] = min(start_index, block['start'])
+                block['end'] = max(end_index, block['end'])
+                block['count'] += 1
+                overlap = True
+                break
+        if not overlap:
+            merged_blocks.append({'start': start_index, 'end': end_index, 'count': 1})
+
+    # 提取文段文本并按关键词个数排序
+    text_blocks = [{'text': content[block['start']:block['end']], 'count': block['count']} for block in merged_blocks]
+    sorted_by_count = sorted(text_blocks, key=lambda x: x['count'], reverse=True)[:5]
+
+    # 提取文段文本并按文段末尾位置排序
+    text_blocks = [{'text': content[block['start']:block['end']], 'end': block['end']} for block in merged_blocks]
+    sorted_by_end = sorted(text_blocks, key=lambda x: x['end'], reverse=True)
+
+    # 移除与按关键词个数排序的文段重复的部分
+    non_duplicate_sorted_by_end = [block for block in sorted_by_end if block['text'] not in [b['text'] for b in sorted_by_count]][:5]
+
+
+    main_text = ''
+    for per_text in non_duplicate_sorted_by_end:
+        main_text+="--%s\n"%per_text["text"]
+        if len(main_text) > match_n:
+            break
+    
+    for per_text in sorted_by_count:
+        main_text+="--%s\n"%per_text["text"]
+        if len(main_text) > match_n+time_n:
+            break
+
+    return main_text[:match_n+time_n+200]
+
 def draw_group(prompt,to):
     try:
         urldraw=draw_url
@@ -221,10 +317,19 @@ def send_image_url(resp_dict):
 def main(rev):
     global objdict
     try:
+        timestamp = time.time()
+        localtime = time.localtime(timestamp)
+        current_time = time.strftime(
+                "%Y-%m-%d %H:%M:%S", localtime
+            )
+        e_information="[information]\n当前时间：%s\n"%current_time
         if rev["message_type"] == "private":
             if "illue%schat"%rev["sender"]["user_id"] not in objdict.keys():
                 objdict["illue%schat"%rev["sender"]["user_id"]]=""
-
+            if not os.path.exists("./user/p%s"%rev["sender"]["user_id"]):
+                os.makedirs("./user/p%s"%rev["sender"]["user_id"])
+                with open("./user/p%s/memory.txt"%rev["sender"]["user_id"],"w") as tpass:
+                    pass
             
             if "[CQ:image,"  not in rev['raw_message']:
                 objdict["illue%schat"%rev["sender"]["user_id"]]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
@@ -275,119 +380,167 @@ def main(rev):
                                 "Authorization": "Bearer "+user_key
                         }
                     messages=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["illue%schat"%rev["sender"]["user_id"]]}]
+                    keywords = jieba.analyse.extract_tags(rev['raw_message'], topK=5)
+                    s_memory=get_memory("./user/p%s/memory.txt"%rev["sender"]["user_id"],keywords)
                     data={
-                        "model": user_chat_model,##claude-3-opus-vf
-                        "messages":messages,
-                        "stream": True
-                    }
-                    response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
-                # print(response1.content)
-                    temp_tts_list=[]
-                    processed_d_data1=''
-                    for line in response.iter_lines():
-                        try:
-                            decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                            if decoded != '':
-                                processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-                        except Exception as e:
-                            continue
-                            pass
-                        lastlen=len(temp_tts_list)
-                        # decoded1=line.decode('unicode_escape').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                        # processed_d_data1=json.loads(decoded1)["stream_output"]
-                        if '```' not in processed_d_data1:
-                            temp_tts_list=processed_d_data1.split("#split#")
+                            "model": user_chat_model,##claude-3-opus-vf
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory]\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "stream": True
+                        }
+                    is_return=True
+                    while is_return:
+                        is_return=False
+                        response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                    # print(response1.content)
+                        temp_tts_list=[]
+                        processed_d_data1=''
+                        for line in response.iter_lines():
+                            try:
+                                decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
+                                if decoded != '':
+                                    processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                            except Exception as e:
+                                continue
+                                pass
+                            lastlen=len(temp_tts_list)
+                            # decoded1=line.decode('unicode_escape').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
+                            # processed_d_data1=json.loads(decoded1)["stream_output"]
+                            if '```' not in processed_d_data1:
+                                temp_tts_list=processed_d_data1.split("#split#")
+                            else:
+                                temp_tts_list=[processed_d_data1]
+                            if not temp_tts_list:
+                                temp_tts_list=temp_tts_list[:-1]
+                            if self_id not in objdict["illue%sgeneing"%rev["sender"]["user_id"]]:
+                                objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                                raise InterruptedError("新消息中断")
+                            
+                            if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
+                                # if ":" in temp_tts_list[-2]:
+                                #     if temp_tts_list[-2].split(":")[0] != "幻蓝":
+                                #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                                #         break
+                                # elif "：" in temp_tts_list[-2]:
+                                #     if temp_tts_list[-2].split("：")[0] != "幻蓝":
+                                #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                                #         break
+                                if '#voice/' in temp_tts_list[-2]:
+                                    try:
+                                        voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
+                                        tts_data = {
+                                        "cha_name": "花火",
+                                        "text": voice.replace("...", "…").replace("…", ","),
+                                        "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
+                                        }
+                                        b_wav = requests.post(
+                                            url='http://127.0.0.1:5000/tts', json=tts_data
+                                            )
+                                        n=random.randrange(10000,99999)
+                                        name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                        to_path='./data/voice/%s'%name
+                                        with open(to_path,'wb') as wbf:
+                                            wbf.write(b_wav.content)
+                                        send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':name })
+                                    except Exception as e:
+                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "语音合成失败"})
+                                        print("暂不支持语音合成")
+                                elif '#picture/' in temp_tts_list[-2]:
+                                    picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                    print(picture)
+                                    draw_private(picture,rev["sender"]["user_id"])
+                                elif '#search/' in temp_tts_list[-2]:
+                                        response.close()
+                                        temp_tts_list=temp_tts_list[:-1]
+                                        break    
+                                else:
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("幻蓝：","").replace("幻蓝:","")})
+                        if "抱歉" in temp_tts_list[-1]:
+                            objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]
+                            print("催眠失败，重置记忆")
+                        # elif ":" in temp_tts_list[-1] or "：" in temp_tts_list[-1]:
+                        #     if temp_tts_list[-1].split(":")[0] != "幻蓝":
+                        #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                        #     else:
+                        #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
+                        #     if temp_tts_list[-1].split("：")[0] != "幻蓝":
+                        #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                        #     else:
+                        #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
                         else:
-                            temp_tts_list=[processed_d_data1]
-                        if not temp_tts_list:
-                            temp_tts_list=temp_tts_list[:-1]
-                        if self_id not in objdict["illue%sgeneing"%rev["sender"]["user_id"]]:
-                            objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                            raise InterruptedError("新消息中断")
-                        
-                        if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
-                            # if ":" in temp_tts_list[-2]:
-                            #     if temp_tts_list[-2].split(":")[0] != "幻蓝":
-                            #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                            #         break
-                            # elif "：" in temp_tts_list[-2]:
-                            #     if temp_tts_list[-2].split("：")[0] != "幻蓝":
-                            #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                            #         break
-                            if '#voice/' in temp_tts_list[-2]:
-                                try:
-                                    voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
-                                    tts_data = {
+                            if '#voice/' in temp_tts_list[-1]:
+                                voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
+                                tts_data = {
                                     "cha_name": "花火",
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
                                     }
-                                    b_wav = requests.post(
-                                        url='http://127.0.0.1:5000/tts', json=tts_data
-                                        )
-                                    n=random.randrange(10000,99999)
-                                    name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                                    to_path='./data/voice/%s'%name
-                                    with open(to_path,'wb') as wbf:
-                                        wbf.write(b_wav.content)
-                                    send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':name })
-                                except Exception as e:
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "语音合成失败"})
-                                    print("暂不支持语音合成")
-                            elif '#picture/' in temp_tts_list[-2]:
-                                picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                b_wav = requests.post(
+                                    url='http://127.0.0.1:5000/tts', json=tts_data
+                                    )
+                                n=random.randrange(10000,99999)
+                                name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                to_path='./data/voice/%s'%name
+                                with open(to_path,'wb') as wbf:
+                                    wbf.write(b_wav.content)
+                                send_voice({'msg_type': 'private', 'number':rev["sender"]["user_id"], 'msg':name })
+                            elif '#picture/' in temp_tts_list[-1]:
+                                picture=temp_tts_list[-1].split('#picture/')[-1].replace("#",'')
                                 print(picture)
                                 draw_private(picture,rev["sender"]["user_id"])
-                                
-                            else:
-                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("幻蓝：","").replace("幻蓝:","")})
-                    if "抱歉" in temp_tts_list[-1]:
-                        objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]
-                        print("催眠失败，重置记忆")
-                    # elif ":" in temp_tts_list[-1] or "：" in temp_tts_list[-1]:
-                    #     if temp_tts_list[-1].split(":")[0] != "幻蓝":
-                    #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                    #     else:
-                    #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    #     if temp_tts_list[-1].split("：")[0] != "幻蓝":
-                    #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                    #     else:
-                    #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    else:
-                        if '#voice/' in temp_tts_list[-1]:
-                            voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
-                            tts_data = {
-                                "cha_name": "花火",
-                                "text": voice.replace("...", "…").replace("…", ","),
-                                "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
+                            elif '#search/' in temp_tts_list[-1]:
+                                def search(query):
+                                    """
+                                    Searches the web for the specified query and returns the results.
+                                    """
+                                    response = requests.get(
+                                        'https://api.openinterpreter.com/v0/browser/search',
+                                        params={"query": query},
+                                    )
+                                    return response.json()["result"]
+                                s_prompt=temp_tts_list[-1].split('#search/')[-1].replace("#",'')
+                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "正在联网搜索：%s"%s_prompt})
+                                search_result=search(s_prompt)
+                                print(search_result)
+                                objdict["illue%s"%rev["sender"]["user_id"]][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
+                                messages=objdict["illue%s"%rev["sender"]["user_id"]][0]
+                                data={
+                                    "model": user_chat_model,##claude-3-opus-vf
+                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
+                                    "stream": True
                                 }
-                            b_wav = requests.post(
-                                url='http://127.0.0.1:5000/tts', json=tts_data
-                                )
-                            n=random.randrange(10000,99999)
-                            name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                            to_path='./data/voice/%s'%name
-                            with open(to_path,'wb') as wbf:
-                                wbf.write(b_wav.content)
-                            send_voice({'msg_type': 'private', 'number':rev["sender"]["user_id"], 'msg':name })
-                        elif '#picture/' in temp_tts_list[-1]:
-                            picture=temp_tts_list[-1].split('#picture/')[-1].replace("#",'')
-                            print(picture)
-                            draw_private(picture,rev["sender"]["user_id"])
-                        else:
-                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    print(processed_d_data1)
-                    #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': processed_d_data1})
-                    objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev["sender"]["user_id"]},{'role':'assistant','content':processed_d_data1}]
-                #objdict["illue%s"%rev['group_id']][1]=objdict["illue%s"%rev['group_id']][1]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                    # rand=random.randrange(1,settings+1)
-                    # exec('objdict["illue%s"]=wechat(ilu%dname,ilu%dinfo,12,20,5,cmsg.from_user_id,"微信群聊%s")'%(cmsg.from_user_id,rand,rand,cmsg.from_user_nickname))
-                    # exec('objdict["illue%s"].ispersonal=False'%cmsg.from_user_id)
-                print("未发现新消息...运行时间：%f"%(time.time()-startT))
-                if len(objdict["illue%s"%rev["sender"]["user_id"]][0])> 8:
-                    objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]+objdict["illue%s"%rev["sender"]["user_id"]][0][-6:]
-                # if len(objdict["illue%s"%rev['group_id']][1])> 8:
-                #     objdict["illue%s"%rev['group_id']][1]=[objdict["illue%s"%rev['group_id']][1][0]]+objdict["illue%s"%rev['group_id']][1][-6:]    
+                                is_return=True
+                                continue
+                            else:
+                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
+                            print(processed_d_data1)
+                            #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': processed_d_data1})
+                            objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            with open(
+                                    "./user/p%s/memory.txt"%rev["sender"]["user_id"],
+                                    "a",
+                                    encoding="utf-8",
+                                ) as txt:
+                                    timestamp = time.time()
+                                    localtime = time.localtime(timestamp)
+                                    current_time = time.strftime(
+                                        "%Y-%m-%d %H:%M:%S", localtime
+                                    )
+                                    txt.write(
+                                        "[%s]我说：%s\n" % (current_time, rev['raw_message'])
+                                    )
+                                    txt.write(
+                                        "[%s]你回复：%s\n"
+                                        % (current_time, processed_d_data1)
+                                    )
+                    #objdict["illue%s"%rev['group_id']][1]=objdict["illue%s"%rev['group_id']][1]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                        # rand=random.randrange(1,settings+1)
+                        # exec('objdict["illue%s"]=wechat(ilu%dname,ilu%dinfo,12,20,5,cmsg.from_user_id,"微信群聊%s")'%(cmsg.from_user_id,rand,rand,cmsg.from_user_nickname))
+                        # exec('objdict["illue%s"].ispersonal=False'%cmsg.from_user_id)
+            print("未发现新消息...运行时间：%f"%(time.time()-startT))
+            if len(objdict["illue%s"%rev["sender"]["user_id"]][0])> 10:
+                objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]+objdict["illue%s"%rev["sender"]["user_id"]][0][-6:]
+            # if len(objdict["illue%s"%rev['group_id']][1])> 8:
+            #     objdict["illue%s"%rev['group_id']][1]=[objdict["illue%s"%rev['group_id']][1][0]]+objdict["illue%s"%rev['group_id']][1][-6:]    
             objdict["illue%schat"%rev["sender"]["user_id"]]=''
             
 
@@ -405,7 +558,10 @@ def main(rev):
 
             if "illue%schat"%rev['group_id'] not in objdict.keys():
                 objdict["illue%schat"%rev['group_id']]=""
-
+            if not os.path.exists("./user/g%s"%rev['group_id']):
+                os.makedirs("./user/g%s"%rev['group_id'])
+                with open("./user/g%s/memory.txt"%rev['group_id'],"w") as tpass:
+                    pass
             
             if "[CQ:image,"  not in rev['raw_message']:
                 objdict["illue%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
@@ -464,119 +620,169 @@ def main(rev):
                                 "Authorization": "Bearer "+user_key
                         }
                     messages=objdict["illue%s"%rev['group_id']][0]+[{"role":"user","content":objdict["illue%schat"%rev['group_id']]}]
+                    keywords = jieba.analyse.extract_tags(rev['raw_message'], topK=5)
+                    s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords)
                     data={
-                        "model": user_chat_model,##claude-3-opus-vf
-                        "messages":messages,
-                        "stream": True
-                    }
-                    response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
-                # print(response1.content)
-                    temp_tts_list=[]
-                    processed_d_data1=''
-                    for line in response.iter_lines():
-                        try:
-                            decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                            if decoded != '':
-                                processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-                        except Exception as e:
-                            continue
-                            pass
-                        lastlen=len(temp_tts_list)
-                        # decoded1=line.decode('unicode_escape').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                        # processed_d_data1=json.loads(decoded1)["stream_output"]
-                        if '```' not in processed_d_data1:
-                            temp_tts_list=processed_d_data1.split("#split#")
+                            "model": user_chat_model,##claude-3-opus-vf
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory]\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "stream": True
+                        }
+                    is_return=True
+                    while is_return:
+                        is_return=False
+                        response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                    # print(response1.content)
+                        temp_tts_list=[]
+                        processed_d_data1=''
+                        for line in response.iter_lines():
+                            try:
+                                decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
+                                if decoded != '':
+                                    processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                            except Exception as e:
+                                continue
+                                pass
+                            lastlen=len(temp_tts_list)
+                            # decoded1=line.decode('unicode_escape').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
+                            # processed_d_data1=json.loads(decoded1)["stream_output"]
+                            if '```' not in processed_d_data1:
+                                temp_tts_list=processed_d_data1.split("#split#")
+                            else:
+                                temp_tts_list=[processed_d_data1]
+                            if not temp_tts_list:
+                                temp_tts_list=temp_tts_list[:-1]
+                            if self_id not in objdict["illue%sgeneing"%rev['group_id']]:
+                                objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                                raise InterruptedError("新消息中断")
+                            
+                            if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
+                                # if ":" in temp_tts_list[-2]:
+                                #     if temp_tts_list[-2].split(":")[0] != "幻蓝":
+                                #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                                #         break
+                                # elif "：" in temp_tts_list[-2]:
+                                #     if temp_tts_list[-2].split("：")[0] != "幻蓝":
+                                #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                                #         break
+                                if '#voice/' in temp_tts_list[-2]:
+                                    try:
+                                        voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
+                                        tts_data = {
+                                        "cha_name": "花火",
+                                        "text": voice.replace("...", "…").replace("…", ","),
+                                        "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
+                                        }
+                                        b_wav = requests.post(
+                                            url='http://127.0.0.1:5000/tts', json=tts_data
+                                            )
+                                        n=random.randrange(10000,99999)
+                                        name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                        to_path='./data/voice/%s'%name
+                                        with open(to_path,'wb') as wbf:
+                                            wbf.write(b_wav.content)
+                                        send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
+                                    except Exception as e:
+                                        # send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "语音合成失败"})
+                                        print("暂不支持语音合成")
+                                elif '#picture/' in temp_tts_list[-2]:
+                                    picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                    print(picture)
+                                    draw_group(picture,rev['group_id'])
+                                elif '#search/' in temp_tts_list[-2]:
+                                    response.close()
+                                    temp_tts_list=temp_tts_list[:-1]
+                                    break
+                                else:
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("幻蓝：","").replace("幻蓝:","")})
+                        if "抱歉" in temp_tts_list[-1]:
+                            objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                            print("催眠失败，重置记忆")
+                        # elif ":" in temp_tts_list[-1] or "：" in temp_tts_list[-1]:
+                        #     if temp_tts_list[-1].split(":")[0] != "幻蓝":
+                        #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                        #     else:
+                        #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
+                        #     if temp_tts_list[-1].split("：")[0] != "幻蓝":
+                        #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                        #     else:
+                        #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
                         else:
-                            temp_tts_list=[processed_d_data1]
-                        if not temp_tts_list:
-                            temp_tts_list=temp_tts_list[:-1]
-                        if self_id not in objdict["illue%sgeneing"%rev['group_id']]:
-                            objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                            raise InterruptedError("新消息中断")
-                        
-                        if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
-                            # if ":" in temp_tts_list[-2]:
-                            #     if temp_tts_list[-2].split(":")[0] != "幻蓝":
-                            #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                            #         break
-                            # elif "：" in temp_tts_list[-2]:
-                            #     if temp_tts_list[-2].split("：")[0] != "幻蓝":
-                            #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                            #         break
-                            if '#voice/' in temp_tts_list[-2]:
-                                try:
-                                    voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
-                                    tts_data = {
+                            if '#voice/' in temp_tts_list[-1]:
+                                voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
+                                tts_data = {
                                     "cha_name": "花火",
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
                                     }
-                                    b_wav = requests.post(
-                                        url='http://127.0.0.1:5000/tts', json=tts_data
-                                        )
-                                    n=random.randrange(10000,99999)
-                                    name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                                    to_path='./data/voice/%s'%name
-                                    with open(to_path,'wb') as wbf:
-                                        wbf.write(b_wav.content)
-                                    send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
-                                except Exception as e:
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "语音合成失败"})
-                                    print("暂不支持语音合成")
-                            elif '#picture/' in temp_tts_list[-2]:
-                                picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                b_wav = requests.post(
+                                    url='http://127.0.0.1:5000/tts', json=tts_data
+                                    )
+                                n=random.randrange(10000,99999)
+                                name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                to_path='./data/voice/%s'%name
+                                with open(to_path,'wb') as wbf:
+                                    wbf.write(b_wav.content)
+                                send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
+                            elif '#picture/' in temp_tts_list[-1]:
+                                picture=temp_tts_list[-1].split('#picture/')[-1].replace("#",'')
                                 print(picture)
                                 draw_group(picture,rev['group_id'])
+                            elif '#search/' in temp_tts_list[-1]:
+                                def search(query):
+                                    """
+                                    Searches the web for the specified query and returns the results.
+                                    """
+                                    response = requests.get(
+                                        'https://api.openinterpreter.com/v0/browser/search',
+                                        params={"query": query},
+                                    )
+                                    return response.json()["result"]
+                                s_prompt=temp_tts_list[-1].split('#search/')[-1].replace("#",'')
+                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "正在联网搜索：%s"%s_prompt})
+                                search_result=search(s_prompt)
+                                print(search_result)
+                                objdict["illue%s"%rev['group_id']][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
+                                messages=objdict["illue%s"%rev['group_id']][0]
+                                data={
+                                    "model": user_chat_model,##claude-3-opus-vf
+                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
+                                    "stream": True
+                                }
+                                is_return=True
+                                continue
                                 
                             else:
-                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("幻蓝：","").replace("幻蓝:","")})
-                    if "抱歉" in temp_tts_list[-1]:
-                        objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                        print("催眠失败，重置记忆")
-                    # elif ":" in temp_tts_list[-1] or "：" in temp_tts_list[-1]:
-                    #     if temp_tts_list[-1].split(":")[0] != "幻蓝":
-                    #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                    #     else:
-                    #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    #     if temp_tts_list[-1].split("：")[0] != "幻蓝":
-                    #         objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
-                    #     else:
-                    #         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    else:
-                        if '#voice/' in temp_tts_list[-1]:
-                            voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
-                            tts_data = {
-                                "cha_name": "花火",
-                                "text": voice.replace("...", "…").replace("…", ","),
-                                "character_emotion":random.choice(['default','平常的','慢速病娇','傻白甜','平静的','疯批','聊天'])
-                                }
-                            b_wav = requests.post(
-                                url='http://127.0.0.1:5000/tts', json=tts_data
+                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
+                            print(processed_d_data1)
+                            #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': processed_d_data1})
+                            objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            with open(
+                                "./user/g%s/memory.txt"%rev['group_id'],
+                                "a",
+                                encoding="utf-8",
+                            ) as txt:
+                                timestamp = time.time()
+                                localtime = time.localtime(timestamp)
+                                current_time = time.strftime(
+                                    "%Y-%m-%d %H:%M:%S", localtime
                                 )
-                            n=random.randrange(10000,99999)
-                            name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                            to_path='./data/voice/%s'%name
-                            with open(to_path,'wb') as wbf:
-                                wbf.write(b_wav.content)
-                            send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
-                        elif '#picture/' in temp_tts_list[-1]:
-                            picture=temp_tts_list[-1].split('#picture/')[-1].replace("#",'')
-                            print(picture)
-                            draw_group(picture,rev['group_id'])
-                        else:
-                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("幻蓝：","").replace("幻蓝:","")})
-                    print(processed_d_data1)
-                    #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': processed_d_data1})
-                    objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                #objdict["illue%s"%rev['group_id']][1]=objdict["illue%s"%rev['group_id']][1]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                    # rand=random.randrange(1,settings+1)
-                    # exec('objdict["illue%s"]=wechat(ilu%dname,ilu%dinfo,12,20,5,cmsg.from_user_id,"微信群聊%s")'%(cmsg.from_user_id,rand,rand,cmsg.from_user_nickname))
-                    # exec('objdict["illue%s"].ispersonal=False'%cmsg.from_user_id)
-                print("未发现新消息...运行时间：%f"%(time.time()-startT))
-                if len(objdict["illue%s"%rev['group_id']][0])> 8:
-                    objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]+objdict["illue%s"%rev['group_id']][0][-6:]
-                # if len(objdict["illue%s"%rev['group_id']][1])> 8:
-                #     objdict["illue%s"%rev['group_id']][1]=[objdict["illue%s"%rev['group_id']][1][0]]+objdict["illue%s"%rev['group_id']][1][-6:]    
+                                txt.write(
+                                    "[%s]%s\n" % (current_time, objdict["illue%schat"%rev['group_id']])
+                                )
+                                txt.write(
+                                    "[%s]你回复：%s\n"
+                                    % (current_time, processed_d_data1)
+                                )
+                    #objdict["illue%s"%rev['group_id']][1]=objdict["illue%s"%rev['group_id']][1]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                        # rand=random.randrange(1,settings+1)
+                        # exec('objdict["illue%s"]=wechat(ilu%dname,ilu%dinfo,12,20,5,cmsg.from_user_id,"微信群聊%s")'%(cmsg.from_user_id,rand,rand,cmsg.from_user_nickname))
+                        # exec('objdict["illue%s"].ispersonal=False'%cmsg.from_user_id)
+
+            print("未发现新消息...运行时间：%f"%(time.time()-startT))
+            if len(objdict["illue%s"%rev['group_id']][0])> 12:
+                objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]+objdict["illue%s"%rev['group_id']][0][-6:]
+            # if len(objdict["illue%s"%rev['group_id']][1])> 8:
+            #     objdict["illue%s"%rev['group_id']][1]=[objdict["illue%s"%rev['group_id']][1][0]]+objdict["illue%s"%rev['group_id']][1][-6:]    
             objdict["illue%schat"%rev['group_id']]=''
                 
 
@@ -609,6 +815,7 @@ system= system_prompt+"""
 1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”
 2. 使用语音时按照格式 #split##voice/语言合成的内容##split# ，例如语音输出“你好”： #split##voice/你好##split#  (不要过多使用语音；使用语音时不可使用（括号）和特色字符)
 3. 使用绘画功能时按照格式 #split##picture/绘画提示词##split# ，例如绘画一个女孩： #split##picture/one girl##split#  （除非明确要求否则不要绘画；绘画提示词尽力充实丰富，细节饱满详细，提示词使用英文单词）
+4. 需要联网搜索时按照格式 #split##search/搜索关键词##split#，例如查询国内的新闻：#split##search/国内 新闻##split#  （关键词尽量丰富，详细，具体）
 4. 回复时，禁止以群友的名义重复或冒充群友说话
 """
 
