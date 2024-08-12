@@ -22,6 +22,7 @@ import jieba.analyse
 # print('启动backnew辅助程序中...')
 # os.system('start /min backnews.exe')
 # time.sleep(1)
+
 def merge_contents(data):
     # 初始化一个新的列表来存储处理后的数据
     data=[data[0]]+[{"role":"user","content":" "}]+data[1:]
@@ -37,7 +38,10 @@ def merge_contents(data):
 
         # 如果当前content为空，则将其改为空格
         if not current_content.replace(" ",''):
-            current_content = "呜呜呜...遇到未知错误..."
+            if current_role == "user":
+                current_content = "[特殊消息]"
+            else:
+                current_content = "呜呜，遇到未知错误..."
 
         # 如果当前role与上一个role相同，则合并content
         if current_role == prev_role:
@@ -322,7 +326,7 @@ def main(rev):
         current_time = time.strftime(
                 "%Y-%m-%d %H:%M:%S", localtime
             )
-        e_information="[information]\n当前时间：%s\n"%current_time
+        e_information="[information](准确 有时效性)\n当前时间：%s\n"%current_time
         if rev["message_type"] == "private":
             if "illue%schat"%rev["sender"]["user_id"] not in objdict.keys():
                 objdict["illue%schat"%rev["sender"]["user_id"]]=""
@@ -382,10 +386,12 @@ def main(rev):
                     messages=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["illue%schat"%rev["sender"]["user_id"]]}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'], topK=5)
                     s_memory=get_memory("./user/p%s/memory.txt"%rev["sender"]["user_id"],keywords)
+                    print(s_memory)
                     data={
                             "model": user_chat_model,##claude-3-opus-vf
-                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory]\n%s\n"%s_memory+e_information}]+messages[1:]),
-                            "stream": True
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "stream": True,
+                            "use_search": False
                         }
                     is_return=True
                     while is_return:
@@ -506,7 +512,8 @@ def main(rev):
                                 data={
                                     "model": user_chat_model,##claude-3-opus-vf
                                     "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
-                                    "stream": True
+                                    "stream": True,
+                                    "use_search": False
                                 }
                                 is_return=True
                                 continue
@@ -545,7 +552,7 @@ def main(rev):
             
 
         elif rev["message_type"] == "group":
-            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"]) and "[CQ:image," in rev['raw_message']:
+            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"] or "炼丹师" in rev["sender"]["nickname"]) and "[CQ:image," in rev['raw_message']:
                 time.sleep(5+random.randrange(0,5))
                 message_id=rev['message_id']
                 res=requests.post('http://localhost:3000/delete_msg', json={
@@ -564,8 +571,9 @@ def main(rev):
                     pass
             
             if "[CQ:image,"  not in rev['raw_message']:
+                objdict["illue%schat"%rev['group_id']]=objdict["illue%schat"%rev['group_id']][-30:]
                 objdict["illue%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
-                objdict["illue%schat"%rev['group_id']]=objdict["illue%schat"%rev['group_id']][-50:]
+                
             if "#settitle:" in rev['raw_message']:
                 title=rev['raw_message'].split(':',1)[-1][:5]
                 res=requests.post('http://localhost:3000/set_group_special_title', json={
@@ -592,6 +600,7 @@ def main(rev):
                 if '#reset' in rev['raw_message']:
                     objdict["illue%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'}) 
+
                 else:        
                     # data={"user_input":"你是一个意图分析助手，接下来我会给你一段文字，你需要分析用户这段话的意图，备选答案为[01:'想聊天',02:'向AI提问以寻求帮助',03:'进行AI绘画']，你只能从中选一个最贴切的答案用中文直接将序号回复给我，不允许说其他内容。"+"当前需要分析意图的语段是：“"+rev['raw_message']+"”","history":[{'role':'system','content':"你是一个意图分析助手，接下来我会给你一段文字，你需要分析用户这段话的意图，备选答案为[01:'想聊天',02:'向AI提问以寻求帮助',03:'进行AI绘画']，你只能从中选一个最贴切的答案直接回复序号给我，不允许说其他内容。"}]}
                     # response1 = requests.post(
@@ -622,10 +631,12 @@ def main(rev):
                     messages=objdict["illue%s"%rev['group_id']][0]+[{"role":"user","content":objdict["illue%schat"%rev['group_id']]}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'], topK=5)
                     s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords)
+                    print(s_memory)
                     data={
                             "model": user_chat_model,##claude-3-opus-vf
-                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory]\n%s\n"%s_memory+e_information}]+messages[1:]),
-                            "stream": True
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "stream": True,
+                            "use_search": False
                         }
                     is_return=True
                     while is_return:
@@ -640,6 +651,7 @@ def main(rev):
                                 if decoded != '':
                                     processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
                             except Exception as e:
+                                print(decoded,e)
                                 continue
                                 pass
                             lastlen=len(temp_tts_list)
@@ -734,7 +746,7 @@ def main(rev):
                                     """
                                     response = requests.get(
                                         'https://api.openinterpreter.com/v0/browser/search',
-                                        params={"query": query},
+                                        params={"query": query + " 详细详细"},
                                     )
                                     return response.json()["result"]
                                 s_prompt=temp_tts_list[-1].split('#search/')[-1].replace("#",'')
@@ -746,7 +758,8 @@ def main(rev):
                                 data={
                                     "model": user_chat_model,##claude-3-opus-vf
                                     "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
-                                    "stream": True
+                                    "stream": True,
+                                    "use_search": False
                                 }
                                 is_return=True
                                 continue
@@ -777,13 +790,13 @@ def main(rev):
                         # rand=random.randrange(1,settings+1)
                         # exec('objdict["illue%s"]=wechat(ilu%dname,ilu%dinfo,12,20,5,cmsg.from_user_id,"微信群聊%s")'%(cmsg.from_user_id,rand,rand,cmsg.from_user_nickname))
                         # exec('objdict["illue%s"].ispersonal=False'%cmsg.from_user_id)
-
+                        objdict["illue%schat"%rev['group_id']]=''
             print("未发现新消息...运行时间：%f"%(time.time()-startT))
             if len(objdict["illue%s"%rev['group_id']][0])> 12:
                 objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]+objdict["illue%s"%rev['group_id']][0][-6:]
             # if len(objdict["illue%s"%rev['group_id']][1])> 8:
             #     objdict["illue%s"%rev['group_id']][1]=[objdict["illue%s"%rev['group_id']][1][0]]+objdict["illue%s"%rev['group_id']][1][-6:]    
-            objdict["illue%schat"%rev['group_id']]=''
+            
                 
 
     except Exception as e:
@@ -858,16 +871,7 @@ url2='http://127.0.0.1:8084/'
 processed_d_data='想聊天'
 startT=time.time()#总计时开始
 print('程序已启动')
-with open("./set.json", "r", encoding="utf-8") as setting:  # 读取长期保存的设置
-    setinfo = setting.read()
-    setdir = json.loads(setinfo)
-    user_api = setdir["chat_url"]
-    user_key = setdir["chat_key"]
-    user_chat_model = setdir["chat_model"]
-    draw_url = setdir["draw_url"]
-    draw_key = setdir["draw_key"]
-    draw_model = setdir["draw_model"]
-    system_prompt = setdir["system_prompt"]
+
 while 1:
     #wechat
     try:
