@@ -41,7 +41,7 @@
 
 3. 启动：
    安装必要的库：
-   先cd到桌宠根目录，然后打开命令行，输入以下命令：
+   先cd到Qbot-main根目录，然后打开命令行，输入以下命令：
    ```cmd
    pip install -r requirements.txt
    ```
