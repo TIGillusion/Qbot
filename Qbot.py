@@ -466,10 +466,7 @@ def main(rev):
                                 continue
                                 pass
                             lastlen=len(temp_tts_list)
-                            if '```' not in processed_d_data1:
-                                temp_tts_list=processed_d_data1.split("#split#")
-                            else:
-                                temp_tts_list=[processed_d_data1]
+                            temp_tts_list=processed_d_data1.split("#split#")
                             if not temp_tts_list:
                                 temp_tts_list=temp_tts_list[:-1]
                             if self_id not in objdict["illue%sgeneing"%rev["sender"]["user_id"]]:
@@ -717,10 +714,7 @@ def main(rev):
                                 continue
                                 pass
                             lastlen=len(temp_tts_list)
-                            if '```' not in processed_d_data1:
-                                temp_tts_list=processed_d_data1.split("#split#")
-                            else:
-                                temp_tts_list=[processed_d_data1]
+                            temp_tts_list=processed_d_data1.split("#split#")
                             if not temp_tts_list:
                                 temp_tts_list=temp_tts_list[:-1]
                             if self_id not in objdict["illue%sgeneing"%rev['group_id']]:
