@@ -627,7 +627,7 @@ def main(rev):
 
             pass_ban=False
             for ban_name in ban_names:
-                if ban_name in "芙芙" in rev["sender"]["nickname"]:
+                if ban_name in rev["sender"]["nickname"]:
                     pass_ban = True
                     break
             if pass_ban:
