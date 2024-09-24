@@ -486,7 +486,7 @@ def main(rev):
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
                                         b_wav = requests.post(
-                                            url='http://127.0.0.1:5002/tts', json=tts_data
+                                            url='http://127.0.0.1:5000/tts', json=tts_data
                                             )
                                         n=random.randrange(10000,99999)
                                         name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
@@ -542,7 +542,7 @@ def main(rev):
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
                                 b_wav = requests.post(
-                                    url='http://127.0.0.1:5002/tts', json=tts_data
+                                    url='http://127.0.0.1:5000/tts', json=tts_data
                                     )
                                 n=random.randrange(10000,99999)
                                 name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
@@ -737,7 +737,7 @@ def main(rev):
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
                                         b_wav = requests.post(
-                                            url='http://127.0.0.1:5002/tts', json=tts_data
+                                            url='http://127.0.0.1:5000/tts', json=tts_data
                                             )
                                         n=random.randrange(10000,99999)
                                         name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
@@ -792,7 +792,7 @@ def main(rev):
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
                                 b_wav = requests.post(
-                                    url='http://127.0.0.1:5002/tts', json=tts_data
+                                    url='http://127.0.0.1:5000/tts', json=tts_data
                                     )
                                 n=random.randrange(10000,99999)
                                 name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
