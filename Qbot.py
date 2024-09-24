@@ -516,8 +516,10 @@ def main(rev):
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
                                     raise KeyboardInterrupt("AI认为应该跳过此回复！")
                                 elif "#emotion/" in temp_tts_list[-2]:
-                                    e_image=random.choice(["angry1.png","angry.jpg"])
-                                    send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':e_image})
+                                    t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
+                                    e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                    e_image=random.choice(e_image_list)
+                                    send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
                                 elif "#music/" in temp_tts_list[-2]:
                                     t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
                                     smusic_l=os.listdir("./data/voice/smusic")
@@ -578,8 +580,10 @@ def main(rev):
                                 send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
                                 raise KeyboardInterrupt("AI认为应该跳过此回复！")
                             elif "#emotion/" in temp_tts_list[-1]:
-                                e_image=random.choice(["angry1.png","angry.jpg"])
-                                send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':e_image})
+                                t_emotion=temp_tts_list[-1].split("#emotion/")[-1].replace("#",'')
+                                e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                e_image=random.choice(e_image_list)
+                                send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
                                 smusic_l=os.listdir("./data/voice/smusic")
@@ -762,8 +766,10 @@ def main(rev):
                                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
                                     raise KeyboardInterrupt("AI认为应该跳过此回复！")
                                 elif "#emotion/" in temp_tts_list[-2]:
-                                    e_image=random.choice(["angry1.png","angry.jpg"])
-                                    send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':e_image})
+                                    t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
+                                    e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                    e_image=random.choice(e_image_list)
+                                    send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
                                 elif "#music/" in temp_tts_list[-2]:
                                     t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
                                     smusic_l=os.listdir("./data/voice/smusic")
@@ -824,8 +830,10 @@ def main(rev):
                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
                                 raise KeyboardInterrupt("AI认为应该跳过此回复！")
                             elif "#emotion/" in temp_tts_list[-1]:
-                                e_image=random.choice(["angry1.png","angry.jpg"])
-                                send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':e_image})
+                                t_emotion=temp_tts_list[-1].split("#emotion/")[-1].replace("#",'')
+                                e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                e_image=random.choice(e_image_list)
+                                send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
                                 smusic_l=os.listdir("./data/voice/smusic")
@@ -904,6 +912,14 @@ def music_files(filename):
         return send_from_directory('./data/voice/smusic/', filename, as_attachment=True)
     else:
         return 'File not found', 404
+    
+@app.route('/data/image/<emotion>/<filename>', methods=['GET', 'POST'])
+def emoji_files(emotion,filename):
+    print("用户请求文件：", emotion,"/",filename)
+    if os.path.exists('./data/image/%s/%s'%(emotion,filename)):
+        return send_from_directory('./data/image/%s'%emotion, filename, as_attachment=True)
+    else:
+        return 'File not found', 404
 
 # 定义一个函数来启动Flask应用
 def run_server():
@@ -944,7 +960,7 @@ system= system_prompt+"""
 4. 需要联网搜索时按照格式 #split##search/搜索关键词##split#，例如查询国内的新闻：#split##search/国内 新闻##split#  （关键词尽量多，详细，具体）
 5. 每隔一段时间有重要的信息点需要写入长期记忆 #split##memory/写入的信息内容##split#，例如提到幻日是你的老爹：#split##memory/幻日是我老爹##split# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
 6. 不想或者不需要回复信息时，只需要输出 #split##pass/None##split#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #split##pass/None##split# (不要总是使用此操作拒绝回复)
-7. 非常生气时发送愤怒表情包，按照格式 #split##emotion/None##split#，例如有人反复纠缠不休导致很生气：#split##emotion/None##split#  (不要总是发送表情包，每条信息最多使用一次表情包)
+7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下情绪[angry,happy,sad,fear,bored])
 8. 心情好想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你亲自唱潮汐：#split##music/幻蓝-潮汐(清唱.wav##split# (不要总是唱歌，要适当拒绝目前只支持以下歌曲名[%s]，如果没有合适歌曲就随机选一个歌名)
 8. 回复时，禁止以群友的名义重复或冒充群友说话
 """%str_music_l[:-1]#附加特殊操作order
