@@ -1,4 +1,6 @@
-﻿# v0.9.7更新：
+#推荐大模型：GLM0520模型，能力很强，且新用户可以免费白嫖，可以用这个来体验本项目
+链接：我正在BigModel.cn上用智谱API打造新一代应用服务，通过我的专属邀请链接注册即可获得额外GLM-4-Air 2000万Tokens好友专属福利，期待和你一起在BigModel上探索AGI时代的应用；链接：https://www.bigmodel.cn/invite?icode=TI78RQ3FRZDOG00daIHyTJmwcr074zMJTpgMb8zZZvg%3D
+ # v0.9.7更新：
 1. 采用模型团方案，可以填写多个模型，根据权重调用，建议选取一个高性能模型和两个便宜模型，既可以在保证能力的同时节省费用，还可以避免大模型回复模板化的问题
 
 2. 允许AI自己在适当的时候发送data/smusic文件夹内的歌曲
