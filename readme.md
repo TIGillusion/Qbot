@@ -2,6 +2,7 @@
 推荐大模型：GLM0520模型，能力很强，且新用户可以免费白嫖，可以用这个来体验本项目。
 
 链接：我正在BigModel.cn上用智谱API打造新一代应用服务，通过我的专属邀请链接注册即可获得额外GLM-4-Air 2000万Tokens好友专属福利，期待和你一起在BigModel上探索AGI时代的应用；链接：https://www.bigmodel.cn/invite?icode=TI78RQ3FRZDOG00daIHyTJmwcr074zMJTpgMb8zZZvg%3D
+
 **注：智谱清言`glm-4-flash`已对所有用户完全免费调用。**
 
 # v0.9.7更新：
