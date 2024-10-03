@@ -39,13 +39,13 @@
 1. 首先，下载并安装NTQQ（一种新架构的QQ电脑端）：
    [NTQQ下载链接](https://im.qq.com/pcqq/index.shtml)
 
-2. 安装LLonebot的NTQQ插件：
+2. 安装llob的NTQQ插件：
    [NTQQ插件链接](https://github.com/LLOneBot/LLOneBot)
    安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
    如果是Windows系统，注意下载如下名称的较新版本exe：
     ![NTQQ插件安装图](source/1.png)
 
-3. 配置LLonebot插件：
+3. 配置安装好的插件：
    安装好插件后，打开ntqq进入插件设置
    填写各种信息（千万不要忘记填写端口号）后，**注意保存！！！**
     ![NTQQ插件安装图](source/2.png)
