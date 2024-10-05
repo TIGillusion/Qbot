@@ -72,7 +72,7 @@
    ```cmd
    pip install -r requirements.txt
    ```
-   保持NTQQ的运行状态，然后使用`python Qbot.py`完成启动。
+   保持NTQQ的运行状态，然后直接双击`Qbot.py`或使用`python Qbot.py`完成启动。
 
    （遇到问题可以联系开发者幻日QQ：2141073363）
 
