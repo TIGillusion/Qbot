@@ -220,12 +220,17 @@ def draw_group(prompt,to):
                     "Content-Type": "application/json",
                     "Authorization": "Bearer "+draw_key
             }
-        
-        data={
-            "model":draw_model,##claude-3-opus-vf
-            "messages":[{"role":"user","content":prompt}],
-            "stream": True
-        }
+        if "cogview" in draw_model:
+            data={
+                "model":draw_model,
+                "prompt":prompt,
+            }
+        else:
+            data={
+                "model":draw_model,##claude-3-opus-vf
+                "messages":[{"role":"user","content":prompt}],
+                "stream": True
+            }
         send_msg({'msg_type': 'group', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
         response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
         if response.status_code==200:
@@ -235,7 +240,11 @@ def draw_group(prompt,to):
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
-                    processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                    if "cogview" in draw_model:
+                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
+                    else:
+                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+
                     print(decoded)
             except Exception as e:
                 print(e)
@@ -302,7 +311,7 @@ def draw_private(prompt,to):
     except Exception as e:
         print('绘画错误:',e)
         send_msg({'msg_type': 'private', 'number': to, 'msg':'AI绘画操作无法执行'})
-
+        
 def send_msg(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
