@@ -275,11 +275,17 @@ def draw_private(prompt,to):
                     "Authorization": "Bearer "+draw_key
             }
         
-        data={
-            "model":draw_model,
-            "messages":[{"role":"user","content":prompt}],
-            "stream": True
-        }
+        if "cogview" in draw_model:
+            data={
+                "model":draw_model,
+                "prompt":prompt,
+            }
+        else:
+            data={
+                "model":draw_model,##claude-3-opus-vf
+                "messages":[{"role":"user","content":prompt}],
+                "stream": True
+            }
         send_msg({'msg_type': 'private', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
         response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
         if response.status_code==200:
@@ -289,7 +295,10 @@ def draw_private(prompt,to):
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
-                    processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                    if "cogview" in draw_model:
+                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
+                    else:
+                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
                     print(decoded)
             except Exception as e:
                 print(e)
@@ -463,7 +472,28 @@ def main(rev):
                     is_return=True
                     while is_return:
                         is_return=False
-                        response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                        for _ in range(0,3):
+                            try:
+                                response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                                if response.status_code==200:
+                                    break
+                                print("请求错误，尝试兜底模型")
+                                data["model"]=chat_models[0]["model_name"]
+                                turl=chat_models[0]["model_api"]
+                                user_key=chat_models[0]["model_key"]
+                                headers={
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer "+user_key
+                                }
+                            except Exception as e:
+                                print("请求错误，尝试兜底模型：",e)
+                                data["model"]=chat_models[0]["model_name"]
+                                turl=chat_models[0]["model_api"]
+                                user_key=chat_models[0]["model_key"]
+                                headers={
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer "+user_key
+                                }
                         temp_tts_list=[]
                         processed_d_data1=''
                         for line in response.iter_lines():
@@ -487,7 +517,7 @@ def main(rev):
                                     try:
                                         voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
                                         tts_data = {
-                                        "cha_name": "illuevoice",
+                                        "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
                                         "text": voice.replace("...", "…").replace("…", ","),
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
@@ -543,7 +573,7 @@ def main(rev):
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illuevoice",
+                                    "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -710,7 +740,28 @@ def main(rev):
                     is_return=True
                     while is_return:
                         is_return=False
-                        response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                        for _ in range(0,3):
+                            try:
+                                response=requests.post(url=turl,headers=headers,stream=True,data=json.dumps(data))
+                                if response.status_code==200:
+                                    break
+                                print("请求错误，尝试兜底模型")
+                                data["model"]=chat_models[0]["model_name"]
+                                turl=chat_models[0]["model_api"]
+                                user_key=chat_models[0]["model_key"]
+                                headers={
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer "+user_key
+                                }
+                            except Exception as e:
+                                print("请求错误，尝试兜底模型：",e)
+                                data["model"]=chat_models[0]["model_name"]
+                                turl=chat_models[0]["model_api"]
+                                user_key=chat_models[0]["model_key"]
+                                headers={
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer "+user_key
+                                }
                         temp_tts_list=[]
                         processed_d_data1=''
                         for line in response.iter_lines():
@@ -735,7 +786,7 @@ def main(rev):
                                     try:
                                         voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
                                         tts_data = {
-                                        "cha_name": "illuevoice",
+                                        "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
                                         "text": voice.replace("...", "…").replace("…", ","),
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
@@ -775,12 +826,39 @@ def main(rev):
                                     send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
                                 elif "#music/" in temp_tts_list[-2]:
                                     t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
-                                    smusic_l=os.listdir("./data/voice/smusic")
-                                    if t_music_n in smusic_l:
-                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "《%s》"%t_music_n})
-                                        send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+t_music_n})
-                                    else:
-                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
+                                    
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：0%"})
+                                    datam={"name":t_music_n,"speaker":"illue","low":True}
+                                    response1 = requests.post(url="http://127.0.0.1:3333",data=json.dumps(datam),stream=True)
+                                    for line in response1.iter_lines():
+                                        decoded = (
+                                            line.decode("unicode_escape")
+                                            .replace("\b", "\\b")
+                                            .replace("\f", "\\f")
+                                            .replace("\r", "\\r")
+                                            .replace("\t", "\\t")
+                                            .replace("\n", "\\n")
+                                        )
+                                        done = json.loads(decoded)["done"]
+                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：{done}%"})
+                                        if done == 100:
+                                            file_name = json.loads(decoded)["name"]
+                                            if "error:" in file_name:
+                                                w_error = file_name.replace("error:","")
+                                                if w_error == "time":
+                                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，原因：歌曲过长"})
+                                                else:
+                                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
+                                            else:
+                                                with open("./data/voice/smusic/%s"%file_name, "wb") as f:
+                                                    response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name, timeout=60).content
+                                                    f.write(response_wav)
+                                                #copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
+                                                requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
+                                                send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                                time.sleep(random.randrange(0,3))
+                                                send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                        #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
                                 else:
                                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
@@ -790,7 +868,7 @@ def main(rev):
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illuevoice",
+                                    "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -839,12 +917,38 @@ def main(rev):
                                 send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
-                                smusic_l=os.listdir("./data/voice/smusic")
-                                if t_music_n in smusic_l:
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "《%s》"%t_music_n})
-                                    send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+t_music_n})
-                                else:
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
+                                datam={"name":t_music_n,"speaker":"illue","low":True}
+                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：0%"})
+                                response1 = requests.post(url="http://127.0.0.1:3333",data=json.dumps(datam),stream=True) 
+                                for line in response1.iter_lines():
+                                    decoded = (
+                                        line.decode("unicode_escape")
+                                        .replace("\b", "\\b")
+                                        .replace("\f", "\\f")
+                                        .replace("\r", "\\r")
+                                        .replace("\t", "\\t")
+                                        .replace("\n", "\\n")
+                                    )
+                                    done = json.loads(decoded)["done"]
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：{done}%"})
+                                    if done == 100:
+                                        file_name = json.loads(decoded)["name"]
+                                        if "error:" in file_name:
+                                            w_error = file_name.replace("error:","")
+                                            if w_error == "time":
+                                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，原因：歌曲过长"})
+                                            else:
+                                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
+                                        else:
+                                            with open("./data/voice/smusic/%s"%file_name, "wb") as f:
+                                                response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name, timeout=60).content
+                                                f.write(response_wav)
+                                            # copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
+                                            requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
+                                            send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                            time.sleep(random.randrange(0,3))
+                                            send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                    #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
                             else:
                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
