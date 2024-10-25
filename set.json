@@ -17,7 +17,8 @@
             "model_api":"模型的请求API1，要填写完整（包含/v1/chat/completions）",
             "model_name":"模型名称1",
             "model_key":"此模型的秘钥",
-            "weight":3
+            "weight":0,
+            "tips":"注意，首个模型尽量选择稳定模型，如果其他模型出错将使用此模型兜底回复"
         },
         {
             "model_api":"模型的请求API2，要填写完整（包含/v1/chat/completions）",
