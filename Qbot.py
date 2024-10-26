@@ -374,6 +374,23 @@ def send_voice(resp_dict):
         })
         print("send_private_msg:",msg,json.loads(res.content))
 
+def send_music(resp_dict):
+    msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
+    number = resp_dict['number']  # 回复账号（群号/好友号）
+    msg = resp_dict['msg']  # 要回复的消息
+    if msg_type == 'group':
+        res=requests.post('http://localhost:3000/send_group_msg', json={
+            'group_id': number,
+            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s]"%msg
+        })
+        print("send_group_msg:",msg,json.loads(res.content))
+    elif msg_type == 'private':
+        res=requests.post('http://localhost:3000/send_private_msg', json={
+            'user_id': number,
+            'message':"[CQ:file,file=http://127.0.0.1:4321/data/voice/%s]"%msg
+        })
+        print("send_private_msg:",msg,json.loads(res.content))
+
 def send_image_url(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
@@ -419,8 +436,8 @@ def main(rev):
             )
         e_information="[information](准确 有时效性)\n当前时间：%s\n"%current_time
         if rev["message_type"] == "private":
-            if "illue%schat"%rev["sender"]["user_id"] not in objdict.keys():
-                objdict["illue%schat"%rev["sender"]["user_id"]]=""
+            if "banaijian%schat"%rev["sender"]["user_id"] not in objdict.keys():
+                objdict["banaijian%schat"%rev["sender"]["user_id"]]=""
             if not os.path.exists("./user/p%s"%rev["sender"]["user_id"]):
                 os.makedirs("./user/p%s"%rev["sender"]["user_id"])
                 with open("./user/p%s/memory.txt"%rev["sender"]["user_id"],"w") as tpass:
@@ -430,19 +447,19 @@ def main(rev):
                     pass
             
             if "[CQ:image,"  not in rev['raw_message']:
-                objdict["illue%schat"%rev["sender"]["user_id"]]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
-                objdict["illue%schat"%rev["sender"]["user_id"]]=objdict["illue%schat"%rev["sender"]["user_id"]][-50:]
+                objdict["banaijian%schat"%rev["sender"]["user_id"]]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
+                objdict["banaijian%schat"%rev["sender"]["user_id"]]=objdict["banaijian%schat"%rev["sender"]["user_id"]][-50:]
 
             if True:
-                a=objdict["illue%schat"%rev["sender"]["user_id"]]
+                a=objdict["banaijian%schat"%rev["sender"]["user_id"]]
                 print(a)
                 self_id=random.randrange(100000,999999)
-                objdict["illue%sgeneing"%rev["sender"]["user_id"]]=[self_id] 
+                objdict["banaijian%sgeneing"%rev["sender"]["user_id"]]=[self_id] 
                 rev['raw_message']=rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')
-                if "illue%s"%rev["sender"]["user_id"] not in objdict.keys():
-                    objdict["illue%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
+                if "banaijian%s"%rev["sender"]["user_id"] not in objdict.keys():
+                    objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
-                    objdict["illue%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
+                    objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空对话历史'}) 
                 else:        
                     processed_d_data="强制切换意图"
@@ -458,7 +475,7 @@ def main(rev):
                                 "Content-Type": "application/json",
                                 "Authorization": "Bearer "+user_key
                         }
-                    messages=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["illue%schat"%rev["sender"]["user_id"]]}]
+                    messages=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["banaijian%schat"%rev["sender"]["user_id"]]}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'].replace(AI_name,""), topK=50)
                     s_memory=get_memory("./user/p%s/memory.txt"%rev["sender"]["user_id"],keywords)
                     s_memory+=get_I_memory("./user/p%s/I_memory.txt"%rev["sender"]["user_id"])
@@ -508,8 +525,8 @@ def main(rev):
                             temp_tts_list=processed_d_data1.split("#split#")
                             if not temp_tts_list:
                                 temp_tts_list=temp_tts_list[:-1]
-                            if self_id not in objdict["illue%sgeneing"%rev["sender"]["user_id"]]:
-                                objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            if self_id not in objdict["banaijian%sgeneing"%rev["sender"]["user_id"]]:
+                                objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                                 raise InterruptedError("新消息中断")
                             
                             if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
@@ -517,7 +534,7 @@ def main(rev):
                                     try:
                                         voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
                                         tts_data = {
-                                        "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
+                                        "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
                                         "text": voice.replace("...", "…").replace("…", ","),
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
@@ -567,13 +584,13 @@ def main(rev):
                                 else:
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
-                            objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]
+                            objdict["banaijian%s"%rev["sender"]["user_id"]][0]=[objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]]
                             print("催眠失败，重置记忆")
                         else:
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
+                                    "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -596,8 +613,8 @@ def main(rev):
                                 send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "正在联网搜索：%s"%s_prompt})
                                 search_result=search(s_prompt)
                                 print(search_result)
-                                objdict["illue%s"%rev["sender"]["user_id"]][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
-                                messages=objdict["illue%s"%rev["sender"]["user_id"]][0]
+                                objdict["banaijian%s"%rev["sender"]["user_id"]][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
+                                messages=objdict["banaijian%s"%rev["sender"]["user_id"]][0]
                                 data={
                                     "model": user_chat_model,##claude-3-opus-vf
                                     "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
@@ -631,7 +648,7 @@ def main(rev):
                             else:
                                 send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
-                            objdict["illue%s"%rev["sender"]["user_id"]][0]=objdict["illue%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                             with open(
                                     "./user/p%s/memory.txt"%rev["sender"]["user_id"],
                                     "a",
@@ -650,9 +667,9 @@ def main(rev):
                                         % (current_time, processed_d_data1)
                                     )
             print("未发现新消息...运行时间：%f"%(time.time()-startT))
-            if len(objdict["illue%s"%rev["sender"]["user_id"]][0])> 10:
-                objdict["illue%s"%rev["sender"]["user_id"]][0]=[objdict["illue%s"%rev["sender"]["user_id"]][0][0]]+objdict["illue%s"%rev["sender"]["user_id"]][0][-6:]  
-            objdict["illue%schat"%rev["sender"]["user_id"]]=''
+            if len(objdict["banaijian%s"%rev["sender"]["user_id"]][0])> 10:
+                objdict["banaijian%s"%rev["sender"]["user_id"]][0]=[objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]]+objdict["banaijian%s"%rev["sender"]["user_id"]][0][-6:]  
+            objdict["banaijian%schat"%rev["sender"]["user_id"]]=''
             
 
         elif rev["message_type"] == "group":
@@ -673,8 +690,8 @@ def main(rev):
                 raise RuntimeError("break limitless turn")#屏蔽指定名称qq
             
 
-            if "illue%schat"%rev['group_id'] not in objdict.keys():#创建目录
-                objdict["illue%schat"%rev['group_id']]=""
+            if "banaijian%schat"%rev['group_id'] not in objdict.keys():#创建目录
+                objdict["banaijian%schat"%rev['group_id']]=""
             if not os.path.exists("./user/g%s"%rev['group_id']):
                 os.makedirs("./user/g%s"%rev['group_id'])
                 with open("./user/g%s/memory.txt"%rev['group_id'],"w") as tpass:
@@ -684,8 +701,8 @@ def main(rev):
                     pass
             
             if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
-                objdict["illue%schat"%rev['group_id']]=objdict["illue%schat"%rev['group_id']][-30:]
-                objdict["illue%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
+                objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-30:]
+                objdict["banaijian%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
                 
             if "#settitle:" in rev['raw_message']:#自动设置头衔（暂时无效）
                 title=rev['raw_message'].split(':',1)[-1][:5]
@@ -703,15 +720,15 @@ def main(rev):
                     is_trigger = True
                     break
             if (is_trigger or '[CQ:at,qq=%d]'%rev['self_id'] in rev['raw_message'] or random.randrange(0,random_trigger)==0):#触发回复
-                a=objdict["illue%schat"%rev['group_id']]
+                a=objdict["banaijian%schat"%rev['group_id']]
                 print(a)
                 self_id=random.randrange(100000,999999)
-                objdict["illue%sgeneing"%rev['group_id']]=[self_id] 
+                objdict["banaijian%sgeneing"%rev['group_id']]=[self_id] 
                 rev['raw_message']=rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')
-                if "illue%s"%rev['group_id'] not in objdict.keys():
-                    objdict["illue%s"%rev['group_id']]=[[{'role':'system','content':system}]]
+                if "banaijian%s"%rev['group_id'] not in objdict.keys():
+                    objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
-                    objdict["illue%s"%rev['group_id']]=[[{'role':'system','content':system}]]
+                    objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'}) 
                 else:        
                     processed_d_data="强制切换意图"
@@ -726,7 +743,7 @@ def main(rev):
                                 "Content-Type": "application/json",
                                 "Authorization": "Bearer "+user_key
                         }
-                    messages=objdict["illue%s"%rev['group_id']][0]+[{"role":"user","content":objdict["illue%schat"%rev['group_id']]}]
+                    messages=objdict["banaijian%s"%rev['group_id']][0]+[{"role":"user","content":objdict["banaijian%schat"%rev['group_id']]}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'].replace(AI_name,""), topK=50)
                     s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords)
                     s_memory+=get_I_memory("./user/g%s/I_memory.txt"%rev['group_id'])
@@ -777,8 +794,8 @@ def main(rev):
                             temp_tts_list=processed_d_data1.split("#split#")
                             if not temp_tts_list:
                                 temp_tts_list=temp_tts_list[:-1]
-                            if self_id not in objdict["illue%sgeneing"%rev['group_id']]:
-                                objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            if self_id not in objdict["banaijian%sgeneing"%rev['group_id']]:
+                                objdict["banaijian%s"%rev['group_id']][0]=objdict["banaijian%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                                 raise InterruptedError("新消息中断")
                             
                             if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
@@ -786,7 +803,7 @@ def main(rev):
                                     try:
                                         voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
                                         tts_data = {
-                                        "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
+                                        "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
                                         "text": voice.replace("...", "…").replace("…", ","),
                                         "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                         }
@@ -862,13 +879,13 @@ def main(rev):
                                 else:
                                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
-                            objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]
+                            objdict["banaijian%s"%rev['group_id']][0]=[objdict["banaijian%s"%rev['group_id']][0][0]]
                             print("催眠失败，重置记忆")
                         else:
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illuevoice",#这里填本地语音合成包里面配置好的说话人
+                                    "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -891,8 +908,8 @@ def main(rev):
                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "正在联网搜索：%s"%s_prompt})
                                 search_result=search(s_prompt)
                                 print(search_result)
-                                objdict["illue%s"%rev['group_id']][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
-                                messages=objdict["illue%s"%rev['group_id']][0]
+                                objdict["banaijian%s"%rev['group_id']][0]+=[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1+"""\nsystem[搜索结果不可见]：正在联网搜索：%s\n搜索结果：\n%s\n由于system返回的搜索结果你应该看不见，我将用自己的话详细，具体的讲述一下搜索结果。"""%(s_prompt,search_result)},{"role":"user","content":"开始详细具体的讲述吧"}]
+                                messages=objdict["banaijian%s"%rev['group_id']][0]
                                 data={
                                     "model": user_chat_model,
                                     "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
@@ -953,7 +970,7 @@ def main(rev):
                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
                             print(user_chat_model)
-                            objdict["illue%s"%rev['group_id']][0]=objdict["illue%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                            objdict["banaijian%s"%rev['group_id']][0]=objdict["banaijian%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                             with open(
                                 "./user/g%s/memory.txt"%rev['group_id'],
                                 "a",
@@ -965,19 +982,19 @@ def main(rev):
                                     "%Y-%m-%d %H:%M:%S", localtime
                                 )
                                 txt.write(
-                                    "[%s]%s\n" % (current_time, objdict["illue%schat"%rev['group_id']])
+                                    "[%s]%s\n" % (current_time, objdict["banaijian%schat"%rev['group_id']])
                                 )
                                 txt.write(
                                     "[%s]你回复：%s\n"
                                     % (current_time, processed_d_data1)
                                 )
-                        objdict["illue%schat"%rev['group_id']]=''
+                        objdict["banaijian%schat"%rev['group_id']]=''
             print("未发现新消息...运行时间：%f"%(time.time()-startT))
-            if len(objdict["illue%s"%rev['group_id']][0])> 10:
-                objdict["illue%s"%rev['group_id']][0]=[objdict["illue%s"%rev['group_id']][0][0]]+objdict["illue%s"%rev['group_id']][0][-6:]
+            if len(objdict["banaijian%s"%rev['group_id']][0])> 10:
+                objdict["banaijian%s"%rev['group_id']][0]=[objdict["banaijian%s"%rev['group_id']][0][0]]+objdict["banaijian%s"%rev['group_id']][0][-6:]
     except Exception as e:
         try:
-            objdict["illue%schat"%rev['group_id']]=''
+            objdict["banaijian%schat"%rev['group_id']]=''
         except Exception as ee:
             print(user_chat_model)
             print(ee)
@@ -1070,7 +1087,7 @@ system= system_prompt+"""
 7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下情绪[angry,happy,sad,fear,bored])
 8. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)
 9. 回复时，禁止以群友的名义重复或冒充群友说话
-"""%str_music_l[:-1]#附加特殊操作order
+"""
 
 weihu=False#是否暂停qq机器人进入维护状态
 objdict={}
