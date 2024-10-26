@@ -1068,8 +1068,8 @@ system= system_prompt+"""
 5. 每隔一段时间有重要的信息点需要写入长期记忆 #split##memory/写入的信息内容##split#，例如提到幻日是你的老爹：#split##memory/幻日是我老爹##split# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
 6. 不想或者不需要回复信息时，只需要输出 #split##pass/None##split#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #split##pass/None##split# (不要总是使用此操作拒绝回复)
 7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下情绪[angry,happy,sad,fear,bored])
-8. 心情好想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你亲自唱潮汐：#split##music/幻蓝-潮汐(清唱.wav##split# (不要总是唱歌，要适当拒绝目前只支持以下歌曲名[%s]，如果没有合适歌曲就随机选一个歌名)
-8. 回复时，禁止以群友的名义重复或冒充群友说话
+8. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)
+9. 回复时，禁止以群友的名义重复或冒充群友说话
 """%str_music_l[:-1]#附加特殊操作order
 
 weihu=False#是否暂停qq机器人进入维护状态
