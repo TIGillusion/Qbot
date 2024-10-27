@@ -739,7 +739,7 @@ def main(rev):
                 if '#sudo' in rev['raw_message']:
                     verification_code = str(random.randrange(100000, 1000000))
                     send_msg({'msg_type': 'private', 'number': root_id, 'msg': verification_code})
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg':f'[CQ:at,qq={rev['sender']['user_id']},name={rev['sender']['nickname']}]验证码已发送'})
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg':f"[CQ:at,qq={rev['sender']['user_id']},name={rev['sender']['nickname']}]验证码已发送"})
                     print("发信ID：",rev["sender"]["user_id"])
                 if '#暂停' in rev['raw_message'] and (verification_code in rev['raw_message'] or rev['sender']["user_id"]==root_id):
                     pause_group = True
