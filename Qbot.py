@@ -172,7 +172,7 @@ def get_memory(file_path, keywords, match_n=200, time_n=200, radius=50):
     """
     # 读取整个文件内容
     with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
+        content = file.read()[-409600:]
 
     # 构建正则表达式，用于匹配任意一个关键词
     keywords_pattern = '|'.join(map(re.escape, keywords))
