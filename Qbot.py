@@ -581,13 +581,25 @@ def main(rev):
                                     e_image_list=os.listdir("./data/image/%s"%t_emotion)
                                     e_image=random.choice(e_image_list)
                                     send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
+                                elif "#mood/" in temp_tts_list[-2]:
+                                    t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
+                                    try:
+                                        objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                        change_setting("./user/p%s/setting.json"%rev['group_id'],"mood",t_mood)
+                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
+                                    except Exception as e:
+                                        print("切换情感错误：",e)
                                 elif "#music/" in temp_tts_list[-2]:
                                     t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
                                     smusic_l=os.listdir("./data/voice/smusic")
-                                    if t_music_n in smusic_l:
-                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%t_music_n})
-                                        send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+t_music_n})
-                                    else:
+                                    is_find_m=False
+                                    for p_music_n in smusic_l:
+                                        if t_music_n in p_music_n:
+                                            is_find_m=True
+                                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%p_music_n})
+                                            send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+p_music_n})
+                                            break
+                                    if not is_find_m:
                                         send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
                                 else:
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
@@ -645,13 +657,25 @@ def main(rev):
                                 e_image_list=os.listdir("./data/image/%s"%t_emotion)
                                 e_image=random.choice(e_image_list)
                                 send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
+                            elif "#mood/" in temp_tts_list[-1]:
+                                t_mood=temp_tts_list[-1].split("#mood/")[-1].replace("#",'')
+                                try:
+                                    objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                    change_setting("./user/p%s/setting.json"%rev['group_id'],"mood",t_mood)
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
+                                except Exception as e:
+                                    print("切换情感错误：",e)
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
                                 smusic_l=os.listdir("./data/voice/smusic")
-                                if t_music_n in smusic_l:
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%t_music_n})
-                                    send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+t_music_n})
-                                else:
+                                is_find_m=False
+                                for p_music_n in smusic_l:
+                                    if t_music_n in p_music_n:
+                                        is_find_m=True
+                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%t_music_n})
+                                        send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+t_music_n})
+                                        break
+                                if not is_find_m:
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
                             else:
                                 send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
