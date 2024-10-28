@@ -1,4 +1,4 @@
-print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363')
+print('\n欢迎使用由幻日编写的幻蓝AI-Qbot1.1程序，有疑问请联系q：2141073363')
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import time
@@ -13,6 +13,14 @@ from threading import Thread
 import base64
 import jieba.analyse
 from bs4 import BeautifulSoup
+
+def change_setting(file_name,key,value):
+    with open(file_name, 'r', encoding='utf-8') as f:
+        t_gsetting=json.load(f)
+    t_gsetting[key]=value
+    with open(file_name, 'w', encoding='utf-8') as f:
+        json.dump(t_gsetting, f, ensure_ascii=False, indent=4)
+
 
 def search(query):
     """
@@ -699,9 +707,14 @@ def main(rev):
             if not os.path.exists("./user/g%s/I_memory.txt"%rev['group_id']):
                 with open("./user/g%s/I_memory.txt"%rev['group_id'],"w") as tpass:
                     pass
+            if not os.path.exists("./user/g%s/setting.json"%rev['group_id']):
+                data={'mood':'default','random_trigger':random_trigger,"root_id":root_ids}
+                with open("./user/g%s/setting.json"%rev['group_id'], 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=4)
+
             
             if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
-                objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-30:]
+                objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-50:]
                 objdict["banaijian%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
                 
             if "#settitle:" in rev['raw_message']:#自动设置头衔（暂时无效）
@@ -713,13 +726,15 @@ def main(rev):
                     'duration':-1
                 })
                 print("set_group_special_title:",rev['raw_message'].split(':',1)[-1][:5],json.loads(res.content))
-
+            with open("./user/g%s/setting.json"%rev['group_id'], 'r', encoding='utf-8') as f:
+                tt_gsetting=json.load(f)
+            tt_random_trigger=tt_gsetting["random_trigger"]
             is_trigger=False#比对触发词
             for trigger in triggers:
                 if trigger in rev['raw_message']:
                     is_trigger = True
                     break
-            if (is_trigger or '[CQ:at,qq=%d]'%rev['self_id'] in rev['raw_message'] or random.randrange(0,random_trigger)==0):#触发回复
+            if (is_trigger or '[CQ:at,qq=%d]'%rev['self_id'] in rev['raw_message'] or random.randrange(0,tt_random_trigger)==0):#触发回复
                 a=objdict["banaijian%schat"%rev['group_id']]
                 print(a)
                 self_id=random.randrange(100000,999999)
@@ -730,8 +745,28 @@ def main(rev):
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'}) 
+                elif "#mood" in rev['raw_message'] and rev['user_id'] in root_ids:
+                    for tt_mood in system_prompts.keys():
+                        if tt_mood in rev['raw_message'].replace("#mood",""):
+                            objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system_prompts[tt_mood]}]]
+                            change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",tt_mood)
+                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[%s]'%tt_mood}) 
+                            break
+                elif "#random" in rev['raw_message'] and rev['user_id'] in root_ids:
+                    t_random_trigger=int(rev['raw_message'].split(" ")[-1])
+                    change_setting("./user/g%s/setting.json"%rev['group_id'],"random_trigger",t_random_trigger)
+                    if t_random_trigger<=0:
+                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已关机]'}) 
+                    else:
+                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[触发率设置为1/%d]'%t_random_trigger}) 
+                    
                 else:        
+                    if tt_random_trigger < 1:
+                        raise KeyboardInterrupt("群聊已停止回复")
                     processed_d_data="强制切换意图"
+                    turl=user_api
+                    if random.randrange(0,10)==0:#在这里切换情感复原的概率
+                        objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts["default"]}
                     if weihu:
                         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[维护中...]"})
                         raise KeyboardInterrupt("维护ing")
@@ -745,14 +780,13 @@ def main(rev):
                         }
                     messages=objdict["banaijian%s"%rev['group_id']][0]+[{"role":"user","content":objdict["banaijian%schat"%rev['group_id']]}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'].replace(AI_name,""), topK=50)
-                    s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords)
+                    s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords,match_n=500)
                     s_memory+=get_I_memory("./user/g%s/I_memory.txt"%rev['group_id'])
                     print(s_memory)
                     data={
                             "model": user_chat_model,
                             "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
-                            "stream": True,
-                            "use_search": False
+                            "stream": True
                         }
                     is_return=True
                     while is_return:
@@ -841,6 +875,14 @@ def main(rev):
                                     e_image_list=os.listdir("./data/image/%s"%t_emotion)
                                     e_image=random.choice(e_image_list)
                                     send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
+                                elif "#mood/" in temp_tts_list[-2]:
+                                    t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
+                                    try:
+                                        objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                        change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",t_mood)
+                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
+                                    except Exception as e:
+                                        print("切换情感错误：",e)
                                 elif "#music/" in temp_tts_list[-2]:
                                     t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
                                     
@@ -932,6 +974,14 @@ def main(rev):
                                 e_image_list=os.listdir("./data/image/%s"%t_emotion)
                                 e_image=random.choice(e_image_list)
                                 send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
+                            elif "#mood/" in temp_tts_list[-1]:
+                                t_mood=temp_tts_list[-1].split("#mood/")[-1].replace("#",'')
+                                try:
+                                    objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                    change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",t_mood)
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
+                                except Exception as e:
+                                    print("切换情感错误：",e)
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
                                 datam={"name":t_music_n,"speaker":"illue","low":True}
@@ -990,7 +1040,7 @@ def main(rev):
                                 )
                         objdict["banaijian%schat"%rev['group_id']]=''
             print("未发现新消息...运行时间：%f"%(time.time()-startT))
-            if len(objdict["banaijian%s"%rev['group_id']][0])> 10:
+            if len(objdict["banaijian%s"%rev['group_id']][0])> 18:
                 objdict["banaijian%s"%rev['group_id']][0]=[objdict["banaijian%s"%rev['group_id']][0][0]]+objdict["banaijian%s"%rev['group_id']][0][-6:]
     except Exception as e:
         try:
@@ -1062,20 +1112,26 @@ with open("./set.json", "r", encoding="utf-8") as setting:  # 读取长期保存
     draw_url = setdir["draw_url"]
     draw_key = setdir["draw_key"]
     draw_model = setdir["draw_model"]
-    system_prompt = setdir["system_prompt"]
+    system_prompts = setdir["system_prompts"]
     chat_models = setdir["chat_models"]
     debug = setdir["debug"]
     triggers = setdir["triggers"]
     random_trigger = setdir["random_trigger"]
     AI_name = setdir["AI_name"]
     ban_names = setdir["ban_names"]
+    root_ids = setdir["root_ids"]
 
 smusic_l=os.listdir("./data/voice/smusic")#载入本地音乐信息
 str_music_l=""
 for p_m_n in smusic_l:
     str_music_l += (p_m_n+",")
 
-system= system_prompt+"""
+moodstr=''
+for mood in system_prompts.keys():
+    moodstr+=(mood+",")
+moodstr=moodstr[:-1]
+
+order = f"""
 
 [order]
 1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”
@@ -1084,11 +1140,20 @@ system= system_prompt+"""
 4. 需要联网搜索时按照格式 #split##search/搜索关键词##split#，例如查询国内的新闻：#split##search/国内 新闻##split#  （关键词尽量多，详细，具体）
 5. 每隔一段时间有重要的信息点需要写入长期记忆 #split##memory/写入的信息内容##split#，例如提到幻日是你的老爹：#split##memory/幻日是我老爹##split# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
 6. 不想或者不需要回复信息时，只需要输出 #split##pass/None##split#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #split##pass/None##split# (不要总是使用此操作拒绝回复)
-7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下情绪[angry,happy,sad,fear,bored])
+7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下表情包[angry,happy,sad,fear,bored])
 8. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)
-9. 回复时，禁止以群友的名义重复或冒充群友说话
+9. 需要切换自身心情时，按照格式 #split##mood/心情名##split#，例如有人惹你生气：#split##mood/angry##split#，心情平复后：#split##mood/default##split#（不要频繁切换情感，只支持以下心情[{moodstr}]）
+0. 回复时，禁止以群友的名义重复或冒充群友说话
 """
 
+system_prompt=system_prompts["default"]
+system= system_prompt+order
+
+for mood in system_prompts.keys():
+    system_prompts[mood]+=order
+
+jieyue=True
+cpu_lacking=False
 weihu=False#是否暂停qq机器人进入维护状态
 objdict={}
 processed_d_data='想聊天'
