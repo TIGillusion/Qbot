@@ -389,13 +389,13 @@ def send_music(resp_dict):
     if msg_type == 'group':
         res=requests.post('http://localhost:3000/send_group_msg', json={
             'group_id': number,
-            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s]"%msg
+            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1])
         })
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
         res=requests.post('http://localhost:3000/send_private_msg', json={
             'user_id': number,
-            'message':"[CQ:file,file=http://127.0.0.1:4321/data/voice/%s]"%msg
+            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1])
         })
         print("send_private_msg:",msg,json.loads(res.content))
 
