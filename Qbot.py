@@ -934,7 +934,7 @@ def main(rev):
                                                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
                                             else:
                                                 with open("./data/voice/smusic/%s"%file_name, "wb") as f:
-                                                    response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name, timeout=60).content
+                                                    response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name).content
                                                     f.write(response_wav)
                                                 #copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
                                                 requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
@@ -1032,7 +1032,7 @@ def main(rev):
                                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
                                         else:
                                             with open("./data/voice/smusic/%s"%file_name, "wb") as f:
-                                                response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name, timeout=60).content
+                                                response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name).content
                                                 f.write(response_wav)
                                             # copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
                                             requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
