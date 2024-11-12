@@ -76,6 +76,6 @@
     "speaker":"illue",
     "#speaker#-->":"这里填语音输出是说话人的名称，需要提前在本地语音合成里面配置好语音模型（不启用本地语音合成也可以不管）",
 
-    "send_debug":false,
+    "send_debug":true,
     "#send_debug#-->":"是否发送如跳过回复，切换情感等调试信息"
 }
