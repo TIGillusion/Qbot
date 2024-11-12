@@ -1,4 +1,4 @@
-print('\n欢迎使用由幻日编写的幻蓝AI-Qbot1.1程序，有疑问请联系q：2141073363')
+print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363')
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import time
@@ -228,7 +228,7 @@ def draw_group(prompt,to):
                     "Content-Type": "application/json",
                     "Authorization": "Bearer "+draw_key
             }
-        if "cogview" in draw_model:
+        if "cogview" in draw_model or "stabilityai/" in draw_model:
             data={
                 "model":draw_model,
                 "prompt":prompt,
@@ -248,7 +248,7 @@ def draw_group(prompt,to):
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
-                    if "cogview" in draw_model:
+                    if "cogview" in draw_model or "stabilityai/" in draw_model:
                         processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
                     else:
                         processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
@@ -283,7 +283,7 @@ def draw_private(prompt,to):
                     "Authorization": "Bearer "+draw_key
             }
         
-        if "cogview" in draw_model:
+        if "cogview" in draw_model or "stabilityai/" in draw_model:
             data={
                 "model":draw_model,
                 "prompt":prompt,
@@ -303,7 +303,7 @@ def draw_private(prompt,to):
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
-                    if "cogview" in draw_model:
+                    if "cogview" in draw_model or "stabilityai/" in draw_model:
                         processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
                     else:
                         processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
@@ -426,6 +426,21 @@ def send_image_url(resp_dict):
         })
         print("send_private_msg:",msg,json.loads(res.content))       
 
+def remove_emojis(text):
+    emoji_pattern = re.compile("["
+                               u"\U0001F600-\U0001F64F"  # emoticons
+                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                               u"\U0001F700-\U0001F77F"  # alchemical symbols
+                               u"\U0001F780-\U0001F7FF"  # Geometric Shapes Extended
+                               u"\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+                               u"\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+                               u"\U0001FA00-\U0001FA6F"  # Chess Symbols
+                               u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+                               u"\U00002702-\U000027B0"  # Dingbats
+                               "]+", flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
+
 def choose_model():
     w_c_models=[]
     for c_model in chat_models:
@@ -453,7 +468,10 @@ def main(rev):
             if not os.path.exists("./user/p%s/I_memory.txt"%rev["sender"]["user_id"]):
                 with open("./user/p%s/I_memory.txt"%rev["sender"]["user_id"],"w") as tpass:
                     pass
-            
+            if not os.path.exists("./user/p%s/setting.json"%rev["sender"]["user_id"]):
+                data={'mood':'default','random_trigger':random_trigger,"root_id":root_ids}
+                with open("./user/p%s/setting.json"%rev["sender"]["user_id"], 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=4)
             if "[CQ:image,"  not in rev['raw_message']:
                 objdict["banaijian%schat"%rev["sender"]["user_id"]]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
                 objdict["banaijian%schat"%rev["sender"]["user_id"]]=objdict["banaijian%schat"%rev["sender"]["user_id"]][-50:]
@@ -471,9 +489,12 @@ def main(rev):
                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空对话历史'}) 
                 else:        
                     processed_d_data="强制切换意图"
+                    if random.randrange(0,2)==0:#在这里切换情感复原的概率
+                        objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts["default"]}
                     if weihu:
                         send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "维护中..."})
                         raise KeyboardInterrupt("维护ing")
+                    
                     print(processed_d_data)
                     if not processed_d_data:
                         processed_d_data='.'
@@ -519,90 +540,99 @@ def main(rev):
                                         "Content-Type": "application/json",
                                         "Authorization": "Bearer "+user_key
                                 }
+                        is_not_remove_emoji=random.randrange(0,3)#设置清除emoji概率
                         temp_tts_list=[]
                         processed_d_data1=''
                         for line in response.iter_lines():
                             try:
                                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                                 if decoded != '':
-                                    processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                                    temp_processed_d_data1=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
                             except Exception as e:
                                 continue
                                 pass
-                            lastlen=len(temp_tts_list)
-                            temp_tts_list=processed_d_data1.split("#split#")
-                            if not temp_tts_list:
-                                temp_tts_list=temp_tts_list[:-1]
-                            if self_id not in objdict["banaijian%sgeneing"%rev["sender"]["user_id"]]:
-                                objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                                raise InterruptedError("新消息中断")
-                            
-                            if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
-                                if '#voice/' in temp_tts_list[-2]:
-                                    try:
-                                        voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
-                                        tts_data = {
-                                        "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
-                                        "text": voice.replace("...", "…").replace("…", ","),
-                                        "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
-                                        }
-                                        b_wav = requests.post(
-                                            url='http://127.0.0.1:5000/tts', json=tts_data
-                                            )
-                                        n=random.randrange(10000,99999)
-                                        name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                                        to_path='./data/voice/%s'%name
-                                        with open(to_path,'wb') as wbf:
-                                            wbf.write(b_wav.content)
-                                        send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':name })
-                                    except Exception as e:
-                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "语音合成失败"})
-                                        print("暂不支持语音合成")
-                                elif '#picture/' in temp_tts_list[-2]:
-                                    picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
-                                    print(picture)
-                                    draw_private(picture,rev["sender"]["user_id"])
-                                elif '#search/' in temp_tts_list[-2]:
-                                        response.close()
+                            if decoded != '':
+                                for p_token in temp_processed_d_data1:
+                                    processed_d_data1+=p_token
+                                    if not is_not_remove_emoji:
+                                        processed_d_data1=remove_emojis(processed_d_data1)
+                                    lastlen=len(temp_tts_list)
+                                    temp_tts_list=processed_d_data1.split("#split#")
+                                    if not temp_tts_list:
                                         temp_tts_list=temp_tts_list[:-1]
-                                        break   
-                                elif '#memory/' in temp_tts_list[-2]:
-                                    memory=temp_tts_list[-1].split('#memory/')[-1].replace("#",'')
-                                    print("写入记忆：",memory)    
-                                    with open("./user/p%s/I_memory.txt"%rev["sender"]["user_id"],"a",encoding="utf-8") as mem:
-                                        mem.write(" "+memory) 
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[写入记忆]"})
-                                elif "#pass/" in temp_tts_list[-2]:
-                                    response.close()
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
-                                    raise KeyboardInterrupt("AI认为应该跳过此回复！")
-                                elif "#emotion/" in temp_tts_list[-2]:
-                                    t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
-                                    e_image_list=os.listdir("./data/image/%s"%t_emotion)
-                                    e_image=random.choice(e_image_list)
-                                    send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
-                                elif "#mood/" in temp_tts_list[-2]:
-                                    t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
-                                    try:
-                                        objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts[t_mood]}
-                                        change_setting("./user/p%s/setting.json"%rev['group_id'],"mood",t_mood)
-                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
-                                    except Exception as e:
-                                        print("切换情感错误：",e)
-                                elif "#music/" in temp_tts_list[-2]:
-                                    t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
-                                    smusic_l=os.listdir("./data/voice/smusic")
-                                    is_find_m=False
-                                    for p_music_n in smusic_l:
-                                        if t_music_n in p_music_n:
-                                            is_find_m=True
-                                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%p_music_n})
-                                            send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+p_music_n})
-                                            break
-                                    if not is_find_m:
-                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
-                                else:
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
+                                    if self_id not in objdict["banaijian%sgeneing"%rev["sender"]["user_id"]]:
+                                        objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                                        raise InterruptedError("新消息中断")
+                                    
+                                    if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
+                                        if '#voice/' in temp_tts_list[-2]:
+                                            try:
+                                                voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
+                                                tts_data = {
+                                                "cha_name": speaker,#这里填本地语音合成包里面配置好的说话人
+                                                "text": voice.replace("...", "…").replace("…", ","),
+                                                "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
+                                                }
+                                                b_wav = requests.post(
+                                                    url='http://127.0.0.1:5000/tts', json=tts_data
+                                                    )
+                                                n=random.randrange(10000,99999)
+                                                name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                                to_path='./data/voice/%s'%name
+                                                with open(to_path,'wb') as wbf:
+                                                    wbf.write(b_wav.content)
+                                                send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':name })
+                                            except Exception as e:
+                                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "语音合成失败"})
+                                                print("暂不支持语音合成")
+                                        elif '#picture/' in temp_tts_list[-2]:
+                                            picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                            print(picture)
+                                            draw_private(picture,rev["sender"]["user_id"])
+                                        elif '#search/' in temp_tts_list[-2]:
+                                                response.close()
+                                                temp_tts_list=temp_tts_list[:-1]
+                                                break   
+                                        elif '#memory/' in temp_tts_list[-2]:
+                                            memory=temp_tts_list[-1].split('#memory/')[-1].replace("#",'')
+                                            print("写入记忆：",memory)    
+                                            with open("./user/p%s/I_memory.txt"%rev["sender"]["user_id"],"a",encoding="utf-8") as mem:
+                                                mem.write(" "+memory) 
+                                            if send_debug:
+                                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[写入记忆]"})
+                                        elif "#pass/" in temp_tts_list[-2]:
+                                            response.close()
+                                            if send_debug:
+                                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
+                                            raise KeyboardInterrupt("AI认为应该跳过此回复！")
+                                        elif "#emotion/" in temp_tts_list[-2]:
+                                            t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
+                                            e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                            e_image=random.choice(e_image_list)
+                                            send_image({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"%s/%s"%(t_emotion,e_image)})
+                                        elif "#mood/" in temp_tts_list[-2]:
+                                            t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
+                                            try:
+                                                objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                                change_setting("./user/p%s/setting.json"%rev["sender"]["user_id"],"mood",t_mood)
+                                                if send_debug:
+                                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
+                                            except Exception as e:
+                                                print("切换情感错误：",e)
+                                        elif "#music/" in temp_tts_list[-2]:
+                                            t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
+                                            smusic_l=os.listdir("./data/voice/smusic")
+                                            is_find_m=False
+                                            for p_music_n in smusic_l:
+                                                if t_music_n in p_music_n:
+                                                    is_find_m=True
+                                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "《%s》"%p_music_n})
+                                                    send_voice({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg':"smusic/"+p_music_n})
+                                                    break
+                                            if not is_find_m:
+                                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
+                                        else:
+                                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
                             objdict["banaijian%s"%rev["sender"]["user_id"]][0]=[objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]]
                             print("催眠失败，重置记忆")
@@ -610,7 +640,7 @@ def main(rev):
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
+                                    "cha_name": speaker,#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -648,9 +678,11 @@ def main(rev):
                                 print("写入记忆：",memory)    
                                 with open("./user/p%s/I_memory.txt"%rev["sender"]["user_id"],"a",encoding="utf-8") as mem:
                                     mem.write(" "+memory) 
-                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[写入记忆]"})
+                                if send_debug:
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[写入记忆]"})
                             elif "#pass/" in temp_tts_list[-1]:
-                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
+                                if send_debug:
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[pass]"})
                                 raise KeyboardInterrupt("AI认为应该跳过此回复！")
                             elif "#emotion/" in temp_tts_list[-1]:
                                 t_emotion=temp_tts_list[-1].split("#emotion/")[-1].replace("#",'')
@@ -661,8 +693,9 @@ def main(rev):
                                 t_mood=temp_tts_list[-1].split("#mood/")[-1].replace("#",'')
                                 try:
                                     objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts[t_mood]}
-                                    change_setting("./user/p%s/setting.json"%rev['group_id'],"mood",t_mood)
-                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
+                                    change_setting("./user/p%s/setting.json"%rev["sender"]["user_id"],"mood",t_mood)
+                                    if send_debug:
+                                        send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[%s]"%t_mood})
                                 except Exception as e:
                                     print("切换情感错误：",e)
                             elif "#music/" in temp_tts_list[-1]:
@@ -705,7 +738,7 @@ def main(rev):
             
 
         elif rev["message_type"] == "group":
-            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"] or "炼丹师" in rev["sender"]["nickname"]) and "[CQ:image," in rev['raw_message']:
+            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"] or "炼丹师" in rev["sender"]["nickname"] or "行己之道" in rev["sender"]["nickname"]) and "[CQ:image," in rev['raw_message']:
                 time.sleep(5+random.randrange(0,5))
                 message_id=rev['message_id']
                 res=requests.post('http://localhost:3000/delete_msg', json={
@@ -738,8 +771,8 @@ def main(rev):
 
             
             if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
-                objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-50:]
-                objdict["banaijian%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
+                objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-70:]
+                objdict["banaijian%schat"%rev['group_id']]+=("["+rev["sender"]["nickname"]+"]说："+rev['raw_message'].replace('[CQ:at,qq=%d,name=%s]'%(rev['self_id'],AI_name),AI_name)+'\n\n')
                 
             if "#settitle:" in rev['raw_message']:#自动设置头衔（暂时无效）
                 title=rev['raw_message'].split(':',1)[-1][:5]
@@ -753,6 +786,7 @@ def main(rev):
             with open("./user/g%s/setting.json"%rev['group_id'], 'r', encoding='utf-8') as f:
                 tt_gsetting=json.load(f)
             tt_random_trigger=tt_gsetting["random_trigger"]
+            root_id=tt_gsetting["root_id"]
             is_trigger=False#比对触发词
             for trigger in triggers:
                 if trigger in rev['raw_message']:
@@ -763,20 +797,37 @@ def main(rev):
                 print(a)
                 self_id=random.randrange(100000,999999)
                 objdict["banaijian%sgeneing"%rev['group_id']]=[self_id] 
-                rev['raw_message']=rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')
+                rev['raw_message']=rev['raw_message'].replace('[CQ:at,qq=%d,name=%s]'%(rev['self_id'],AI_name),'')
                 if "banaijian%s"%rev['group_id'] not in objdict.keys():
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'}) 
-                elif "#mood" in rev['raw_message'] and rev['user_id'] in root_ids:
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空对话历史]'}) 
+                elif "#mood" in rev['raw_message'] and rev['user_id'] in root_id:
                     for tt_mood in system_prompts.keys():
                         if tt_mood in rev['raw_message'].replace("#mood",""):
                             objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system_prompts[tt_mood]}]]
                             change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",tt_mood)
                             send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[%s]'%tt_mood}) 
                             break
-                elif "#random" in rev['raw_message'] and rev['user_id'] in root_ids:
+                elif "#forcememory" in rev['raw_message'] and rev['user_id'] in root_id:
+                    force_memory=rev['raw_message'].split("#forcememory")[-1]
+                    with open("./user/g%s/I_memory.txt"%rev['group_id'],"a",encoding="utf-8") as mem:
+                        mem.write(" "+force_memory)
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[强制写入记忆]'}) 
+                elif "#forceallmemory" in rev['raw_message'] and rev['user_id'] in root_ids:
+                    force_memory=rev['raw_message'].split("#forceallmemory")[-1]
+                    user_list_m=os.listdir("./user")
+                    for per_user_m in user_list_m:
+                        with open("./user/%s/I_memory.txt"%(per_user_m),"a",encoding="utf-8") as mem:
+                            mem.write(" "+force_memory)
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[全频道写入记忆]'}) 
+                elif "#addid" in rev['raw_message'] and rev['user_id'] in root_id:
+                    addid=rev['raw_message'].split("#addid")[-1]
+                    root_id.append(int(addid.replace(" ","")))
+                    change_setting("./user/g%s/setting.json"%rev['group_id'],"root_id",root_id)  
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[添加管理员ID]'})      
+                elif "#random" in rev['raw_message'] and rev['user_id'] in root_id:
                     t_random_trigger=int(rev['raw_message'].split(" ")[-1])
                     change_setting("./user/g%s/setting.json"%rev['group_id'],"random_trigger",t_random_trigger)
                     if t_random_trigger<=0:
@@ -789,7 +840,13 @@ def main(rev):
                         raise KeyboardInterrupt("群聊已停止回复")
                     processed_d_data="强制切换意图"
                     turl=user_api
-                    if random.randrange(0,10)==0:#在这里切换情感复原的概率
+                    # if rev['group_id'] != 930214132 and jieyue:
+                    #     # send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[illue quota is not enough]"})
+                    #     # raise KeyboardInterrupt("节约token")
+                    #     user_key="sk-OBOxTsNA8Gz9DuMQAc4669399f7a4b3fAaE3Ee91C2068d0f"
+                    #     user_chat_model="gpt-4o"
+                    #     turl="http://154.37.221.52:3000/v1/chat/completions"
+                    if random.randrange(0,7)==0:#在这里切换情感复原的概率
                         objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts["default"]}
                     if weihu:
                         send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[维护中...]"})
@@ -837,113 +894,122 @@ def main(rev):
                                         "Content-Type": "application/json",
                                         "Authorization": "Bearer "+user_key
                                 }
+                        is_not_remove_emoji=random.randrange(0,3)#设置清除emoji概率
                         temp_tts_list=[]
                         processed_d_data1=''
                         for line in response.iter_lines():
                             try:
                                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                                 if decoded != '':
-                                    processed_d_data1+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                                    temp_processed_d_data1=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
                             except Exception as e:
                                 print(decoded,e)
                                 continue
                                 pass
-                            lastlen=len(temp_tts_list)
-                            temp_tts_list=processed_d_data1.split("#split#")
-                            if not temp_tts_list:
-                                temp_tts_list=temp_tts_list[:-1]
-                            if self_id not in objdict["banaijian%sgeneing"%rev['group_id']]:
-                                objdict["banaijian%s"%rev['group_id']][0]=objdict["banaijian%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                                raise InterruptedError("新消息中断")
-                            
-                            if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
-                                if '#voice/' in temp_tts_list[-2]:
-                                    try:
-                                        voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
-                                        tts_data = {
-                                        "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
-                                        "text": voice.replace("...", "…").replace("…", ","),
-                                        "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
-                                        }
-                                        b_wav = requests.post(
-                                            url='http://127.0.0.1:5000/tts', json=tts_data
-                                            )
-                                        n=random.randrange(10000,99999)
-                                        name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
-                                        to_path='./data/voice/%s'%name
-                                        with open(to_path,'wb') as wbf:
-                                            wbf.write(b_wav.content)
-                                        send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
-                                    except Exception as e:
-                                        print("暂不支持语音合成")
-                                elif '#picture/' in temp_tts_list[-2]:
-                                    picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
-                                    print(picture)
-                                    draw_group(picture,rev['group_id'])
-                                elif '#search/' in temp_tts_list[-2]:
-                                    response.close()
-                                    temp_tts_list=temp_tts_list[:-1]
-                                    break
-                                elif '#memory/' in temp_tts_list[-2]:
-                                    memory=temp_tts_list[-2].split('#memory/')[-1].replace("#",'')
-                                    print("写入记忆：",memory)    
-                                    with open("./user/g%s/I_memory.txt"%rev['group_id'],"a",encoding="utf-8") as mem:
-                                        mem.write(" "+memory)
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[写入记忆]"})
-                                elif "#pass/" in temp_tts_list[-2]:
-                                    response.close()
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
-                                    raise KeyboardInterrupt("AI认为应该跳过此回复！")
-                                elif "#emotion/" in temp_tts_list[-2]:
-                                    t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
-                                    e_image_list=os.listdir("./data/image/%s"%t_emotion)
-                                    e_image=random.choice(e_image_list)
-                                    send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
-                                elif "#mood/" in temp_tts_list[-2]:
-                                    t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
-                                    try:
-                                        objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts[t_mood]}
-                                        change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",t_mood)
-                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
-                                    except Exception as e:
-                                        print("切换情感错误：",e)
-                                elif "#music/" in temp_tts_list[-2]:
-                                    t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
+                            if decoded != '':
+                                for p_token in temp_processed_d_data1:
+                                    processed_d_data1+=p_token
+                                    if not is_not_remove_emoji:
+                                        processed_d_data1=remove_emojis(processed_d_data1)
+                                    lastlen=len(temp_tts_list)
+                                    temp_tts_list=processed_d_data1.split("#split#")
+                                    if not temp_tts_list:
+                                        temp_tts_list=temp_tts_list[:-1]
+                                    if self_id not in objdict["banaijian%sgeneing"%rev['group_id']]:
+                                        objdict["banaijian%s"%rev['group_id']][0]=objdict["banaijian%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
+                                        raise InterruptedError("新消息中断")
                                     
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：0%"})
-                                    datam={"name":t_music_n,"speaker":"illue","low":True}
-                                    response1 = requests.post(url="http://127.0.0.1:3333",data=json.dumps(datam),stream=True)
-                                    for line in response1.iter_lines():
-                                        decoded = (
-                                            line.decode("unicode_escape")
-                                            .replace("\b", "\\b")
-                                            .replace("\f", "\\f")
-                                            .replace("\r", "\\r")
-                                            .replace("\t", "\\t")
-                                            .replace("\n", "\\n")
-                                        )
-                                        done = json.loads(decoded)["done"]
-                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：{done}%"})
-                                        if done == 100:
-                                            file_name = json.loads(decoded)["name"]
-                                            if "error:" in file_name:
-                                                w_error = file_name.replace("error:","")
-                                                if w_error == "time":
-                                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，原因：歌曲过长"})
-                                                else:
-                                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
-                                            else:
-                                                with open("./data/voice/smusic/%s"%file_name, "wb") as f:
-                                                    response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name).content
-                                                    f.write(response_wav)
-                                                #copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
-                                                requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
-                                                send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
-                                                time.sleep(random.randrange(0,3))
-                                                send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
-                                        #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
-                                else:
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
+                                    if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
+                                        if '#voice/' in temp_tts_list[-2]:
+                                            try:
+                                                voice=temp_tts_list[-2].split('#voice/')[-1].replace("#",'')
+                                                tts_data = {
+                                                "cha_name": speaker,#这里填本地语音合成包里面配置好的说话人
+                                                "text": voice.replace("...", "…").replace("…", ","),
+                                                "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
+                                                }
+                                                b_wav = requests.post(
+                                                    url='http://127.0.0.1:5000/tts', json=tts_data
+                                                    )
+                                                n=random.randrange(10000,99999)
+                                                name='%stts%d.wav'%((time.strftime('%F')+'-'+time.strftime('%T').replace(':','-')),n)
+                                                to_path='./data/voice/%s'%name
+                                                with open(to_path,'wb') as wbf:
+                                                    wbf.write(b_wav.content)
+                                                send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':name })
+                                            except Exception as e:
+                                                print("暂不支持语音合成")
+                                        elif '#picture/' in temp_tts_list[-2]:
+                                            picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
+                                            print(picture)
+                                            draw_group(picture,rev['group_id'])
+                                        elif '#search/' in temp_tts_list[-2]:
+                                            response.close()
+                                            temp_tts_list=temp_tts_list[:-1]
+                                            break
+                                        elif '#memory/' in temp_tts_list[-2]:
+                                            memory=temp_tts_list[-2].split('#memory/')[-1].replace("#",'')
+                                            print("写入记忆：",memory)    
+                                            with open("./user/g%s/I_memory.txt"%rev['group_id'],"a",encoding="utf-8") as mem:
+                                                mem.write(" "+memory)
+                                            if send_debug:
+                                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[写入记忆]"})
+                                        elif "#pass/" in temp_tts_list[-2]:
+                                            response.close()
+                                            if send_debug:
+                                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
+                                            raise KeyboardInterrupt("AI认为应该跳过此回复！")
+                                        elif "#emotion/" in temp_tts_list[-2]:
+                                            t_emotion=temp_tts_list[-2].split("#emotion/")[-1].replace("#",'')
+                                            e_image_list=os.listdir("./data/image/%s"%t_emotion)
+                                            e_image=random.choice(e_image_list)
+                                            send_image({'msg_type': 'group', 'number': rev['group_id'], 'msg':"%s/%s"%(t_emotion,e_image)})
+                                        elif "#mood/" in temp_tts_list[-2]:
+                                            t_mood=temp_tts_list[-2].split("#mood/")[-1].replace("#",'')
+                                            try:
+                                                objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts[t_mood]}
+                                                change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",t_mood)
+                                                if send_debug:
+                                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
+                                            except Exception as e:
+                                                print("切换情感错误：",e)
+                                        elif "#music/" in temp_tts_list[-2]:
+                                            t_music_n=temp_tts_list[-2].split("#music/")[-1].replace("#",'')
+                                            
+                                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：0%"})
+                                            datam={"name":t_music_n,"speaker":singer,"low":True}
+                                            response1 = requests.post(url="http://127.0.0.1:3333",data=json.dumps(datam),stream=True)
+                                            for line in response1.iter_lines():
+                                                decoded = (
+                                                    line.decode("unicode_escape")
+                                                    .replace("\b", "\\b")
+                                                    .replace("\f", "\\f")
+                                                    .replace("\r", "\\r")
+                                                    .replace("\t", "\\t")
+                                                    .replace("\n", "\\n")
+                                                )
+                                                done = json.loads(decoded)["done"]
+                                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：{done}%"})
+                                                if done == 100:
+                                                    file_name = json.loads(decoded)["name"]
+                                                    if "error:" in file_name:
+                                                        w_error = file_name.replace("error:","")
+                                                        if w_error == "time":
+                                                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，原因：歌曲过长"})
+                                                        else:
+                                                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习失败，错误码：%s"%w_error})
+                                                    else:
+                                                        with open("./data/voice/smusic/%s"%file_name, "wb") as f:
+                                                            response_wav = requests.get(url="http://127.0.0.1:3333/output/%s"%file_name).content
+                                                            f.write(response_wav)
+                                                        #copy_file("D:\\program-illusion\\realtime-song\\output\\%s"%file_name,"./data/voice/smusic")
+                                                        requests.post(url="http://127.0.0.1:3333/removea/%s"%file_name,stream=True) 
+                                                        send_voice({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                                        time.sleep(random.randrange(0,3))
+                                                        send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
+                                                #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
+                                        else:
+                                            send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
                             objdict["banaijian%s"%rev['group_id']][0]=[objdict["banaijian%s"%rev['group_id']][0][0]]
                             print("催眠失败，重置记忆")
@@ -951,7 +1017,7 @@ def main(rev):
                             if '#voice/' in temp_tts_list[-1]:
                                 voice=temp_tts_list[-1].split('#voice/')[-1].replace("#",'')
                                 tts_data = {
-                                    "cha_name": "illue",#这里填本地语音合成包里面配置好的说话人
+                                    "cha_name": speaker,#这里填本地语音合成包里面配置好的说话人
                                     "text": voice.replace("...", "…").replace("…", ","),
                                     "character_emotion":random.choice(['default','angry','excited','narration-relaxed','depressed'])
                                     }
@@ -989,9 +1055,11 @@ def main(rev):
                                 print("写入记忆：",memory)    
                                 with open("./user/g%s/I_memory.txt"%rev['group_id'],"a",encoding="utf-8") as mem:
                                     mem.write(" "+memory)
-                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[写入记忆]"})
+                                if send_debug:
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[写入记忆]"})
                             elif "#pass/" in temp_tts_list[-1]:
-                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
+                                if send_debug:
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[pass]"})
                                 raise KeyboardInterrupt("AI认为应该跳过此回复！")
                             elif "#emotion/" in temp_tts_list[-1]:
                                 t_emotion=temp_tts_list[-1].split("#emotion/")[-1].replace("#",'')
@@ -1003,12 +1071,13 @@ def main(rev):
                                 try:
                                     objdict["banaijian%s"%rev['group_id']][0][0]={"role":"system","content":system_prompts[t_mood]}
                                     change_setting("./user/g%s/setting.json"%rev['group_id'],"mood",t_mood)
-                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
+                                    if send_debug:
+                                        send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[%s]"%t_mood})
                                 except Exception as e:
                                     print("切换情感错误：",e)
                             elif "#music/" in temp_tts_list[-1]:
                                 t_music_n=temp_tts_list[-1].split("#music/")[-1].replace("#",'')
-                                datam={"name":t_music_n,"speaker":"illue","low":True}
+                                datam={"name":t_music_n,"speaker":singer,"low":True}
                                 send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': f"歌曲《{t_music_n}》学习进度：0%"})
                                 response1 = requests.post(url="http://127.0.0.1:3333",data=json.dumps(datam),stream=True) 
                                 for line in response1.iter_lines():
@@ -1144,6 +1213,11 @@ with open("./set.json", "r", encoding="utf-8") as setting:  # 读取长期保存
     AI_name = setdir["AI_name"]
     ban_names = setdir["ban_names"]
     root_ids = setdir["root_ids"]
+    send_debug = setdir["send_debug"]
+    speaker = setdir["speaker"]
+    is_voice = setdir["is_voice"]
+    song = setdir["song"]
+    singer = setdir["singer"]
 
 smusic_l=os.listdir("./data/voice/smusic")#载入本地音乐信息
 str_music_l=""
@@ -1159,16 +1233,32 @@ order = f"""
 
 [order]
 1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”
-2. 使用语音时按照格式 #split##voice/语言合成的内容##split# ，例如语音输出“你好”： #split##voice/你好##split#  (不要过多使用语音；使用语音时不可使用（括号）和特色字符)
+2. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下表情包[angry,happy,sad,fear,bored])
 3. 使用绘画功能时按照格式 #split##picture/绘画提示词##split# ，例如绘画一个女孩： #split##picture/one girl##split#  （除非明确要求否则不要绘画；绘画提示词尽力充实丰富，细节饱满详细，提示词使用英文单词）
 4. 需要联网搜索时按照格式 #split##search/搜索关键词##split#，例如查询国内的新闻：#split##search/国内 新闻##split#  （关键词尽量多，详细，具体）
 5. 每隔一段时间有重要的信息点需要写入长期记忆 #split##memory/写入的信息内容##split#，例如提到幻日是你的老爹：#split##memory/幻日是我老爹##split# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
 6. 不想或者不需要回复信息时，只需要输出 #split##pass/None##split#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #split##pass/None##split# (不要总是使用此操作拒绝回复)
-7. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下表情包[angry,happy,sad,fear,bored])
-8. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)
-9. 需要切换自身心情时，按照格式 #split##mood/心情名##split#，例如有人惹你生气：#split##mood/angry##split#，心情平复后：#split##mood/default##split#（不要频繁切换情感，只支持以下心情[{moodstr}]）
-0. 回复时，禁止以群友的名义重复或冒充群友说话
+7. 需要切换自身心情时，按照格式 #split##mood/心情名##split#，例如有人惹你生气：#split##mood/angry##split#，心情平复后：#split##mood/default##split#（非必要不要情感，只支持以下心情[{moodstr}]）
 """
+if is_voice:
+    order+="""
+8. 使用语音时按照格式 #split##voice/语言合成的内容##split# ，例如语音输出“你好”： #split##voice/你好##split#  (不要过多使用语音；使用语音时不可使用（括号）和特色字符)"""
+if song:
+    order+="""
+9. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)"""
+
+order+="""
+0. 回复时，禁止以群友的名义重复或冒充群友说话"""
+
+"""
+[question]有人问桌宠或qbot相关问题时可以参考下列常见问题和帮助回答
+1.闪退：在软件文件夹下进入通过cmd运行程序即可看到报错并反馈给幻日老爹
+2.切换角色：在桌宠文件夹下打开一键资源下载器，选择一键切换角色
+3.桌宠连不上服务器：尝试重启或叫幻日老爹检查服务器网络
+4.桌宠不说话或本地语音合成出错：检查本地语音合成终端报错信息并联系幻日老爹，只支持v1版本语音模型，设置路径为纯英文，最新版自带本地语音合成不用下载
+5.qbot后台没反应：检查qq的llonebot插件配置，特别是上报地址是否填好为http:127.0.0.1:3001
+6.qbot收到消息但是没回复：可能是模型问题，可尝试去智谱清言官方网站找免费模型glm-4-flash，注意填写正确的请求api，key以及模型名称
+"""#在这里可以添加一些想让AI高权重知道的一些信息等，不宜太多
 
 system_prompt=system_prompts["default"]
 system= system_prompt+order
@@ -1179,6 +1269,7 @@ for mood in system_prompts.keys():
 jieyue=True
 cpu_lacking=False
 weihu=False#是否暂停qq机器人进入维护状态
+
 objdict={}
 processed_d_data='想聊天'
 startT=time.time()#总计时开始
