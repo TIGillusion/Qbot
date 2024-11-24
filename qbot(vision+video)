@@ -810,7 +810,7 @@ def main(rev):
             
 
         elif rev["message_type"] == "group":
-            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"] or "炼丹师" in rev["sender"]["nickname"]) and "[CQ:image," in rev['raw_message']:
+            if ("团子" in rev["sender"]["nickname"] or "芙芙" in rev["sender"]["nickname"] or "炼丹师" in rev["sender"]["nickname"]:
                 time.sleep(5+random.randrange(0,5))
                 message_id=rev['message_id']
                 res=requests.post('http://localhost:3000/delete_msg', json={
@@ -841,9 +841,7 @@ def main(rev):
                 with open("./user/g%s/setting.json"%rev['group_id'], 'w', encoding='utf-8') as f:
                     json.dump(data, f, ensure_ascii=False, indent=4)
 
-            
-            if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
-              if "[CQ:image," in rev['raw_message']and random.randrange(0, 10) > 0:          #满足条件会保存图片到指定位置
+            if "[CQ:image," in rev['raw_message']and random.randrange(0, 10) > 0:          #满足条件会保存图片到指定位置
                     get_image = rev['raw_message'][15:51].lower()
                     if ".jpe" in get_image:
                         get_image = get_image.replace(".jpe", ".jpeg")
@@ -884,6 +882,8 @@ def main(rev):
                     with open(to_path, 'rb') as img_file:
                         img_base = base64.b64encode(img_file.read()).decode('utf-8')
                     print("运行到这里说明保存成功")
+        
+            if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
                 objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-50:]
                 objdict["banaijian%schat"%rev['group_id']]+=(rev["sender"]["nickname"]+"："+rev['raw_message'].replace('[CQ:at,qq=%d]'%rev['self_id'],'')+'\n\n')
                 
