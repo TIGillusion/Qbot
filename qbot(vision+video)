@@ -13,6 +13,25 @@ from threading import Thread
 import base64
 import jieba.analyse
 from bs4 import BeautifulSoup
+from zhipuai import ZhipuAI
+from PIL import Image
+from io import BytesIO
+
+
+
+
+imgtxt_path = "./图片识别库/记录文档.txt"
+try:
+    with open(imgtxt_path, "a", encoding="utf-8") as record:
+        record.write("")
+        with open(imgtxt_path, "r", encoding="utf-8") as record:
+            record_list = record.readlines()
+            if int(record_list[-7])<10:
+                img_num = int(record_list[-7])
+            else:
+                img_num = int(record_list[-8:-7])
+except:
+    pass
 
 def change_setting(file_name,key,value):
     with open(file_name, 'r', encoding='utf-8') as f:
@@ -223,81 +242,77 @@ def get_memory(file_path, keywords, match_n=200, time_n=200, radius=50):
           
 def recognize_image(img_base):
     global img_num
-          recognize_model="glm-4V-Plus"                          #  推荐使用智谱的图像识别大模型，稳定可靠
-          client = ZhipuAI(api_key="%s" % user_key)                    # 填写你自己的APIKey
-    try:
-        url = "https://apicn.furina.chat/v1/chat/completions"
-        payload = {
-            "model": "claude-3-5-sonnet-20240620",                  #这里添加备用图像识别模型
-            "messages": [
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": img_base
-                    }
-                },
-                {
-                    "role": "user",
-                    "content": "分析一下这张图片中的人物表达了什么情感或在做什么有什么意图，如果图片中有文字请结合文字做出分析，只用给出你的总结即可"
-                }
-            ],
-            "stream": False,
-        }
-        headers = {
-            "Authorization": "Bearer api-key",
-            "Content-Type": "application/json"
-        }
-
-        response = requests.request("POST", url, json=payload, headers=headers)
-        content = json.loads("%s" % response.text)
-        image_res = "%s" % content['choices'][0]['message']['content']
-        print(response.text)
-    except:
-        pass
-          # 填写您自己的APIKey
-        response = client.chat.completions.create(
-            model="%s"%recognize_model,  # 填写需要调用的模型名称
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": img_base
+        recognize_model="glm-4v-flash"
+        client = ZhipuAI(api_key="你自己的apikey")        #这里推荐用质谱的视觉模型，便宜好用
+      # 填写您自己的APIKey
+        try:
+            print("图片识别中，请稍候...")
+            response = client.chat.completions.create(
+                model="%s" % recognize_model,  # 填写需要调用的模型名称
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": img_base
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "分析一下这张图片中的人物表达了什么情感或意图，如果图片中有文字请结合文字做出分析，只用给出你的总结即可"
                             }
-                        },
-                        {
-                            "type": "text",
-                            "text": "分析一下这张图片中的人物表达了什么情感或意图，如果图片中有文字请结合文字做出分析，只用给出你的总结即可"
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+            )
+            image_res = "%s" % response.choices[0].message.content
+        except:
+              # 填写您自己的APIKey
+            response = client.chat.completions.create(
+                model="%s"%recognize_model,  # 填写需要调用的模型名称
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": img_base
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "分析一下这张图片中的人物表达了什么情感或意图，如果图片中有文字请结合文字做出分析，只用给出你的总结即可"
+                            }
+                        ]
+                    }
+                ]
+            )
+            image_res = "%s" % response.choices[0].message.content
+        if "解析" in rev['raw_message']:
+             send_msg({'msg_type': 'group', 'number': rev['group_id'],
+                  'msg': "%s" %image_res})
+        print(image_res)
+        time.sleep(2)
+        turl = user_api
+        response2 = client.chat.completions.create(
+            model="glm-4-0520",  # 请填写您要调用的模型名称
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user",
+                 "content": rev['raw_message']+"我向你发了张图片，因为你看不到，我就将内容总结给你了，现在请你就该图片内容，做出回应，内容限制在15字以内"+image_res},
+            ],
+            stream=True,
         )
-        image_res = "%s" % response.choices[0].message.content
-    if "解析" in rev['raw_message']:
-      send_msg({'msg_type': 'group', 'number': rev['group_id'],            #默认回复为AI的简单回答，如果需要完整的解析，请在命令中加上解析二字
-             'msg': "%s" %image_res})
-    print(image_res)
-    time.sleep(2)
-    turl = user_api
-    response2 = client.chat.completions.create(
-        model=user_chat_model,  # 请填写您要调用的模型名称
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user",
-             "content": rev['raw_message']+"我向你发了张图片，因为你看不到，我就将内容总结给你了，现在请你就该图片内容，做出回应，内容限制在15字以内"+image_res},
-        ],
-        stream=True,
-    )
-    processed_d_data2 = ''
-    for chunk in response2:
-         processed_d_data2 += chunk.choices[0].delta.content
-    print("已读取图片信息:%s" % image_res)
-    print("已读取图片分析信息:%s" % processed_d_data2)
-    send_msg({'msg_type': 'group', 'number': rev['group_id'],
-              'msg': "%s" % processed_d_data2})
+        processed_d_data2 = ''
+        for chunk in response2:
+             processed_d_data2 += chunk.choices[0].delta.content
+        print("已读取图片信息:%s" % image_res)
+        print("已读取图片分析信息:%s" % processed_d_data2)
+        send_msg({'msg_type': 'group', 'number': rev['group_id'],
+                  'msg': "%s" % processed_d_data2})
       
 def get_url(prompt):
     global url
@@ -308,7 +323,7 @@ def get_url(prompt):
         prompt="%s" % prompt
     )
     print(response)
-    time.sleep(150)
+    time.sleep(300)
     client = ZhipuAI(api_key="%s" % user_key)
     img_id = response.id
     print(img_id)
@@ -841,47 +856,52 @@ def main(rev):
                 with open("./user/g%s/setting.json"%rev['group_id'], 'w', encoding='utf-8') as f:
                     json.dump(data, f, ensure_ascii=False, indent=4)
 
-            if "[CQ:image," in rev['raw_message']and random.randrange(0, 10) > 0:          #满足条件会保存图片到指定位置
-                    get_image = rev['raw_message'][15:51].lower()
-                    if ".jpe" in get_image:
-                        get_image = get_image.replace(".jpe", ".jpeg")
-                    name = "%d.jpg" % img_num
-                    if ".gif" in get_image:
-                        name = "%d.gif" % img_num
-                    print(get_image)
-                    with open(imgtxt_path, "a", encoding="utf-8") as record:
-                        record.write("[" + name + "],")
-                    with open(imgtxt_path, "r", encoding="utf-8") as record:
-                        record_list = record.read()
-                    to_path = '.\图片识别库\%s' % name                #需要自己在主文件夹下建立图片识别库文件夹
-                    time.sleep(2)
-                    if record_list[-7] != img_num + 1:
+            if "[CQ:image," in rev['raw_message']and "幻蓝" not in rev["sender"]["nickname"] and "纳西妲" not in rev["sender"]["nickname"]and "春蓝" not in rev["sender"]["nickname"]
+                    and "杏菜" not in rev["sender"]["nickname"]:                                #可以添加经常发表情包的对象进行屏蔽
+                print(rev['raw_message'])
+                get_image = rev['raw_message'][15:51].lower()
+                if ".jpe" in get_image:
+                    get_image = get_image.replace(".jpe", ".jpeg")
+                name = "%d.jpg" % img_num
+                if ".gif" in get_image:
+                    name = "%d.gif" % img_num
+                print(get_image)
+                with open(imgtxt_path, "a", encoding="utf-8") as record:
+                    record.write("[" + name + "],")
+                with open(imgtxt_path, "r", encoding="utf-8") as record:
+                    record_list = record.read()
+                to_path = './图片识别库/%s' % name
+                time.sleep(2)
+                qq=""
+                if record_list[-7] != img_num + 1:
+                    try:
+                        img = Image.open(BytesIO(open(
+                            r"C:\Users\86138\Documents\Tencent Files\%s\nt_qq\nt_data\Emoji\emoji-recv\2024-12\Ori\%s" % (qq,get_image),        #填写机器人的QQ，以下所有的路径都需要自行调整
+                            'rb').read()))
+                        img.save(to_path)
+                    except:
                         try:
-                            img = Image.open(BytesIO(open(
-                                r"C:\Users\86138\Documents\Tencent Files\3820178105\nt_qq\nt_data\Emoji\emoji-recv\2024-11\Ori\%s" % get_image,        #替换为你自己的QQ号和保存路径，用于图像模型的调用
+                            img2 = Image.open(BytesIO(open(
+                                r"C:\Users\86138\Documents\Tencent Files\%s\nt_qq\nt_data\Pic\2024-12\Ori\%s" % (qq,get_image),
                                 'rb').read()))
-                            img.save(to_path)
+                            img2.save(to_path)
                         except:
                             try:
-                                img2 = Image.open(BytesIO(open(
-                                    r"C:\Users\86138\Documents\Tencent Files\3820178105\nt_qq\nt_data\Pic\2024-11\Ori\%s" % get_image,
+                                if ".jpg" in get_image:
+                                    get_image = get_image.replace(".jpg", "_720.jpg")
+                                if ".png" in get_image:
+                                    get_image = get_image.replace(".png", "_720.png")
+                                if ".jpeg" in get_image:
+                                    get_image = get_image.replace(".jpeg", "_720.jpeg")
+                                img3 = Image.open(BytesIO(open(
+                                    r"C:\Users\86138\Documents\Tencent Files\%s\nt_qq\nt_data\Pic\2024-12\Thumb\%s" % (qq,get_image),
                                     'rb').read()))
-                                img2.save(to_path)
+                                img3.save(to_path)
                             except:
-                                try:
-                                    if ".jpg" in get_image:
-                                        get_image = get_image.replace(".jpg", "_720.jpg")
-                                    if ".png" in get_image:
-                                        get_image = get_image.replace(".png", "_720.png")
-                                    img3 = Image.open(BytesIO(open(
-                                        r"C:\Users\86138\Documents\Tencent Files\3820178105\nt_qq\nt_data\Pic\2024-11\Thumb\%s" % get_image,
-                                        'rb').read()))
-                                    img3.save(to_path)
-                                except:
-                                    print("图片识别库的图片保存失败")
-                    with open(to_path, 'rb') as img_file:
-                        img_base = base64.b64encode(img_file.read()).decode('utf-8')
-                    print("运行到这里说明保存成功")
+                                print("图片识别库的图片保存失败")
+                with open(to_path, 'rb') as img_file:
+                    img_base = base64.b64encode(img_file.read()).decode('utf-8')
+                print("运行到这里说明保存成功")
         
             if "[CQ:image,"  not in rev['raw_message']:#组建单次回复上下文
                 objdict["banaijian%schat"%rev['group_id']]=objdict["banaijian%schat"%rev['group_id']][-50:]
@@ -914,9 +934,12 @@ def main(rev):
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'}) 
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空对话历史'})
+                if "#识图" in rev['raw_message']:
+                    print(img_base)
+                    recognize_image(img_base)
                 if '#生成视频' in rev['raw_message']:
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '正在执行，请耐心等待1坤钟'})
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '正在执行，请耐心等待两坤钟'})
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "5分钟以上无响应，说明图片转视频失败，图片可能存在违规"})
                     get_url("%s"%rev['raw_message'].replace('#生成视频',''))
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[CQ:video,file=%s]" % url})
@@ -1032,6 +1055,9 @@ def main(rev):
                                     picture=temp_tts_list[-2].split('#picture/')[-1].replace("#",'')
                                     print(picture)
                                     draw_group(picture,rev['group_id'])
+                                elif '#recognize/' in temp_tts_list[-2]:
+                                        temp_tts_list[-2] = temp_tts_list[-2].split('#recognize/')[-1].replace("#", '')
+                                        recognize_image(img_base)
                                 elif '#search/' in temp_tts_list[-2]:
                                     response.close()
                                     temp_tts_list=temp_tts_list[:-1]
@@ -1120,6 +1146,9 @@ def main(rev):
                                 picture=temp_tts_list[-1].split('#picture/')[-1].replace("#",'')
                                 print(picture)
                                 draw_group(picture,rev['group_id'])
+                            elif '#recognize/' in temp_tts_list[-1]:
+                                temp_tts_list[-1] = temp_tts_list[-1].split('#recognize/')[-1].replace("#", '')
+                                recognize_image(img_base)
                             elif '#search/' in temp_tts_list[-1]:
 
                                 s_prompt=temp_tts_list[-1].split('#search/')[-1].replace("#",'')
