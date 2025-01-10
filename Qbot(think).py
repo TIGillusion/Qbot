@@ -1,4 +1,4 @@
-print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363')
+print('\n欢迎使用由幻日编写的幻蓝AI程序，部分内容由春日补充添加，该版本兼容TIG模型的思维链模式，可以隐藏思维链内容输出，有疑问请联系幻日q：2141073363'或春日q：1901182260)
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import time
@@ -711,7 +711,29 @@ def main(rev):
                                 if not is_find_m:
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
                             else:
-                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
+                                if "think" in processed_d_data1:
+                                    keyword = "```"
+                                    pattern = f"{keyword}(.*?)```"
+                                    temp_msg = processed_d_data1.replace("\n", "")
+                                    match = re.search(pattern, temp_msg)
+                                    think = match.group(1)
+                                    print(think)
+                                    print(temp_msg)
+                                    try:
+                                        temp_msg = temp_msg.replace(think, "").replace("```", "")
+                                        if temp_msg == "":
+                                            print("无响应")
+                                        temp_msg = temp_msg.split("#cut#")
+                                        print(temp_msg)
+                                        lenn = len(temp_msg)
+                                        while lenn > 0:
+                                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"],
+                                                      'msg': temp_msg[-lenn].replace("%s："%AI_name,"").replace("%s:"%AI_name,"").replace("```", "")})
+                                            lenn -= 1
+                                    except:
+                                        pass
+                                else:
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
                             objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                             with open(
@@ -1127,8 +1149,7 @@ def main(rev):
                                         lenn = len(temp_msg)
                                         while lenn > 0:
                                             send_msg({'msg_type': 'group', 'number': rev['group_id'],
-                                                      'msg': temp_msg[-lenn].replace("柴郡AI：", "").replace(
-                                                          "柴郡AI:", "").replace("```", "")})
+                                                      'msg': temp_msg[-lenn].replace("%s："%AI_name,"").replace("%s:"%AI_name,"").replace("```", "")})
                                             lenn -= 1
                                     except:
                                         pass
