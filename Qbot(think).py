@@ -1,4 +1,4 @@
-print('\n欢迎使用由幻日编写的幻蓝AI程序，部分内容由春日补充添加，该版本兼容TIG模型的思维链模式，可以隐藏思维链内容输出，有疑问请联系幻日q：2141073363'或春日q：1901182260)
+print('\n欢迎使用由幻日编写的幻蓝AI程序，部分内容由春日补充添加，该版本兼容TIG模型的思维链模式，可以隐藏思维链内容输出，有疑问请联系幻日q：2141073363或春日q：1901182260')
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import time
