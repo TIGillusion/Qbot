@@ -723,7 +723,7 @@ def main(rev):
                                         temp_msg = temp_msg.replace(think, "").replace("```", "")
                                         if temp_msg == "":
                                             print("无响应")
-                                        temp_msg = temp_msg.split("#cut#")
+                                        temp_msg = temp_msg.split("#split#")
                                         print(temp_msg)
                                         lenn = len(temp_msg)
                                         while lenn > 0:
@@ -1144,7 +1144,7 @@ def main(rev):
                                         temp_msg = temp_msg.replace(think, "").replace("```", "")
                                         if temp_msg == "":
                                             print("无响应")
-                                        temp_msg = temp_msg.split("#cut#")
+                                        temp_msg = temp_msg.split("#split#")
                                         print(temp_msg)
                                         lenn = len(temp_msg)
                                         while lenn > 0:
