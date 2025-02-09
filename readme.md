@@ -106,7 +106,9 @@
 3. 启动：  
    打开命令行（win+r，输入cmd并回车），先cd到Qbot-main根目录。
    
-   （可选，但强烈推荐）使用venv来避免污染全局环境  
+   可选，推荐大佬/开发者：
+   cmd：
+   使用venv来避免污染全局环境  
    创建venv：
    ```cmd
    python -m venv .venv
@@ -115,7 +117,8 @@
    ```cmd
    .venv/Scripts/activate.bat
    ```
-   (如果是PowerShell)激活venv：
+   PowerShell：
+   激活venv：
    ```PowerShell
    .venv/Scripts/activate.ps1
    ```
@@ -123,13 +126,13 @@
    ```PowerShell
    Set-ExecutionPolicy RemoteSigned -Scope Process
    ```
-   （必须）安装必要的库：  
+   必须：安装必要的库：  
    ```cmd
    python -m pip install -r requirements.txt
    ```
    保持NTQQ的运行状态，然后使用`python Qbot.py`完成启动。  
    （如果使用venv请先激活venv）  
-   （遇到问题可以联系开发者幻日QQ：2141073363）
+   （遇到问题可以联系开发者幻日QQ：2141073363，可选venv遇到问题可以联系观赏鱼QQ：2082895869）
 
 # 补充：
 将音乐放在data/smusic文件夹下，AI适当的时候会自己从中选取合适歌曲发送（音乐不适宜太多（<20个），否则AI可能不按要求选取歌曲）【本功能已在10.25次更新中被AI翻唱功能取代】
