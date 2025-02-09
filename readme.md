@@ -103,14 +103,32 @@
 2. 修改：
    - 进入`Qbot.py`源代码编辑页面。
 
-3. 启动：
-   安装必要的库：
-   打开命令行（win+r，输入cmd并回车），先cd到Qbot-main根目录，然后输入以下命令：
+3. 启动：  
+   打开命令行（win+r，输入cmd并回车），先cd到Qbot-main根目录。
+   
+   （可选，但强烈推荐）使用venv来避免污染全局环境  
+   创建venv：
    ```cmd
-   pip install -r requirements.txt
+   python -m venv .venv
    ```
-   保持NTQQ的运行状态，然后使用`python Qbot.py`完成启动。
-
+   激活venv：
+   ```cmd
+   .venv/Scripts/activate.bat
+   ```
+   (如果是PowerShell)激活venv：
+   ```PowerShell
+   .venv/Scripts/activate.ps1
+   ```
+   （如果PowerShell报不允许执行）修改该PowerShell实例脚本执行策略：  
+   ```PowerShell
+   Set-ExecutionPolicy RemoteSigned -Scope Process
+   ```
+   （必须）安装必要的库：  
+   ```cmd
+   python -m pip install -r requirements.txt
+   ```
+   保持NTQQ的运行状态，然后使用`python Qbot.py`完成启动。  
+   （如果使用venv请先激活venv）  
    （遇到问题可以联系开发者幻日QQ：2141073363）
 
 # 补充：
