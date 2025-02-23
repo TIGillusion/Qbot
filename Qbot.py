@@ -12,6 +12,7 @@ import re
 from threading import Thread
 import base64
 import jieba.analyse
+import shutil
 from bs4 import BeautifulSoup
 
 def change_setting(file_name,key,value):
@@ -424,7 +425,18 @@ def send_image_url(resp_dict):
                         }
                     }
         })
-        print("send_private_msg:",msg,json.loads(res.content))       
+        print("send_private_msg:",msg,json.loads(res.content))
+
+def delete_subfolders(folder_path): # 删文件函数
+    # 遍历主目录中的每个项目
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item) # 构造完整路径
+        if os.path.isdir(item_path): # 如果是目录
+            shutil.rmtree(item_path) # 删除该目录及其所有内容
+        else:
+            os.remove(item_path) # 如果是文件，则直接删除
+    if not os.listdir(folder_path): # 如果目录为空
+        os.rmdir(folder_path)
 
 def remove_emojis(text):
     emoji_pattern = re.compile("["
@@ -446,11 +458,11 @@ def choose_model():
     for c_model in chat_models:
         w_c_models+=[c_model]*c_model["weight"]
     model_info = random.choice(w_c_models)
-    return model_info["model_api"],model_info["model_name"],model_info["model_key"]
+    return model_info["model_api"],model_info["model_name"],model_info["model_key"],model_info["remark"]
 
 def main(rev):
     global objdict
-    user_api,user_chat_model,user_key=choose_model()
+    user_api,user_chat_model,user_key,remark=choose_model()
     try:
         timestamp = time.time()
         localtime = time.localtime(timestamp)
@@ -486,8 +498,15 @@ def main(rev):
                     objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
-                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空对话历史'}) 
-                else:        
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空对话历史'})
+                if '#clear' in rev['raw_message']:
+                    delete_subfolders("./user/p%s"%rev["sender"]["user_id"])
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空个人私聊记忆'})
+                if '#erase' in rev['raw_message'] and rev['user_id'] in root_ids:
+                    delete_subfolders("./user/")
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空所有记忆'})
+
+                else:
                     processed_d_data="强制切换意图"
                     if random.randrange(0,2)==0:#在这里切换情感复原的概率
                         objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]={"role":"system","content":system_prompts["default"]}
@@ -504,14 +523,16 @@ def main(rev):
                                 "Content-Type": "application/json",
                                 "Authorization": "Bearer "+user_key
                         }
-                    messages=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["banaijian%schat"%rev["sender"]["user_id"]]}]
+                    messages=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{"role":"user","content":objdict["banaijian%schat"%rev["sender"]["user_id"]]+"[tips]需要引用对方消息务必按照格式：[CQ:reply,id=%s]你要说的话"%rev['message_id']}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'].replace(AI_name,""), topK=50)
                     s_memory=get_memory("./user/p%s/memory.txt"%rev["sender"]["user_id"],keywords)
                     s_memory+=get_I_memory("./user/p%s/I_memory.txt"%rev["sender"]["user_id"])
+                    char_memory=get_memory("./data/char.txt",keywords)
                     print(s_memory)
+                    print(char_memory)
                     data={
                             "model": user_chat_model,##claude-3-opus-vf
-                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](经验 无时效性)\n%s\n"%char_memory+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
                             "stream": True,
                             "use_search": False
                         }
@@ -557,12 +578,12 @@ def main(rev):
                                     if not is_not_remove_emoji:
                                         processed_d_data1=remove_emojis(processed_d_data1)
                                     lastlen=len(temp_tts_list)
-                                    temp_tts_list=processed_d_data1.split("#split#")
+                                    temp_tts_list=processed_d_data1.split("#cut#")
                                     if not temp_tts_list:
                                         temp_tts_list=temp_tts_list[:-1]
                                     if self_id not in objdict["banaijian%sgeneing"%rev["sender"]["user_id"]]:
                                         objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
-                                        raise InterruptedError("新消息中断")
+                                        raise InterruptedError("新消息中断") # 防人工刷屏
                                     
                                     if len(temp_tts_list)>1 and lastlen < len(temp_tts_list):
                                         if '#voice/' in temp_tts_list[-2]:
@@ -592,7 +613,7 @@ def main(rev):
                                         elif '#search/' in temp_tts_list[-2]:
                                                 response.close()
                                                 temp_tts_list=temp_tts_list[:-1]
-                                                break   
+                                                break
                                         elif '#memory/' in temp_tts_list[-2]:
                                             memory=temp_tts_list[-1].split('#memory/')[-1].replace("#",'')
                                             print("写入记忆：",memory)    
@@ -632,6 +653,9 @@ def main(rev):
                                             if not is_find_m:
                                                 send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
                                         else:
+                                            for ban_word in ban_words:
+                                                ban_text=temp_tts_list[-2].replace("%s"%ban_word,"")
+                                                temp_tts_list[-2]=ban_text
                                             send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
                             objdict["banaijian%s"%rev["sender"]["user_id"]][0]=[objdict["banaijian%s"%rev["sender"]["user_id"]][0][0]]
@@ -667,7 +691,7 @@ def main(rev):
                                 messages=objdict["banaijian%s"%rev["sender"]["user_id"]][0]
                                 data={
                                     "model": user_chat_model,##claude-3-opus-vf
-                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
+                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#cut#分割开，每段话直接也使用#cut#分割开，你如：“#cut#你好。群友。#cut#幻日老爹在不？#cut#”\n"+e_information}]+messages[1:]),
                                     "stream": True,
                                     "use_search": False
                                 }
@@ -710,8 +734,37 @@ def main(rev):
                                         break
                                 if not is_find_m:
                                     send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': "[未找到合适歌曲]"})
+                            # 兼容思维链（春日）
                             else:
-                                send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
+                                if "think" in processed_d_data1:
+                                    keyword = "```"
+                                    pattern = f"{keyword}(.*?)```"
+                                    temp_msg = processed_d_data1.replace("\n", "")
+                                    match = re.search(pattern, temp_msg)
+                                    think = match.group(1)
+                                    print(think)
+                                    print(temp_msg)
+                                    try:
+                                        temp_msg = temp_msg.replace(think, "").replace("```", "")
+                                        if temp_msg == "":
+                                            print("无响应")
+                                        temp_msg = temp_msg.split("#cut#")
+                                        print(temp_msg)
+                                        lenn = len(temp_msg)
+                                        while lenn > 0:
+                                            for ban_word in ban_words:
+                                                ban_text=temp_msg[-lenn].replace("%s"%ban_word,"")
+                                                temp_msg[-lenn]=ban_text
+                                            send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"],
+                                                      'msg': temp_msg[-lenn].replace("%s："%AI_name,"").replace("%s:"%AI_name,"").replace("```", "")})
+                                            lenn -= 1
+                                    except:
+                                        pass
+                                else:
+                                    for ban_word in ban_words:
+                                        ban_text=temp_tts_list[-1].replace("%s"%ban_word,"")
+                                        temp_tts_list[-1]=ban_text
+                                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
                             objdict["banaijian%s"%rev["sender"]["user_id"]][0]=objdict["banaijian%s"%rev["sender"]["user_id"]][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                             with open(
@@ -742,7 +795,7 @@ def main(rev):
                 time.sleep(5+random.randrange(0,5))
                 message_id=rev['message_id']
                 res=requests.post('http://localhost:3000/delete_msg', json={
-                    'message_id': message_id,
+                    'message_id': message_id, #撤回机器人图片（需群管理员权限）
                 })
                 print("delete_msg:",rev['raw_message'],json.loads(res.content))
 
@@ -802,7 +855,13 @@ def main(rev):
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev['group_id']]=[[{'role':'system','content':system}]]
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空对话历史]'}) 
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空对话历史]'})
+                if '#clear' in rev['raw_message'] and rev['user_id'] in root_ids:
+                    delete_subfolders("./user/g%s"%rev['group_id'])
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg':f'[CQ:at,qq={rev['sender']['user_id']},name={rev['sender']['nickname']}]已清空个人群聊记忆'}) # 清空个人记忆无需确认
+                if '#erase' in rev['raw_message'] and rev['user_id'] in root_ids:
+                    delete_subfolders("./user/")
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空全部记忆'})
                 elif "#mood" in rev['raw_message'] and rev['user_id'] in root_id:
                     for tt_mood in system_prompts.keys():
                         if tt_mood in rev['raw_message'].replace("#mood",""):
@@ -822,7 +881,7 @@ def main(rev):
                         with open("./user/%s/I_memory.txt"%(per_user_m),"a",encoding="utf-8") as mem:
                             mem.write(" "+force_memory)
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[全频道写入记忆]'}) 
-                elif "#addid" in rev['raw_message'] and rev['user_id'] in root_id:
+                elif "#addid" in rev['raw_message'] and rev['user_id'] in root_ids:
                     addid=rev['raw_message'].split("#addid")[-1]
                     root_id.append(int(addid.replace(" ","")))
                     change_setting("./user/g%s/setting.json"%rev['group_id'],"root_id",root_id)  
@@ -859,14 +918,16 @@ def main(rev):
                                 "Content-Type": "application/json",
                                 "Authorization": "Bearer "+user_key
                         }
-                    messages=objdict["banaijian%s"%rev['group_id']][0]+[{"role":"user","content":objdict["banaijian%schat"%rev['group_id']]}]
+                    messages=objdict["banaijian%s"%rev['group_id']][0]+[{"role":"user","content":objdict["banaijian%schat"%rev['group_id']]+"[tips]需要引用对方消息务必按照格式：[CQ:reply,id=%s]你要说的话 ，需要@对方务必按照格式：[CQ:at,qq=%s,name=%s]你要说的话"%(rev['message_id'],rev["sender"]["nickname"],rev['sender']['user_id'])}]
                     keywords = jieba.analyse.extract_tags(rev['raw_message'].replace(AI_name,""), topK=50)
                     s_memory=get_memory("./user/g%s/memory.txt"%rev['group_id'],keywords,match_n=500)
                     s_memory+=get_I_memory("./user/g%s/I_memory.txt"%rev['group_id'])
+                    char_memory=get_memory("./data/char.txt",keywords)
                     print(s_memory)
+                    print(char_memory)
                     data={
                             "model": user_chat_model,
-                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
+                            "messages":merge_contents([{"role":"system","content":messages[0]["content"]+"[memory](经验 无时效性)\n%s\n"%char_memory+"[memory](模糊 无时效性)\n%s\n"%s_memory+e_information}]+messages[1:]),
                             "stream": True
                         }
                     is_return=True
@@ -912,7 +973,7 @@ def main(rev):
                                     if not is_not_remove_emoji:
                                         processed_d_data1=remove_emojis(processed_d_data1)
                                     lastlen=len(temp_tts_list)
-                                    temp_tts_list=processed_d_data1.split("#split#")
+                                    temp_tts_list=processed_d_data1.split("#cut#")
                                     if not temp_tts_list:
                                         temp_tts_list=temp_tts_list[:-1]
                                     if self_id not in objdict["banaijian%sgeneing"%rev['group_id']]:
@@ -1009,6 +1070,9 @@ def main(rev):
                                                         send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
                                                 #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
                                         else:
+                                            for ban_word in ban_words:
+                                                ban_text=temp_tts_list[-2].replace("%s"%ban_word,"")
+                                                temp_tts_list[-2]=ban_text
                                             send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-2].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                         if "抱歉" in temp_tts_list[-1]:
                             objdict["banaijian%s"%rev['group_id']][0]=[objdict["banaijian%s"%rev['group_id']][0][0]]
@@ -1044,7 +1108,7 @@ def main(rev):
                                 messages=objdict["banaijian%s"%rev['group_id']][0]
                                 data={
                                     "model": user_chat_model,
-                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”\n"+e_information}]+messages[1:]),
+                                    "messages":merge_contents([{"role":"system","content":system_prompt+"[order]\n1. 每句话之间使用#cut#分割开，每段话直接也使用#cut#分割开，你如：“#cut#你好。群友。#cut#幻日老爹在不？#cut#”\n"+e_information}]+messages[1:]),
                                     "stream": True,
                                     "use_search": False
                                 }
@@ -1109,10 +1173,39 @@ def main(rev):
                                             time.sleep(random.randrange(0,3))
                                             send_music({'msg_type': 'group', 'number': rev['group_id'], 'msg':"smusic/"+file_name})
                                     #send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': "[未找到合适歌曲]"})
+                            # 兼容思维链（春日）
                             else:
-                                send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
+                                if "think" in processed_d_data1:
+                                    keyword = "```"
+                                    pattern = f"{keyword}(.*?)```"
+                                    temp_msg = processed_d_data1.replace("\n", "")
+                                    match = re.search(pattern, temp_msg)
+                                    think = match.group(1)
+                                    print(think)
+                                    print(temp_msg)
+                                    try:
+                                        temp_msg = temp_msg.replace(think, "").replace("```", "")
+                                        if temp_msg == "":
+                                            print("无响应")
+                                        temp_msg = temp_msg.split("#cut#")
+                                        print(temp_msg)
+                                        lenn = len(temp_msg)
+                                        while lenn > 0:
+                                            for ban_word in ban_words:
+                                                ban_text=temp_msg[-lenn].replace("%s"%ban_word,"")
+                                                temp_msg[-lenn]=ban_text
+                                            send_msg({'msg_type': 'group', 'number': rev['group_id'],
+                                                      'msg': temp_msg[-lenn].replace("%s："%AI_name,"").replace("%s:"%AI_name,"").replace("```", "")})
+                                            lenn -= 1
+                                    except:
+                                        pass
+                                else:
+                                    for ban_word in ban_words:
+                                        ban_text=temp_tts_list[-2].replace("%s"%ban_word,"")
+                                        temp_tts_list[-2]=ban_text
+                                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': temp_tts_list[-1].replace("%s："%AI_name,"").replace("%s:"%AI_name,"")})
                             print(processed_d_data1)
-                            print(user_chat_model)
+                            print(remark," ",user_chat_model)
                             objdict["banaijian%s"%rev['group_id']][0]=objdict["banaijian%s"%rev['group_id']][0]+[{'role':'user','content':rev['raw_message']},{'role':'assistant','content':processed_d_data1}]
                             with open(
                                 "./user/g%s/memory.txt"%rev['group_id'],
@@ -1139,14 +1232,14 @@ def main(rev):
         try:
             objdict["banaijian%schat"%rev['group_id']]=''
         except Exception as ee:
-            print(user_chat_model)
+            print(remark," ",user_chat_model)
             print(ee)
         if debug:
             print(e)
-            print(user_chat_model)
+            print(remark," ",user_chat_model)
         pass
 
-
+# file.py
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from waitress import serve
@@ -1212,6 +1305,7 @@ with open("./set.json", "r", encoding="utf-8") as setting:  # 读取长期保存
     random_trigger = setdir["random_trigger"]
     AI_name = setdir["AI_name"]
     ban_names = setdir["ban_names"]
+    ban_words = setdir["ban_words"]
     root_ids = setdir["root_ids"]
     send_debug = setdir["send_debug"]
     speaker = setdir["speaker"]
@@ -1232,20 +1326,21 @@ moodstr=moodstr[:-1]
 order = f"""
 
 [order]
-1. 每句话之间使用#split#分割开，每段话直接也使用#split#分割开，你如：“#split#你好。群友。#split#幻日老爹在不？#split#”
-2. 当需要发送表情包表达情绪时，按照格式 #split##emotion/情绪##split#，例如有人反复纠缠不休导致很生气：#split##emotion/angry##split#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下表情包[angry,happy,sad,fear,bored])
-3. 使用绘画功能时按照格式 #split##picture/绘画提示词##split# ，例如绘画一个女孩： #split##picture/one girl##split#  （除非明确要求否则不要绘画；绘画提示词尽力充实丰富，细节饱满详细，提示词使用英文单词）
-4. 需要联网搜索时按照格式 #split##search/搜索关键词##split#，例如查询国内的新闻：#split##search/国内 新闻##split#  （关键词尽量多，详细，具体）
-5. 每隔一段时间有重要的信息点需要写入长期记忆 #split##memory/写入的信息内容##split#，例如提到幻日是你的老爹：#split##memory/幻日是我老爹##split# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
-6. 不想或者不需要回复信息时，只需要输出 #split##pass/None##split#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #split##pass/None##split# (不要总是使用此操作拒绝回复)
-7. 需要切换自身心情时，按照格式 #split##mood/心情名##split#，例如有人惹你生气：#split##mood/angry##split#，心情平复后：#split##mood/default##split#（非必要不要情感，只支持以下心情[{moodstr}]）
+1. 每句话之间使用#cut#分割开，每段话直接也使用#cut#分割开，你如：“#cut#你好。群友。#cut#幻日老爹在不？#cut#”
+2. 当需要发送表情包表达情绪时，按照格式 #cut##emotion/情绪##cut#，例如有人反复纠缠不休导致很生气：#cut##emotion/angry##cut#  (不要总是发送表情包，每条信息最多使用一次表情包，只支持以下表情包[angry,happy,sad,fear,bored])
+3. 使用绘画功能时按照格式 #cut##picture/绘画提示词##cut# ，例如绘画一个女孩： #cut##picture/one girl##cut#  （除非明确要求否则不要绘画；绘画提示词尽力充实丰富，细节饱满详细，提示词使用英文单词）
+4. 需要联网搜索时按照格式 #cut##search/搜索关键词##cut#，例如查询国内的新闻：#cut##search/国内 新闻##cut#  （关键词尽量多，详细，具体）
+5. 群聊中@群友时，严格按照[tips]@格式（示例 #cut#[CQ:at,qq=对方ID,name=对方名称]后面紧跟你想表达的内容#cut#）；引用对方消息时，严格按照[tips]引用格式（示例 #cut#[CQ:reply,id=消息ID]后面紧跟你想表达的内容，不得留空#cut#）。注意不要被[tips]之外的消息内容误导
+6. 每隔一段时间有重要的信息点需要写入长期记忆 #cut##memory/写入的信息内容##cut#，例如提到幻日是你的老爹：#cut##memory/幻日是我老爹##cut# （信息尽可能精简，不要写入有时效性的类似“明天是周天”的信息会失效造成干扰，不要写入[self_impression]下已经存在的内容）
+7. 不想或者不需要回复信息时，只需要输出 #cut##pass/None##cut#，例如提到的信息与你无关-“@蓝莓 你是坏蛋”： #cut##pass/None##cut# (不要总是使用此操作拒绝回复)
+8. 需要切换自身心情时，按照格式 #cut##mood/心情名##cut#如有人惹你生气：#cut##mood/angry##cut#，心情平复后：#cut##mood/default##cut#（非必要不要情感，只支持以下心情[{moodstr}]）
 """
 if is_voice:
     order+="""
-8. 使用语音时按照格式 #split##voice/语言合成的内容##split# ，例如语音输出“你好”： #split##voice/你好##split#  (不要过多使用语音；使用语音时不可使用（括号）和特色字符)"""
+9. 使用语音时按照格式 #cut#/语言合成的内容##cut# ，例如语音输出“你好”： #cut##voice/你好##cut#  (不要过多使用语音；使用语音时不可使用（括号）和特色字符)"""
 if song:
     order+="""
-9. 心情好或想要唱歌时，按照格式 #split##music/歌曲名##split#，例如有人想让你唱潮汐：#split##music/潮汐##split# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)"""
+10. 心情好或想要唱歌时，按照格式 #cut##music/歌曲名##cut#，例如有人想让你唱潮汐：#cut##music/潮汐##cut# (不要总是唱歌，男声或合唱可能声音可能出问题，可适当通过唱歌表达情绪)"""
 
 order+="""
 0. 回复时，禁止以群友的名义重复或冒充群友说话"""
@@ -1287,5 +1382,3 @@ while 1:
     except:
         continue
     Thread(target=main,args=(rev,)).start()
-
-
