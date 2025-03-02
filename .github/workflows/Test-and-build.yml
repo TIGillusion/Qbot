@@ -50,11 +50,6 @@ jobs:
         isort .
       env:
         PYTHONUTF8: 1
-    - name: Upload the Isortted code
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ format('Qbot-{0}-Python{1}-Isort.py', runner.os, matrix.python-version) }}
-        path: Qbot.py
     - name: Black the code
       run: |
         black . --check --diff
