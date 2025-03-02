@@ -44,6 +44,11 @@ jobs:
       with:
         name: ${{ format('Qbot-{0}-Python{1}.exe', runner.os, matrix.python-version) }}
         path: dist/Qbot.exe
+    - name: Upload the code
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ format('Qbot-{0}-Python{1}.py', runner.os, matrix.python-version) }}
+        path: Qbot.py
     - name: Isort the code
       run: |
         isort . --check --diff
