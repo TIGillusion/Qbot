@@ -22,7 +22,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pyinstaller # pytest
+        python -m pip install flake8 pyinstaller 
+        # pytest
         if ( Test-Path requirements.txt ) { pip install -r requirements.txt }
     - name: Lint with flake8
       run: |
@@ -41,5 +42,5 @@ jobs:
     - name: Upload the binary
       uses: actions/upload-artifact@v4
       with:
-        name: Qbot-windows.exe
+        name: ${{ format('Qbot-{0}-Python{1}.exe', runner.os, matrix.python-version) }}
         path: dist/Qbot.exe
