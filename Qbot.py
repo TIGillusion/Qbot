@@ -1,4 +1,4 @@
-print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363')
+print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363或q：1967444797')
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import time
@@ -498,13 +498,13 @@ def main(rev):
                     objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
                 if '#reset' in rev['raw_message']:
                     objdict["banaijian%s"%rev["sender"]["user_id"]]=[[{'role':'system','content':system}]]
-                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空对话历史'})
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '[已清空对话历史]'})
                 if '#clear' in rev['raw_message']:
                     delete_subfolders("./user/p%s"%rev["sender"]["user_id"])
-                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空个人私聊记忆'})
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '[已清空个人私聊记忆]'})
                 if '#erase' in rev['raw_message'] and rev['user_id'] in root_ids:
                     delete_subfolders("./user/")
-                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '已清空所有记忆'})
+                    send_msg({'msg_type': 'private', 'number': rev["sender"]["user_id"], 'msg': '[已清空所有记忆]'})
 
                 else:
                     processed_d_data="强制切换意图"
@@ -858,10 +858,10 @@ def main(rev):
                     send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空对话历史]'})
                 if '#clear' in rev['raw_message'] and rev['user_id'] in root_ids:
                     delete_subfolders("./user/g%s"%rev['group_id'])
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg':f'[CQ:at,qq={rev['sender']['user_id']},name={rev['sender']['nickname']}]已清空个人群聊记忆'}) # 清空个人记忆无需确认
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空此群聊记忆]'})
                 if '#erase' in rev['raw_message'] and rev['user_id'] in root_ids:
                     delete_subfolders("./user/")
-                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '已清空全部记忆'})
+                    send_msg({'msg_type': 'group', 'number': rev['group_id'], 'msg': '[已清空全部记忆]'})
                 elif "#mood" in rev['raw_message'] and rev['user_id'] in root_id:
                     for tt_mood in system_prompts.keys():
                         if tt_mood in rev['raw_message'].replace("#mood",""):
