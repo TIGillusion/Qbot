@@ -4,6 +4,13 @@ on:
   push:
   pull_request:
 
+defaults:
+  run:
+    shell: pwsh # 默认使用 powershell Core 终端
+
+env:
+  ENABLE_PYTEST: $false # 是否启用 pytest 测试，$false 为不启用，$true 为启用
+
 jobs:
   windows-build:
 
@@ -11,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12", "3.13"] # python 版本列表
 
     steps:
     - uses: actions/checkout@v4
@@ -19,11 +26,22 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Get cache key week
+      id: cache-key-week
+      run: |
+          $week = Get-Date -UFormat %V
+          Write-Output "cache-key-week=$week" >> $env:GITHUB_OUTPUT
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~\AppData\Local\pip\cache
+        key: Python${{ matrix.python-version }}-pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}-${{ steps.cache-key-week.outputs.cache-key-week }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install flake8 Isort black pyinstaller 
-        # pytest
+        if ( $env:ENABLE_PYTEST -eq $true ) { python -m pip install pytest }
         if ( Test-Path requirements.txt ) { pip install -r requirements.txt }
     - name: Lint with flake8
       run: |
@@ -31,9 +49,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --statistics
-    #- name: Test with pytest
-      #run: |
-        #if ( false ) { pytest }
+    - name: Test with pytest
+      run: |
+        if ( $env:ENABLE_PYTEST -eq $true ) { pytest }
     - name: Build the binary
       run: |
         pyinstaller --onefile Qbot.py
@@ -65,6 +83,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --statistics
+    - name: Test formatted code with pytest
+      run: |
+        if ( $env:ENABLE_PYTEST -eq $true ) { pytest }
     - name: Upload the formatted code
       uses: actions/upload-artifact@v4
       with:
