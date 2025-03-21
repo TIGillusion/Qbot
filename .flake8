@@ -1,9 +1,0 @@
-[flake8]
-max-line-length = 127
-max-complexity = 10
-extend-ignore =
-    E203,
-    W503   
-
-# E203：Black 处理冒号后空格的方式与 flake8 默认规则冲突
-# W503：运算符在行尾（Black 的风格）

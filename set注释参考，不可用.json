@@ -1,0 +1,44 @@
+{
+  "socket_number": 6000,
+  //默认端口号，如有冲突或者需要启动多个qqbot可以进行修改
+  "max_ac_word": 180,
+  //AI最大接受字数(包括所有标点符号)，超过会无视，防止有人使用大长文恶意请求浪费token
+  "root_id": [ 1901182260 ],
+  //管理员QQ号，只有这些QQ号才能使用一些管理命令，可在列表中添加多个
+  "trigger": "幻宙娘",
+  //AI回复的触发词
+  "chat_url": "https://phapi.furina.chat/v1/chat/completions",
+  "chat_key": "",
+  //AI的key，请自行前往网站申请TIG对应令牌https://phapi.furina.chat/
+  "chat_model": "TIG-3.5-o1-20250101",
+  //可以自由在TIG系列模型中选择，其他系列模型不兼容
+  "draw_url": "https://api.siliconflow.cn/v1/images/generations",
+  "draw_key": "",
+  "draw_model": "stabilityai/stable-diffusion-3-5-large",
+  //绘画API的key和模型，请自行前往网站申请
+  "system_prompt": "[Character setting]\n",
+  "system_prompt2": "[Character setting]\n",
+  //人设和备用人设，方便切换
+  "active": "true",
+  //是否启用主动发送消息  例如：填写true或false
+  "active_goal": "true",
+  //是否启用私聊主动发送消息
+  "active_private": "1901182260",
+  //私聊主动发送消息的QQ号，例如：1901182260
+  "active_group": "992583002",
+  //私聊主动发送消息的群号，例如：992583002
+  "set_time": "00",
+  //设置群聊主动发送消息的时间，例如：07就是在早上七点钟，私聊默认早上7点和晚上24点发送问候消息
+  "poke": "true",
+  //是否启用AI回复戳一戳，true是启用，false不启用，不启用，可以设置固定回复，例如：["真讨厌","戳我干什么"]
+  "BV_number": [ "BV1obBEYJEkz" ],
+  //填写想让AI了解的大致视频类型，如填写国际形势相关视频的BV号，AI则会自己去了解国际形势相关的视频并分享
+  "poke_message": [ "真讨厌", "戳我干什么" ],
+  //固定戳一戳回复内容
+  "draw": "true",
+  //true是启用API的AI绘画，false是启用本地AI绘画（SD格式），参数需要自己在代码中进行调整，代码和大模型绘画小白可联系开发者帮助
+  "absolute_path": "r\"C:\\Users\\86138\\Desktop\\qq聊天机器人\\qbot幻宙\"",
+  //填写程序所在的绝对路径
+  "ban_name": [ "AI" ]
+
+}
