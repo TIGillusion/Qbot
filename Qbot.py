@@ -1285,6 +1285,19 @@ def emoji_files(emotion,filename):
 def run_server():
     serve(app, host='127.0.0.1', port=4321, threads=10)
 
+# 尝试输出信息
+try:
+    import version
+    print("当前版本：",version.version)
+    print("git 哈希", version.git_hash)
+    print("git 标签", version.git_tag)
+    print("git 分支", version.git_branch)
+    print("git 提交时间", version.git_commit_time)
+    print("构建时间", version.build_time)
+    print("构建python版本", version.build_python_version)
+except:
+    pass
+
 # 创建并启动新线程
 print("启用本地文件传输服务...")
 thread = threading.Thread(target=run_server)
