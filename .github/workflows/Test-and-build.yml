@@ -43,6 +43,9 @@ jobs:
         python -m pip install flake8 Isort black pyinstaller 
         if ( $env:ENABLE_PYTEST -eq $true ) { python -m pip install pytest }
         if ( Test-Path requirements.txt ) { pip install -r requirements.txt }
+    - name: build the version file
+      run: |
+        powershell -ExecutionPolicy Bypass -File version.ps1
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
