@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(HelpMessage="版本信息文件路径")][string]$version_info_py_file_path = "version.py",
     [parameter(HelpMessage="项目根目录")][string]$project_dir = $PSScriptRoot
 )
@@ -63,6 +63,12 @@ function Write-Error {
     }
 }
 
+if ($project_dir.Length -eq 0)
+{
+    Write-Warning "未指定项目根目录$project_dir, 使用当前目录${Get-Location}"
+    $project_dir = Get-Location
+}
+
 # 执行前检查
 if ($False -eq (Test-Path $project_dir))
 {
@@ -95,7 +101,7 @@ if ($null -eq $is_git_repo)
 
 $git_hash = git rev-parse HEAD 2>$null
 
-$git_tag = git describe --tags --abbrev=0 2>$null
+$git_tag = git rev-list --tags --max-count=1 | ForEach-Object { git describe --tags $_ --abbrev=0 } 2>$null
 
 $git_commit_time = git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S' 2>$null
 
