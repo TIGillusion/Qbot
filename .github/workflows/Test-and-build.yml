@@ -48,8 +48,6 @@ jobs:
     - name: Build the version file
       run: |
         if ( Test-Path .\version.ps1 ) { .\version.ps1 -project_dir $env:GITHUB_WORKSPACE }
-      env: 
-        ENABLE_SHORTHASH: $true # 是否启用短哈希, $true 为启用
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
