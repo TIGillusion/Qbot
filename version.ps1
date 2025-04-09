@@ -99,7 +99,12 @@ if ($null -eq $is_git_repo)
     exit 1
 }
 
-$git_hash = git rev-parse HEAD 2>$null
+if ($env:ENABLE_SHORTHASH -eq $True){
+    $git_hash = git rev-parse --short HEAD 2>$null
+}
+else {
+    $git_hash = git rev-parse HEAD 2>$null
+}
 
 $git_tag = git rev-list --tags --max-count=1 | ForEach-Object { git describe --tags $_ --abbrev=0 } 2>$null
 
