@@ -73,7 +73,12 @@
 # 准备：
 
 1. 首先，下载并安装NTQQ（一种新架构的QQ电脑端）：
+
+官网：
    [NTQQ下载链接](https://im.qq.com/pcqq/index.shtml)
+
+旧版：
+   [NTQQ下载链接](https://bbs.pcbeta.com/viewthread-1969561-1-1.html)
 ---
 - 旧版插件教程
 
