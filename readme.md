@@ -75,7 +75,7 @@
 1. 首先，下载并安装NTQQ（一种新架构的QQ电脑端）：
    [NTQQ下载链接](https://im.qq.com/pcqq/index.shtml)
 ---
-**旧版插件教程**
+- 旧版插件教程
 2.1 安装LLonebot的NTQQ插件：
    [NTQQ插件链接](https://github.com/LLOneBot/LLOneBot/releases)
    安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
@@ -86,7 +86,7 @@
    填写各种信息（千万不要忘记填写端口号）后，**注意保存！！！**
     ![NTQQ插件安装图](source/2.png)
 ---
-**新版独立程序教程**
+- 新版独立程序教程
 2.2 LLOneBot独立程序：
    [LLOneBot程序链接](https://github.com/LLOneBot/LLOneBot/releases)
    安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
