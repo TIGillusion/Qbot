@@ -15,7 +15,7 @@
 
 5.修复已知bug
 
-# 10.28更新*：
+# 10.28更新：
 1.加入管理员功能和指令：在set.json里面填写管理员qq号列表即可，指令包括：“触发词#mood 情绪”（设置本群AI的情绪，相关情绪在set里面的系统人设里面修改或添加），“触发词#random 整数”（修改本群AI无触发词的触发概率，整数小于等于0关闭当前群AI）
 
 2.加入多情绪系统提示词功能，可由AI自行切换或管理员手动切换单群的AI情绪模式，即“触发词#mood 情绪”（设置本群AI的情绪，相关情绪在set里面的系统人设里面修改或添加）指令
@@ -74,13 +74,19 @@
 
 1. 首先，下载并安装NTQQ（一种新架构的QQ电脑端）：
    [NTQQ下载链接](https://im.qq.com/pcqq/index.shtml)
-
-2. 安装LLonebot的NTQQ插件：
+---
+* 旧版插件教程 *
+2.1 安装LLonebot的NTQQ插件：
    [NTQQ插件链接](https://github.com/LLOneBot/LLOneBot)
    安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
    如果是Windows系统，注意下载如下名称的较新版本exe：
     ![NTQQ插件安装图](source/1.png)
-
+---
+* 新版独立程序教程 *
+2.2 LLOneBot独立程序：
+   [LLOneBot程序链接](https://github.com/LLOneBot/LLOneBot)
+   安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
+---
 3. 配置LLonebot插件：
    安装好插件后，打开ntqq进入插件设置
    填写各种信息（千万不要忘记填写端口号）后，**注意保存！！！**
