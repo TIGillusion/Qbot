@@ -4,3 +4,4 @@ flask_cors
 waitress
 jieba
 beautifulsoup4
+zhipuai
