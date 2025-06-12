@@ -629,6 +629,7 @@ def see_image(msg):
     #     else:
     #         chatmsg+=p_msg["content"]   
     return returnmsg
+
 def delete_subfolders(folder_path): # 删文件函数
     # 遍历主目录中的每个项目
     for item in os.listdir(folder_path):
