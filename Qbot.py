@@ -462,7 +462,7 @@ def send_image(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': f"file://{os.path.abspath(f'./data/image/{msg}')}"}})
+    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/image/', msg))}"}})
     if msg_type == 'group':
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
@@ -472,7 +472,7 @@ def send_voice(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    res = send_msg_v2(msg_type, number, {'type': 'voice', 'data': {'file': f"file://{os.path.abspath(f"./data/voice/{msg}")}"}})
+    res = send_msg_v2(msg_type, number, {'type': 'voice', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/voice/', msg))}"}})
     if msg_type == 'group':
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
@@ -482,7 +482,7 @@ def send_music(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    res = send_file_v2(msg_type, number, f"./data/voice/smusic/{msg}")
+    res = send_file_v2(msg_type, number, os.path.join('./data/voice/smusic/', msg))
     if msg_type == 'group':
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
