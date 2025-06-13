@@ -451,17 +451,10 @@ def send_msg(resp_dict):
         if remove_kuohao:
             msg=remove_parentheses(msg)
         if msg:
+            res = send_msg_v2(msg_type, number, msg)
             if msg_type == 'group':
-                res=requests.post('http://localhost:3000/send_group_msg', json={
-                    'group_id': number,
-                    'message': msg
-                })
                 print("send_group_msg:",msg,json.loads(res.content))
             elif msg_type == 'private':
-                res=requests.post('http://localhost:3000/send_private_msg', json={
-                    'user_id': number,
-                    'message': msg
-                })
                 print("send_private_msg:",msg,json.loads(res.content))
     return 0
 
@@ -469,79 +462,78 @@ def send_image(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
+    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': f"file://{os.path.abspath(f'./data/image/{msg}')}"}})
     if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:image,file=http://127.0.0.1:4321/data/image/%s]"%msg
-        })
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message':"[CQ:image,file=http://127.0.0.1:4321/data/image/%s]"%msg
-        })
         print("send_private_msg:",msg,json.loads(res.content))
 
 def send_voice(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
+    res = send_msg_v2(msg_type, number, {'type': 'voice', 'data': {'file': f"file://{os.path.abspath(f"./data/voice/{msg}")}"}})
     if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:record,file=http://127.0.0.1:4321/data/voice/%s]"%msg
-        })
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message':"[CQ:record,file=http://127.0.0.1:4321/data/voice/%s]"%msg
-        })
         print("send_private_msg:",msg,json.loads(res.content))
 
 def send_music(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
+    res = send_file_v2(msg_type, number, f"./data/voice/smusic/{msg}")
     if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1].rsplit('.',1)[0][:15]+".wav")
-        })
         print("send_group_msg:",msg,json.loads(res.content))
     elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1].rsplit('.',1)[0][:15]+".wav")
-        })
         print("send_private_msg:",msg,json.loads(res.content))
 
 def send_image_url(resp_dict):
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
+    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': msg}})
     if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': {
-                        "type": "image",
-                        "data": {
-                            "file": "%s"%msg.replace("%20"," ")
-                        }
-                    }
-        })
-        print("send_group_msg:",msg,json.loads(res.content))
+        print("send_group_msg:", msg, json.loads(res.content))
     elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
+        print("send_private_msg:", msg, json.loads(res.content))
+
+def send_msg_v2(msg_type : str, number : int, message : str | dict):
+    if msg_type == 'group':
+        return send_group_msg_v2(number, message)
+    elif msg_type == 'private':
+        return send_private_msg_v2(number, message)
+    else: 
+        raise ValueError("msg_type must be 'group' or 'private'")
+    
+def send_group_msg_v2(group_id, message):
+    url = "http://localhost:3000/send_group_msg"
+    return requests.post(url, json={'group_id': group_id, 'message': message})
+
+def send_private_msg_v2(user_id, message):
+    url = "http://localhost:3000/send_private_msg"
+    return requests.post(url, json={'user_id': user_id,'message': message})
+    
+
+def send_file_v2(msg_type : str, number : int, path : str, name : str | None = None):
+    url : str = "http://localhost:3000/upload_group_file"
+    payload : dict | None = None
+    if name is not None:
+        name = os.path.basename(path)
+    if msg_type == 'group':
+        payload = {
+            'group_id': number,
+            'file': f"file://{os.path.abspath(path)}",
+            'name': name
+            }
+    elif msg_type == 'private':
+        url = "http://localhost:3000/upload_private_file"
+        payload = {
             'user_id': number,
-            'message': {
-                        "type": "image",
-                        "data": {
-                            "file": "%s"%msg
-                        }
-                    }
-        })
-        print("send_private_msg:",msg,json.loads(res.content))
+            'file': f"file://{os.path.abspath(path)}",
+            'name': name
+            }
+    return requests.post(url, json=payload)
 
 def extract_inf(msg,keyword):
     msglist=[]
@@ -1680,57 +1672,6 @@ def main(rev):
             print(e)
             print(remark," ",user_chat_model)
         pass
-
-# file.py
-from flask import Flask, send_from_directory
-from flask_cors import CORS
-from waitress import serve
-import os
-import threading
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/data/image/<filename>', methods=['GET', 'POST'])
-def image_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/image/', filename)):
-        return send_from_directory('./data/image/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-@app.route('/data/voice/<filename>', methods=['GET', 'POST'])
-def voice_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/voice/', filename)):
-        return send_from_directory('./data/voice/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-@app.route('/data/voice/smusic/<filename>', methods=['GET', 'POST'])
-def music_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/voice/smusic/', filename)):
-        return send_from_directory('./data/voice/smusic/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-    
-@app.route('/data/image/<emotion>/<filename>', methods=['GET', 'POST'])
-def emoji_files(emotion,filename):
-    print("用户请求文件：", emotion,"/",filename)
-    if os.path.exists('./data/image/%s/%s'%(emotion,filename)):
-        return send_from_directory('./data/image/%s'%emotion, filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-# 定义一个函数来启动Flask应用
-def run_server():
-    serve(app, host='127.0.0.1', port=4321, threads=10)
-
-# 创建并启动新线程
-print("启用本地文件传输服务...")
-thread = threading.Thread(target=run_server)
-thread.start()
 
 
 print("读取配置文件...")
