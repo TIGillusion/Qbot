@@ -439,7 +439,8 @@ def remove_parentheses(s):
             result += char
     return result
 
-def send_msg(resp_dict):
+def send_msg(resp_dict : dict) -> int:
+    global is_filt,filted_words,remove_kuohao
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg'].strip()  # 要回复的消息 
@@ -452,53 +453,38 @@ def send_msg(resp_dict):
             msg=remove_parentheses(msg)
         if msg:
             res = send_msg_v2(msg_type, number, msg)
-            if msg_type == 'group':
-                print("send_group_msg:",msg,json.loads(res.content))
-            elif msg_type == 'private':
-                print("send_private_msg:",msg,json.loads(res.content))
+            print_log_for_send_func("msg", msg_type, number, msg, res)
     return 0
 
-def send_image(resp_dict):
+def send_image(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
     res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/image/', msg))}"}})
-    if msg_type == 'group':
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        print("send_private_msg:",msg,json.loads(res.content))
+    print_log_for_send_func("image", msg_type, number, msg, res)
 
-def send_voice(resp_dict):
+def send_voice(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
     res = send_msg_v2(msg_type, number, {'type': 'voice', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/voice/', msg))}"}})
-    if msg_type == 'group':
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        print("send_private_msg:",msg,json.loads(res.content))
+    print_log_for_send_func("voice", msg_type, number, msg, res)
 
-def send_music(resp_dict):
+def send_music(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
     res = send_file_v2(msg_type, number, os.path.join('./data/voice/smusic/', msg))
-    if msg_type == 'group':
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        print("send_private_msg:",msg,json.loads(res.content))
+    print_log_for_send_func("music", msg_type, number, msg, res)
 
-def send_image_url(resp_dict):
+def send_image_url(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
     res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': msg}})
-    if msg_type == 'group':
-        print("send_group_msg:", msg, json.loads(res.content))
-    elif msg_type == 'private':
-        print("send_private_msg:", msg, json.loads(res.content))
+    print_log_for_send_func("image_url", msg_type, number, msg, res)
 
-def send_msg_v2(msg_type : str, number : int, message : str | dict):
+def send_msg_v2(msg_type : str, number : int, message : str | dict) -> requests.Response:
     if msg_type == 'group':
         return send_group_msg_v2(number, message)
     elif msg_type == 'private':
@@ -506,16 +492,16 @@ def send_msg_v2(msg_type : str, number : int, message : str | dict):
     else: 
         raise ValueError("msg_type must be 'group' or 'private'")
     
-def send_group_msg_v2(group_id, message):
+def send_group_msg_v2(group_id, message) -> requests.Response:
     url = "http://localhost:3000/send_group_msg"
     return requests.post(url, json={'group_id': group_id, 'message': message})
 
-def send_private_msg_v2(user_id, message):
+def send_private_msg_v2(user_id, message) -> requests.Response:
     url = "http://localhost:3000/send_private_msg"
     return requests.post(url, json={'user_id': user_id,'message': message})
     
 
-def send_file_v2(msg_type : str, number : int, path : str, name : str | None = None):
+def send_file_v2(msg_type : str, number : int, path : str, name : str | None = None) -> requests.Response:
     url : str = "http://localhost:3000/upload_group_file"
     payload : dict | None = None
     if name is not None:
@@ -534,6 +520,10 @@ def send_file_v2(msg_type : str, number : int, path : str, name : str | None = N
             'name': name
             }
     return requests.post(url, json=payload)
+
+def print_log_for_send_func(func_name: str, msg_type: str, number: int, message: str | dict, res: requests.Response) -> None:
+    full_func_name = f"send_{msg_type}_{func_name}"
+    print(f"{full_func_name}: ", f"call with number={number}, message={message}, response={json.loads(res.content)}")
 
 def extract_inf(msg,keyword):
     msglist=[]
