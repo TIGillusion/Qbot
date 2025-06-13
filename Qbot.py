@@ -439,7 +439,7 @@ def remove_parentheses(s):
             result += char
     return result
 
-def send_msg(resp_dict : dict) -> int:
+def send_msg(resp_dict : dict) -> None:
     global is_filt,filted_words,remove_kuohao
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
@@ -454,7 +454,7 @@ def send_msg(resp_dict : dict) -> int:
         if msg:
             res = send_msg_v2(msg_type, number, msg)
             print_log_for_send_func("msg", msg_type, number, msg, res)
-    return 0
+    return None
 
 def send_image(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
