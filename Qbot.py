@@ -329,27 +329,27 @@ def draw_private(prompt : str, to : int) -> None:
 def draw_v2(msg_type : str, number : int, prompt : str) -> None:
     try:
         global draw_url, draw_key, draw_model, debug
-        headers={
+        headers = {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer "+draw_key
             }
         if "cogview" in draw_model or "stabilityai/" in draw_model:
-            data={
+            data = {
                 "model":draw_model,
                 "prompt":prompt,
             }
         else:
-            data={
+            data = {
                 "model":draw_model,##claude-3-opus-vf
                 "messages":[{"role":"user","content":prompt}],
                 "stream": True
             }
         send_msg({'msg_type': msg_type, 'number': number, 'msg': f'正在绘画[{prompt}]中...'})
-        response=requests.post(url=draw_url,headers=headers,stream=True,data=data)
-        if response.status_code!=200:
+        response : requests.Response = requests.post(url = draw_url, headers = headers, stream = True, data = data)
+        if response.status_code != 200:
             send_msg({'msg_type': msg_type, 'number': number, 'msg': f'AI绘画操作模型请求失败HTTP Code: {response.status_code}'})
             return None
-        processed_d_data_draw=''
+        processed_d_data_draw = ''
         for line in response.iter_lines():
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
@@ -363,13 +363,16 @@ def draw_v2(msg_type : str, number : int, prompt : str) -> None:
             except Exception as e:
                 print('读取绘画数据错误: ', e)
                 send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作读取数据时错误'})
-        image_url=processed_d_data_draw.split('(')[-1].replace(')','')
+        image_url = processed_d_data_draw.split('(')[-1].replace(')','')
         if debug:
             print('图片URL: ', image_url)
-        max_n=500
+        max_n = 500
         for n in range(0,max_n):
             try:
                 image_response=requests.get(image_url)
+                if image_response.status_code != 200:
+                    print('绘画图片下载重试: ', n)
+                    continue
                 name=str(uuid.uuid4().hex)+'.png'
                 with open(f"./data/image/{name}",'wb') as f_image:
                     f_image.write(image_response.content)
