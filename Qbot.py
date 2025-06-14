@@ -427,17 +427,17 @@ def draw_private(prompt,to):
         print('绘画错误:',e)
         send_msg({'msg_type': 'private', 'number': to, 'msg':'AI绘画操作无法执行'})
         
-def remove_parentheses(s):
-    result = ""
-    skip = False
+def remove_parentheses(s : str) -> str:
+    buf : list[str] = []
+    skip : int = 0
     for char in s:
         if char in '(（【':
-            skip = True
+            skip += 1
         elif char in ')）】':
-            skip = False
+            skip = max(0, skip - 1)
         elif not skip:
-            result += char
-    return result
+            buf.append(char)
+    return ''.join(buf)
 
 def send_msg(resp_dict : dict) -> None:
     global is_filt,filted_words,remove_kuohao
