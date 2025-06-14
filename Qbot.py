@@ -21,16 +21,16 @@ from bs4 import BeautifulSoup
 from zhipuai import ZhipuAI
 from datetime import datetime
 
-def change_setting(file_name,key,value):
+def change_setting(file_name : str, key : str, value : object) -> None:
     try:
         with open(file_name, 'r', encoding='utf-8') as f:
-            t_gsetting=json.load(f)
+            t_gsetting = json.load(f)
     
-        t_gsetting[key]=value
+        t_gsetting[key] = value
         with open(file_name, 'w', encoding='utf-8') as f:
             json.dump(t_gsetting, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        print(e)
+        print('change_setting error: ', e)
 
 
 
