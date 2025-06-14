@@ -36,9 +36,12 @@ def change_setting(file_name : str, key : str, value : object) -> None:
 def search(query : str) -> str:
     global search_func_list
     for search_func in search_func_list:
-        result = search_func(query)
-        if result:
-            return result
+        try:
+            result = search_func(query)
+            if result:
+                return result
+        except:
+            pass
     return "未搜索到合适结果"
 
 def run_v4_sync(query : str) -> str | None:
