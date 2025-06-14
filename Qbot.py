@@ -1660,7 +1660,7 @@ system= system_prompt+order
 for mood in system_prompts.keys():
     system_prompts[mood]+=order
 
-ttsurls="http://192.168.3.117:5001/tts"
+ttsurls="http://localhost:5001/tts"
 jieyue=True
 cpu_lacking=False
 weihu=False#是否暂停qq机器人进入维护状态
