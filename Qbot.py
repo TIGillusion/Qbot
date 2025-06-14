@@ -452,7 +452,7 @@ def send_msg(resp_dict : dict) -> None:
         if remove_kuohao:
             msg=remove_parentheses(msg)
         if msg:
-            res = send_msg_v2(msg_type, number, msg)
+            res = send_msg_v2(msg_type, number, {'type': 'text', 'data': {'text': msg}})
             print_log_for_send_func("msg", msg_type, number, msg, res)
     return None
 
