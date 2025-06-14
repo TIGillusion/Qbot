@@ -33,8 +33,15 @@ def change_setting(file_name : str, key : str, value : object) -> None:
         print('change_setting error: ', e)
 
 
+def search(query : str) -> str:
+    global search_func_list
+    for search_func in search_func_list:
+        result = search_func(query)
+        if result:
+            return result
+    return "未搜索到合适结果"
 
-def run_v4_sync(query):
+def run_v4_sync(query : str) -> str | None:
     msg = [
         {
             "role": "user",
@@ -66,82 +73,23 @@ def run_v4_sync(query):
     print(result)
     return result
 
-# def glm_search(query):
-    
-
-#     # 初始化 ZhipuAI 客户端
-#     client = ZhipuAI(api_key="31598f74ee9776d64b85b0a0457d9094.EKpxafHYqcpiElrE")
-
-#     # 获取当前日期
-#     current_date = datetime.now().strftime("%Y-%m-%d")
-
-#     # 设置工具（启用网络搜索）
-#     tools = [{
-#         "type": "web_search",
-#         "web_search": {
-#             "enable": True  # 启用网络搜索
-#         }
-#     }]
-
-#     # 系统提示模板，包含时间信息
-#     system_prompt = f"""你是一个具备网络访问能力的智能助手，在适当情况下，优先使用网络信息（参考信息）来回答，
-#     以确保用户得到最新、准确的帮助。当前日期是 {current_date}。"""
-
-#     # 用户输入的问题
-#     user_input = query
-
-#     # 构建动态用户问题提示
-#     user_question = f"参考最新消息给出对用户输入的详细的回答: {user_input}"
-
-#     # 构建消息
-#     messages = [
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": user_question}
-#     ]
-
-#     # 生成响应
-#     response = client.chat.completions.create(
-#         model="glm-4-Flash",
-#         messages=messages,
-#         tools=tools
-#     )
-
-#     # 输出结果
-#     print(response.choices[0].message.content)
-#     return response.choices[0].message.content
-
-def search(query):
-    """
-    Searches the web for the specified query and returns the results.
-    """
+def default_search(query : str) -> str | None:
     response = requests.get(
         'https://api.openinterpreter.com/v0/browser/search',
         params={"query": query},
     )
     if response.status_code==200 and response.json()["result"]:
         return response.json()["result"]
-    else:
-        
-        result = run_v4_sync(querys)
-        if result:
-            return result
-        else:
-            querys=query.split(" ")
-            result = bing_search(query)
-            if result:
-                return result
-            else:
-                return "未搜索到合适结果"
 
-def bing_search(keywords):
+def bing_search(keywords : str) -> str | None:
     q=""
     for p_k in keywords:
         q+=(p_k+"+")
     # 必应搜索结果URL
-    url = 'https://cn.bing.com/search?q=%s&count=10&qs=n&sp=-1&lq=0&pq=%s'%(q[:-1],q[:-1])
+    url = f'https://cn.bing.com/search?q={q[:-1]}'
     # 请求头，模拟浏览器访问
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0'
     }
     
     try:
@@ -1715,6 +1663,8 @@ cpu_lacking=False
 weihu=False#是否暂停qq机器人进入维护状态
 remove_kuohao=True
 
+# 初始化搜索函数列表
+search_func_list = [default_search, run_v4_sync, bing_search]
 
 
 objdict={}
