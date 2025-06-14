@@ -1,4 +1,5 @@
 print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363或q：1967444797')
+import uuid
 import sys
 sys.path.append(".")
 import ssl
@@ -319,68 +320,19 @@ def get_memory(file_path, keywords, match_n=200, time_n=200, radius=50, length=4
 
     return main_text[:match_n+time_n+200]
 
-def draw_group(prompt,to):
+def draw_group(prompt : str, to : int) -> None:
+    draw_v2(msg_type='group', number=to, prompt=prompt)
+
+def draw_private(prompt : str, to : int) -> None:
+    draw_v2(msg_type='private', number=to, prompt=prompt)
+
+def draw_v2(msg_type : str, number : int, prompt : str) -> None:
     try:
-        urldraw=draw_url
+        global draw_url, draw_key, draw_model, debug
         headers={
                     "Content-Type": "application/json",
                     "Authorization": "Bearer "+draw_key
             }
-        if "siliconflow" in urldraw:
-            data={
-                "model":draw_model,
-                "prompt":prompt,
-            }
-        else:
-            data={
-                "model":draw_model,##claude-3-opus-vf
-                "messages":[{"role":"user","content":prompt}],
-                "stream": True
-            }
-        send_msg({'msg_type': 'group', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
-        response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
-        if response.status_code==200:
-            send_msg({'msg_type': 'group', 'number': to, 'msg': '绘画完毕发送中...'})
-        processed_d_data_draw=''
-        for line in response.iter_lines():
-            try:
-                decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                if decoded != '':
-                    if "siliconflow" in urldraw:
-                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
-                    else:
-                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-
-                    print(decoded)
-            except Exception as e:
-                print(e)
-        image_url=processed_d_data_draw.split('(')[-1].replace(')','')
-        print(image_url)
-        max_n=500
-        for n in range(0,max_n):
-            try:
-                image_response=requests.get(image_url)
-                name=str(random.randrange(100000,999999))+'.png'
-                with open("./data/image/%s"%name,'wb') as f_image:
-                    f_image.write(image_response.content)
-                send_image({'msg_type': 'group', 'number': to, 'msg':name })
-                break
-            except:
-                print(n)
-                if n==max_n-1:
-                    raise TimeoutError("重试无效")
-    except Exception as e:
-        print('绘画错误:',e)
-        send_msg({'msg_type': 'group', 'number': to, 'msg':'AI绘画操作无法执行'})
-
-def draw_private(prompt,to):
-    try:
-        urldraw=draw_url
-        headers={
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer "+draw_key
-            }
-        
         if "cogview" in draw_model or "stabilityai/" in draw_model:
             data={
                 "model":draw_model,
@@ -392,40 +344,47 @@ def draw_private(prompt,to):
                 "messages":[{"role":"user","content":prompt}],
                 "stream": True
             }
-        send_msg({'msg_type': 'private', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
-        response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
-        if response.status_code==200:
-            send_msg({'msg_type': 'private', 'number': to, 'msg': '绘画完毕发送中...'})
+        send_msg({'msg_type': msg_type, 'number': number, 'msg': f'正在绘画[{prompt}]中...'})
+        response=requests.post(url=draw_url,headers=headers,stream=True,data=data)
+        if response.status_code!=200:
+            send_msg({'msg_type': msg_type, 'number': number, 'msg': f'AI绘画操作模型请求失败HTTP Code: {response.status_code}'})
+            return None
         processed_d_data_draw=''
         for line in response.iter_lines():
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
                     if "cogview" in draw_model or "stabilityai/" in draw_model:
-                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
+                        processed_d_data_draw += json.loads(decoded)["data"][0]["url"]
                     else:
-                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-                    print(decoded)
+                        processed_d_data_draw += json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                    if debug:
+                        print('绘画数据: ', decoded)
             except Exception as e:
-                print(e)
+                print('读取绘画数据错误: ', e)
+                send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作读取数据时错误'})
         image_url=processed_d_data_draw.split('(')[-1].replace(')','')
-        print(image_url)
+        if debug:
+            print('图片URL: ', image_url)
         max_n=500
         for n in range(0,max_n):
             try:
                 image_response=requests.get(image_url)
-                name=str(random.randrange(100000,999999))+'.png'
-                with open("./data/image/%s"%name,'wb') as f_image:
+                name=str(uuid.uuid4().hex)+'.png'
+                with open(f"./data/image/{name}",'wb') as f_image:
                     f_image.write(image_response.content)
-                send_image({'msg_type': 'private', 'number': to, 'msg':name })
+                    send_image({'msg_type': msg_type, 'number': number, 'msg':name })
                 break
-            except:
-                print(n)
+            except Exception as e:
+                print('绘画图片下载重试: ', n)
+                max_n -= 1
                 if n==max_n-1:
-                    raise TimeoutError("重试无效")
+                    send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作图片下载失败'})
+                    print('绘画图片下载失败: ', e)
+                    return None
     except Exception as e:
-        print('绘画错误:',e)
-        send_msg({'msg_type': 'private', 'number': to, 'msg':'AI绘画操作无法执行'})
+        print('绘画错误:', e)
+        send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作无法执行'})
         
 def remove_parentheses(s : str) -> str:
     buf : list[str] = []
