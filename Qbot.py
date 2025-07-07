@@ -417,7 +417,7 @@ def send_private_msg_v2(user_id, message) -> requests.Response:
 def send_file_v2(msg_type : str, number : int, path : str, name : str | None = None) -> requests.Response:
     url : str = "http://localhost:3000/upload_group_file"
     payload : dict | None = None
-    if name is not None:
+    if name is None:
         name = os.path.basename(path)
     if msg_type == 'group':
         payload = {
