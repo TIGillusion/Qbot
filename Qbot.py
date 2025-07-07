@@ -1,4 +1,5 @@
 print('\n欢迎使用由幻日编写的幻蓝AI程序，有疑问请联系q：2141073363或q：1967444797')
+import uuid
 import sys
 sys.path.append(".")
 import ssl
@@ -20,20 +21,30 @@ from bs4 import BeautifulSoup
 from zhipuai import ZhipuAI
 from datetime import datetime
 
-def change_setting(file_name,key,value):
+def change_setting(file_name : str, key : str, value : object) -> None:
     try:
         with open(file_name, 'r', encoding='utf-8') as f:
-            t_gsetting=json.load(f)
+            t_gsetting = json.load(f)
     
-        t_gsetting[key]=value
+        t_gsetting[key] = value
         with open(file_name, 'w', encoding='utf-8') as f:
             json.dump(t_gsetting, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        print(e)
+        print('change_setting error: ', e)
 
 
+def search(query : str) -> str:
+    global search_func_list
+    for search_func in search_func_list:
+        try:
+            result = search_func(query)
+            if result:
+                return result
+        except:
+            pass
+    return "未搜索到合适结果"
 
-def run_v4_sync(query):
+def run_v4_sync(query : str) -> str | None:
     msg = [
         {
             "role": "user",
@@ -65,82 +76,23 @@ def run_v4_sync(query):
     print(result)
     return result
 
-# def glm_search(query):
-    
-
-#     # 初始化 ZhipuAI 客户端
-#     client = ZhipuAI(api_key="31598f74ee9776d64b85b0a0457d9094.EKpxafHYqcpiElrE")
-
-#     # 获取当前日期
-#     current_date = datetime.now().strftime("%Y-%m-%d")
-
-#     # 设置工具（启用网络搜索）
-#     tools = [{
-#         "type": "web_search",
-#         "web_search": {
-#             "enable": True  # 启用网络搜索
-#         }
-#     }]
-
-#     # 系统提示模板，包含时间信息
-#     system_prompt = f"""你是一个具备网络访问能力的智能助手，在适当情况下，优先使用网络信息（参考信息）来回答，
-#     以确保用户得到最新、准确的帮助。当前日期是 {current_date}。"""
-
-#     # 用户输入的问题
-#     user_input = query
-
-#     # 构建动态用户问题提示
-#     user_question = f"参考最新消息给出对用户输入的详细的回答: {user_input}"
-
-#     # 构建消息
-#     messages = [
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": user_question}
-#     ]
-
-#     # 生成响应
-#     response = client.chat.completions.create(
-#         model="glm-4-Flash",
-#         messages=messages,
-#         tools=tools
-#     )
-
-#     # 输出结果
-#     print(response.choices[0].message.content)
-#     return response.choices[0].message.content
-
-def search(query):
-    """
-    Searches the web for the specified query and returns the results.
-    """
+def default_search(query : str) -> str | None:
     response = requests.get(
         'https://api.openinterpreter.com/v0/browser/search',
         params={"query": query},
     )
     if response.status_code==200 and response.json()["result"]:
         return response.json()["result"]
-    else:
-        
-        result = run_v4_sync(querys)
-        if result:
-            return result
-        else:
-            querys=query.split(" ")
-            result = bing_search(query)
-            if result:
-                return result
-            else:
-                return "未搜索到合适结果"
 
-def bing_search(keywords):
+def bing_search(keywords : str) -> str | None:
     q=""
     for p_k in keywords:
         q+=(p_k+"+")
     # 必应搜索结果URL
-    url = 'https://cn.bing.com/search?q=%s&count=10&qs=n&sp=-1&lq=0&pq=%s'%(q[:-1],q[:-1])
+    url = f'https://cn.bing.com/search?q={q[:-1]}'
     # 请求头，模拟浏览器访问
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0'
     }
     
     try:
@@ -319,127 +271,89 @@ def get_memory(file_path, keywords, match_n=200, time_n=200, radius=50, length=4
 
     return main_text[:match_n+time_n+200]
 
-def draw_group(prompt,to):
+def draw_group(prompt : str, to : int) -> None:
+    draw_v2(msg_type='group', number=to, prompt=prompt)
+
+def draw_private(prompt : str, to : int) -> None:
+    draw_v2(msg_type='private', number=to, prompt=prompt)
+
+def draw_v2(msg_type : str, number : int, prompt : str) -> None:
     try:
-        urldraw=draw_url
-        headers={
+        global draw_url, draw_key, draw_model, debug
+        headers = {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer "+draw_key
             }
-        if "siliconflow" in urldraw:
-            data={
-                "model":draw_model,
-                "prompt":prompt,
-            }
-        else:
-            data={
-                "model":draw_model,##claude-3-opus-vf
-                "messages":[{"role":"user","content":prompt}],
-                "stream": True
-            }
-        send_msg({'msg_type': 'group', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
-        response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
-        if response.status_code==200:
-            send_msg({'msg_type': 'group', 'number': to, 'msg': '绘画完毕发送中...'})
-        processed_d_data_draw=''
-        for line in response.iter_lines():
-            try:
-                decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
-                if decoded != '':
-                    if "siliconflow" in urldraw:
-                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
-                    else:
-                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-
-                    print(decoded)
-            except Exception as e:
-                print(e)
-        image_url=processed_d_data_draw.split('(')[-1].replace(')','')
-        print(image_url)
-        max_n=500
-        for n in range(0,max_n):
-            try:
-                image_response=requests.get(image_url)
-                name=str(random.randrange(100000,999999))+'.png'
-                with open("./data/image/%s"%name,'wb') as f_image:
-                    f_image.write(image_response.content)
-                send_image({'msg_type': 'group', 'number': to, 'msg':name })
-                break
-            except:
-                print(n)
-                if n==max_n-1:
-                    raise TimeoutError("重试无效")
-    except Exception as e:
-        print('绘画错误:',e)
-        send_msg({'msg_type': 'group', 'number': to, 'msg':'AI绘画操作无法执行'})
-
-def draw_private(prompt,to):
-    try:
-        urldraw=draw_url
-        headers={
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer "+draw_key
-            }
-        
         if "cogview" in draw_model or "stabilityai/" in draw_model:
-            data={
+            data = {
                 "model":draw_model,
                 "prompt":prompt,
             }
         else:
-            data={
+            data = {
                 "model":draw_model,##claude-3-opus-vf
                 "messages":[{"role":"user","content":prompt}],
                 "stream": True
             }
-        send_msg({'msg_type': 'private', 'number': to, 'msg': '正在绘画[%s]中...'%prompt})
-        response=requests.post(url=urldraw,headers=headers,stream=True,data=json.dumps(data))
-        if response.status_code==200:
-            send_msg({'msg_type': 'private', 'number': to, 'msg': '绘画完毕发送中...'})
-        processed_d_data_draw=''
+        send_msg({'msg_type': msg_type, 'number': number, 'msg': f'正在绘画[{prompt}]中...'})
+        response : requests.Response = requests.post(url = draw_url, headers = headers, stream = True, data = data)
+        if response.status_code != 200:
+            send_msg({'msg_type': msg_type, 'number': number, 'msg': f'AI绘画操作模型请求失败HTTP Code: {response.status_code}'})
+            return None
+        processed_d_data_draw = ''
         for line in response.iter_lines():
             try:
                 decoded=line.decode('utf-8').replace('\n','\\n').replace('\b','\\b').replace('\f','\\f').replace('\r','\\r').replace('\t','\\t')
                 if decoded != '':
                     if "cogview" in draw_model or "stabilityai/" in draw_model:
-                        processed_d_data_draw+=json.loads(decoded)["data"][0]["url"]
+                        processed_d_data_draw += json.loads(decoded)["data"][0]["url"]
                     else:
-                        processed_d_data_draw+=json.loads(decoded[5:])["choices"][0]["delta"]["content"]
-                    print(decoded)
+                        processed_d_data_draw += json.loads(decoded[5:])["choices"][0]["delta"]["content"]
+                    if debug:
+                        print('绘画数据: ', decoded)
             except Exception as e:
-                print(e)
-        image_url=processed_d_data_draw.split('(')[-1].replace(')','')
-        print(image_url)
-        max_n=500
+                print('读取绘画数据错误: ', e)
+                send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作读取数据时错误'})
+        image_url = processed_d_data_draw.split('(')[-1].replace(')','')
+        if debug:
+            print('图片URL: ', image_url)
+        max_n = 500
         for n in range(0,max_n):
             try:
                 image_response=requests.get(image_url)
-                name=str(random.randrange(100000,999999))+'.png'
-                with open("./data/image/%s"%name,'wb') as f_image:
+                if image_response.status_code != 200:
+                    print('绘画图片下载重试: ', n)
+                    continue
+                name=str(uuid.uuid4().hex)+'.png'
+                with open(f"./data/image/{name}",'wb') as f_image:
                     f_image.write(image_response.content)
-                send_image({'msg_type': 'private', 'number': to, 'msg':name })
+                    send_image({'msg_type': msg_type, 'number': number, 'msg':name })
                 break
-            except:
-                print(n)
+            except Exception as e:
+                print('绘画图片下载重试: ', n)
+                max_n -= 1
                 if n==max_n-1:
-                    raise TimeoutError("重试无效")
+                    send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作图片下载失败'})
+                    print('绘画图片下载失败: ', e)
+                    return None
     except Exception as e:
-        print('绘画错误:',e)
-        send_msg({'msg_type': 'private', 'number': to, 'msg':'AI绘画操作无法执行'})
+        print('绘画错误:', e)
+        send_msg({'msg_type': msg_type, 'number': number, 'msg': 'AI绘画操作无法执行'})
         
-def remove_parentheses(s):
-    result = ""
-    skip = False
+def remove_parentheses(s : str) -> str:
+    buf : list[str] = []
+    skip : int = 0
     for char in s:
         if char in '(（【':
-            skip = True
+            skip += 1
         elif char in ')）】':
-            skip = False
+            skip = max(0, skip - 1)
         elif not skip:
-            result += char
-    return result
+            buf.append(char)
+    return ''.join(buf)
 
-def send_msg(resp_dict):
+def send_msg(resp_dict : dict) -> None:
+    global is_filt,filted_words,remove_kuohao
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg'].strip()  # 要回复的消息 
@@ -451,97 +365,78 @@ def send_msg(resp_dict):
         if remove_kuohao:
             msg=remove_parentheses(msg)
         if msg:
-            if msg_type == 'group':
-                res=requests.post('http://localhost:3000/send_group_msg', json={
-                    'group_id': number,
-                    'message': msg
-                })
-                print("send_group_msg:",msg,json.loads(res.content))
-            elif msg_type == 'private':
-                res=requests.post('http://localhost:3000/send_private_msg', json={
-                    'user_id': number,
-                    'message': msg
-                })
-                print("send_private_msg:",msg,json.loads(res.content))
-    return 0
+            res = send_msg_v2(msg_type, number, {'type': 'text', 'data': {'text': msg}})
+            print_log_for_send_func("msg", msg_type, number, msg, res)
+    return None
 
-def send_image(resp_dict):
+def send_image(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:image,file=http://127.0.0.1:4321/data/image/%s]"%msg
-        })
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message':"[CQ:image,file=http://127.0.0.1:4321/data/image/%s]"%msg
-        })
-        print("send_private_msg:",msg,json.loads(res.content))
+    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/image/', msg))}"}})
+    print_log_for_send_func("image", msg_type, number, msg, res)
 
-def send_voice(resp_dict):
+def send_voice(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:record,file=http://127.0.0.1:4321/data/voice/%s]"%msg
-        })
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message':"[CQ:record,file=http://127.0.0.1:4321/data/voice/%s]"%msg
-        })
-        print("send_private_msg:",msg,json.loads(res.content))
+    res = send_msg_v2(msg_type, number, {'type': 'voice', 'data': {'file': f"file://{os.path.abspath(os.path.join('./data/voice/', msg))}"}})
+    print_log_for_send_func("voice", msg_type, number, msg, res)
 
-def send_music(resp_dict):
+def send_music(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
-    if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1].rsplit('.',1)[0][:15]+".wav")
-        })
-        print("send_group_msg:",msg,json.loads(res.content))
-    elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
-            'user_id': number,
-            'message': "[CQ:file,file=http://127.0.0.1:4321/data/voice/%s,name=%s]"%(msg,msg.split("/")[-1].rsplit('.',1)[0][:15]+".wav")
-        })
-        print("send_private_msg:",msg,json.loads(res.content))
+    res = send_file_v2(msg_type, number, os.path.join('./data/voice/smusic/', msg))
+    print_log_for_send_func("music", msg_type, number, msg, res)
 
-def send_image_url(resp_dict):
+def send_image_url(resp_dict : dict) -> None:
     msg_type = resp_dict['msg_type']  # 回复类型（群聊/私聊）
     number = resp_dict['number']  # 回复账号（群号/好友号）
     msg = resp_dict['msg']  # 要回复的消息
+    res = send_msg_v2(msg_type, number, {'type': 'image', 'data': {'file': msg}})
+    print_log_for_send_func("image_url", msg_type, number, msg, res)
+
+def send_msg_v2(msg_type : str, number : int, message : str | dict) -> requests.Response:
     if msg_type == 'group':
-        res=requests.post('http://localhost:3000/send_group_msg', json={
-            'group_id': number,
-            'message': {
-                        "type": "image",
-                        "data": {
-                            "file": "%s"%msg.replace("%20"," ")
-                        }
-                    }
-        })
-        print("send_group_msg:",msg,json.loads(res.content))
+        return send_group_msg_v2(number, message)
     elif msg_type == 'private':
-        res=requests.post('http://localhost:3000/send_private_msg', json={
+        return send_private_msg_v2(number, message)
+    else: 
+        raise ValueError("msg_type must be 'group' or 'private'")
+    
+def send_group_msg_v2(group_id, message) -> requests.Response:
+    url = "http://localhost:3000/send_group_msg"
+    return requests.post(url, json={'group_id': group_id, 'message': message})
+
+def send_private_msg_v2(user_id, message) -> requests.Response:
+    url = "http://localhost:3000/send_private_msg"
+    return requests.post(url, json={'user_id': user_id,'message': message})
+    
+
+def send_file_v2(msg_type : str, number : int, path : str, name : str | None = None) -> requests.Response:
+    url : str = "http://localhost:3000/upload_group_file"
+    payload : dict | None = None
+    if name is None:
+        name = os.path.basename(path)
+    if msg_type == 'group':
+        payload = {
+            'group_id': number,
+            'file': f"file://{os.path.abspath(path)}",
+            'name': name
+            }
+    elif msg_type == 'private':
+        url = "http://localhost:3000/upload_private_file"
+        payload = {
             'user_id': number,
-            'message': {
-                        "type": "image",
-                        "data": {
-                            "file": "%s"%msg
-                        }
-                    }
-        })
-        print("send_private_msg:",msg,json.loads(res.content))
+            'file': f"file://{os.path.abspath(path)}",
+            'name': name
+            }
+    return requests.post(url, json=payload)
+
+def print_log_for_send_func(func_name: str, msg_type: str, number: int, message: str | dict, res: requests.Response) -> None:
+    full_func_name = f"send_{msg_type}_{func_name}"
+    print(f"{full_func_name}: ", f"call with number={number}, message={message}, response={json.loads(res.content)}")
 
 def extract_inf(msg,keyword):
     msglist=[]
@@ -1681,57 +1576,6 @@ def main(rev):
             print(remark," ",user_chat_model)
         pass
 
-# file.py
-from flask import Flask, send_from_directory
-from flask_cors import CORS
-from waitress import serve
-import os
-import threading
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/data/image/<filename>', methods=['GET', 'POST'])
-def image_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/image/', filename)):
-        return send_from_directory('./data/image/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-@app.route('/data/voice/<filename>', methods=['GET', 'POST'])
-def voice_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/voice/', filename)):
-        return send_from_directory('./data/voice/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-@app.route('/data/voice/smusic/<filename>', methods=['GET', 'POST'])
-def music_files(filename):
-    print("用户请求文件：", filename)
-    if os.path.exists(os.path.join('./data/voice/smusic/', filename)):
-        return send_from_directory('./data/voice/smusic/', filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-    
-@app.route('/data/image/<emotion>/<filename>', methods=['GET', 'POST'])
-def emoji_files(emotion,filename):
-    print("用户请求文件：", emotion,"/",filename)
-    if os.path.exists('./data/image/%s/%s'%(emotion,filename)):
-        return send_from_directory('./data/image/%s'%emotion, filename, as_attachment=True)
-    else:
-        return 'File not found', 404
-
-# 定义一个函数来启动Flask应用
-def run_server():
-    serve(app, host='127.0.0.1', port=4321, threads=10)
-
-# 创建并启动新线程
-print("启用本地文件传输服务...")
-thread = threading.Thread(target=run_server)
-thread.start()
-
 
 print("读取配置文件...")
 with open("./set.json", "r", encoding="utf-8") as setting:  # 读取长期保存的设置
@@ -1816,12 +1660,14 @@ system= system_prompt+order
 for mood in system_prompts.keys():
     system_prompts[mood]+=order
 
-ttsurls="http://192.168.3.117:5001/tts"
+ttsurls="http://localhost:5001/tts"
 jieyue=True
 cpu_lacking=False
 weihu=False#是否暂停qq机器人进入维护状态
 remove_kuohao=True
 
+# 初始化搜索函数列表
+search_func_list = [default_search, run_v4_sync, bing_search]
 
 
 objdict={}

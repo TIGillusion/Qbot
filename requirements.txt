@@ -1,6 +1,4 @@
 requests
-flask
-flask_cors
 waitress
 jieba
 beautifulsoup4
