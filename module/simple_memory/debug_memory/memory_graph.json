@@ -1,0 +1,599 @@
+{
+  "nodes": {
+    "中国": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产",
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "中国有很多城市，每个城市都有其特色",
+        "深圳是中国改革开放的窗口，经济特区的建立推动了中国现代化进程"
+      ],
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.6122053
+    },
+    "文化遗产": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产"
+      ],
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    "北京": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    "首都": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    "有着": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    "上海": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心 上海的外滩有许多历史建筑，是著名的旅游景点"
+      ],
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    "最大": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心"
+      ],
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    "城市": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "中国有很多城市，每个城市都有其特色 城市化是现代化的重要组成部分",
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.6187055
+    },
+    "重要": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心"
+      ],
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    "学习": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    "人工智能": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    "技术": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    "正在": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    "迅速": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    "很多": {
+      "memory_items": [
+        "中国有很多城市，每个城市都有其特色"
+      ],
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    "每个": {
+      "memory_items": [
+        "中国有很多城市，每个城市都有其特色"
+      ],
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    "特色": {
+      "memory_items": [
+        "中国有很多城市，每个城市都有其特色"
+      ],
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    "深圳": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，经济特区的建立推动了中国现代化进程"
+      ],
+      "created_time": 1750442483.6122053,
+      "last_modified": 1750442483.6122053
+    },
+    "改革开放": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，经济特区的建立推动了中国现代化进程"
+      ],
+      "created_time": 1750442483.6122053,
+      "last_modified": 1750442483.6122053
+    },
+    "窗口": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，经济特区的建立推动了中国现代化进程"
+      ],
+      "created_time": 1750442483.6122053,
+      "last_modified": 1750442483.6122053
+    },
+    "经济特区": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，经济特区的建立推动了中国现代化进程"
+      ],
+      "created_time": 1750442483.6122053,
+      "last_modified": 1750442483.6122053
+    },
+    "智能": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442483.6187055,
+      "last_modified": 1750442483.6187055
+    },
+    "系统": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442483.6187055,
+      "last_modified": 1750442483.6187055
+    },
+    "可以": {
+      "memory_items": [
+        "人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技术进行异常行为检测和预警"
+      ],
+      "created_time": 1750442483.6187055,
+      "last_modified": 1750442483.6187055
+    },
+    "利用": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442483.6187055,
+      "last_modified": 1750442483.6187055
+    }
+  },
+  "edges": [
+    {
+      "source": "中国",
+      "target": "文化遗产",
+      "strength": 1,
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    {
+      "source": "中国",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    {
+      "source": "中国",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    {
+      "source": "中国",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442483.5936933,
+      "last_modified": 1750442483.5936933
+    },
+    {
+      "source": "中国",
+      "target": "上海",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "中国",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "中国",
+      "target": "城市",
+      "strength": 2,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.6072063
+    },
+    {
+      "source": "中国",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "中国",
+      "target": "很多",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "中国",
+      "target": "每个",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "中国",
+      "target": "特色",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "中国",
+      "target": "深圳",
+      "strength": 1,
+      "created_time": 1750442483.6122053,
+      "last_modified": 1750442483.6122053
+    },
+    {
+      "source": "中国",
+      "target": "改革开放",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "中国",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "中国",
+      "target": "经济特区",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "文化遗产",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "文化遗产",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "文化遗产",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "北京",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "北京",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "首都",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442483.594192,
+      "last_modified": 1750442483.594192
+    },
+    {
+      "source": "上海",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "上海",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "上海",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "最大",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "最大",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "城市",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442483.5971937,
+      "last_modified": 1750442483.5971937
+    },
+    {
+      "source": "城市",
+      "target": "很多",
+      "strength": 1,
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    {
+      "source": "城市",
+      "target": "每个",
+      "strength": 1,
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    {
+      "source": "城市",
+      "target": "特色",
+      "strength": 1,
+      "created_time": 1750442483.6072063,
+      "last_modified": 1750442483.6072063
+    },
+    {
+      "source": "城市",
+      "target": "智能",
+      "strength": 1,
+      "created_time": 1750442483.6187055,
+      "last_modified": 1750442483.6187055
+    },
+    {
+      "source": "城市",
+      "target": "系统",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "城市",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "城市",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "学习",
+      "target": "人工智能",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "学习",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "学习",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "学习",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "人工智能",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "人工智能",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "人工智能",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "技术",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "技术",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "正在",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442483.6022067,
+      "last_modified": 1750442483.6022067
+    },
+    {
+      "source": "很多",
+      "target": "每个",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "很多",
+      "target": "特色",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "每个",
+      "target": "特色",
+      "strength": 1,
+      "created_time": 1750442483.607706,
+      "last_modified": 1750442483.607706
+    },
+    {
+      "source": "深圳",
+      "target": "改革开放",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "深圳",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "深圳",
+      "target": "经济特区",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "改革开放",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "改革开放",
+      "target": "经济特区",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "窗口",
+      "target": "经济特区",
+      "strength": 1,
+      "created_time": 1750442483.612706,
+      "last_modified": 1750442483.612706
+    },
+    {
+      "source": "智能",
+      "target": "系统",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "智能",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "智能",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "系统",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "系统",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    },
+    {
+      "source": "可以",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442483.6197352,
+      "last_modified": 1750442483.6197352
+    }
+  ]
+}

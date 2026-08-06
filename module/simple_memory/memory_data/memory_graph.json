@@ -1,0 +1,605 @@
+{
+  "nodes": {
+    "中国": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产",
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "中国有很多著名城市，北京是政治中心，上海是经济中心，而深圳是创新中心"
+      ],
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438263.0451465
+    },
+    "文化遗产": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产"
+      ],
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    "北京": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    "首都": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    "有着": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    "上海": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心 上海的外滩有许多历史建筑，是著名的旅游景点"
+      ],
+      "created_time": 1750438258.0261474,
+      "last_modified": 1750438258.0261474
+    },
+    "最大": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "气候变化是当今世界面临的最大挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750438258.0261474,
+      "last_modified": 1750438258.0316594
+    },
+    "城市": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "中国有很多著名城市，北京是政治中心，上海是经济中心，而深圳是创新中心"
+      ],
+      "created_time": 1750438258.0261474,
+      "last_modified": 1750438263.0451465
+    },
+    "重要": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心"
+      ],
+      "created_time": 1750438258.0261474,
+      "last_modified": 1750438258.0261474
+    },
+    "学习": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    "人工智能": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    "技术": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    "正在": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    "迅速": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    "气候变化": {
+      "memory_items": [
+        "气候变化是当今世界面临的最大挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750438258.0311594,
+      "last_modified": 1750438258.0311594
+    },
+    "当今世界": {
+      "memory_items": [
+        "气候变化是当今世界面临的最大挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    "面临": {
+      "memory_items": [
+        "气候变化是当今世界面临的最大挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    "挑战": {
+      "memory_items": [
+        "气候变化是当今世界面临的最大挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    "健康": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750438258.0351703,
+      "last_modified": 1750438258.0351703
+    },
+    "饮食": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    "包括": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    "多种": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    "蔬菜水果": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    "中心": {
+      "memory_items": [
+        "中国有很多著名城市，北京是政治中心，上海是经济中心，而深圳是创新中心"
+      ],
+      "created_time": 1750438263.0451465,
+      "last_modified": 1750438263.0451465
+    },
+    "很多": {
+      "memory_items": [
+        "中国有很多著名城市，北京是政治中心，上海是经济中心，而深圳是创新中心"
+      ],
+      "created_time": 1750438263.0451465,
+      "last_modified": 1750438263.0451465
+    },
+    "著名": {
+      "memory_items": [
+        "中国有很多著名城市，北京是政治中心，上海是经济中心，而深圳是创新中心"
+      ],
+      "created_time": 1750438263.0451465,
+      "last_modified": 1750438263.0451465
+    }
+  },
+  "edges": [
+    {
+      "source": "中国",
+      "target": "文化遗产",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "中国",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "中国",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "中国",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "中国",
+      "target": "上海",
+      "strength": 1,
+      "created_time": 1750438258.0261474,
+      "last_modified": 1750438258.0261474
+    },
+    {
+      "source": "中国",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "中国",
+      "target": "城市",
+      "strength": 2,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "中国",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "中国",
+      "target": "中心",
+      "strength": 1,
+      "created_time": 1750438263.0451465,
+      "last_modified": 1750438263.0451465
+    },
+    {
+      "source": "中国",
+      "target": "很多",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "中国",
+      "target": "著名",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "文化遗产",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "文化遗产",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750438258.0246232,
+      "last_modified": 1750438258.0246232
+    },
+    {
+      "source": "文化遗产",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750438258.0251408,
+      "last_modified": 1750438258.0251408
+    },
+    {
+      "source": "北京",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750438258.0251408,
+      "last_modified": 1750438258.0251408
+    },
+    {
+      "source": "北京",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750438258.0251408,
+      "last_modified": 1750438258.0251408
+    },
+    {
+      "source": "首都",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750438258.0251408,
+      "last_modified": 1750438258.0251408
+    },
+    {
+      "source": "上海",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "上海",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "上海",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "最大",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "最大",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "最大",
+      "target": "气候变化",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "最大",
+      "target": "当今世界",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "最大",
+      "target": "面临",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "最大",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "城市",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438258.0266716,
+      "last_modified": 1750438258.0266716
+    },
+    {
+      "source": "城市",
+      "target": "中心",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "城市",
+      "target": "很多",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "城市",
+      "target": "著名",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "学习",
+      "target": "人工智能",
+      "strength": 1,
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    {
+      "source": "学习",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    {
+      "source": "学习",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    {
+      "source": "学习",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    {
+      "source": "人工智能",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750438258.028652,
+      "last_modified": 1750438258.028652
+    },
+    {
+      "source": "人工智能",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750438258.0291517,
+      "last_modified": 1750438258.0291517
+    },
+    {
+      "source": "人工智能",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750438258.0291517,
+      "last_modified": 1750438258.0291517
+    },
+    {
+      "source": "技术",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750438258.0291517,
+      "last_modified": 1750438258.0291517
+    },
+    {
+      "source": "技术",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750438258.0291517,
+      "last_modified": 1750438258.0291517
+    },
+    {
+      "source": "正在",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750438258.0291517,
+      "last_modified": 1750438258.0291517
+    },
+    {
+      "source": "气候变化",
+      "target": "当今世界",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "气候变化",
+      "target": "面临",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "气候变化",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "当今世界",
+      "target": "面临",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "当今世界",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "面临",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750438258.0316594,
+      "last_modified": 1750438258.0316594
+    },
+    {
+      "source": "健康",
+      "target": "饮食",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "健康",
+      "target": "包括",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "健康",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "健康",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "饮食",
+      "target": "包括",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "饮食",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "饮食",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "包括",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "包括",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "多种",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750438258.0357165,
+      "last_modified": 1750438258.0357165
+    },
+    {
+      "source": "中心",
+      "target": "很多",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "中心",
+      "target": "著名",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    },
+    {
+      "source": "很多",
+      "target": "著名",
+      "strength": 1,
+      "created_time": 1750438263.0456457,
+      "last_modified": 1750438263.0456457
+    }
+  ]
+}

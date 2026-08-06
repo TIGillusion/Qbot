@@ -1,0 +1,1329 @@
+{
+  "nodes": {
+    "中国": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产",
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "深圳是中国改革开放的窗口，是一座现代化的国际化城市 深圳毗邻香港，是中国重要的科技创新中心"
+      ],
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442498.368352
+    },
+    "文化遗产": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产 长城是中国古代伟大的防御工程，也是世界文化遗产"
+      ],
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442495.3132179
+    },
+    "北京": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442495.3132179
+    },
+    "首都": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442495.3132179
+    },
+    "有着": {
+      "memory_items": [
+        "北京是中国的首都，有着悠久的历史和丰富的文化遗产"
+      ],
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442495.3132179
+    },
+    "上海": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心 上海的外滩有许多历史建筑，是著名的旅游景点"
+      ],
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    "最大": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心"
+      ],
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    "城市": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心",
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442498.409395
+    },
+    "重要": {
+      "memory_items": [
+        "上海是中国最大的城市，是重要的经济、金融中心"
+      ],
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    "学习": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    "人工智能": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域",
+        "自然语言处理是人工智能的一个分支，专注于让计算机理解和处理人类语言"
+      ],
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3561404
+    },
+    "技术": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域",
+        "区块链技术是一种分布式账本技术，通过密码学保证交易的安全性和不可篡改性"
+      ],
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.340412
+    },
+    "正在": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    "迅速": {
+      "memory_items": [
+        "人工智能技术正在迅速发展，包括机器学习、深度学习等多个领域"
+      ],
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    "探索": {
+      "memory_items": [
+        "太空探索是人类探索宇宙奥秘的伟大冒险"
+      ],
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    "人类": {
+      "memory_items": [
+        "太空探索是人类探索宇宙奥秘的伟大冒险 火星是太阳系内最接近地球的行星之一，被认为是未来人类移民的潜在目标"
+      ],
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    "太空": {
+      "memory_items": [
+        "太空探索是人类探索宇宙奥秘的伟大冒险"
+      ],
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    "宇宙": {
+      "memory_items": [
+        "太空探索是人类探索宇宙奥秘的伟大冒险"
+      ],
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    "奥秘": {
+      "memory_items": [
+        "太空探索是人类探索宇宙奥秘的伟大冒险"
+      ],
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    "气候变化": {
+      "memory_items": [
+        "气候变化是当今世界面临的最严峻挑战之一，全球变暖导致极端天气事件增多 减少碳排放是应对气候变化的重要措施"
+      ],
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    "当今世界": {
+      "memory_items": [
+        "气候变化是当今世界面临的最严峻挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    "面临": {
+      "memory_items": [
+        "气候变化是当今世界面临的最严峻挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    "严峻": {
+      "memory_items": [
+        "气候变化是当今世界面临的最严峻挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    "挑战": {
+      "memory_items": [
+        "气候变化是当今世界面临的最严峻挑战之一，全球变暖导致极端天气事件增多"
+      ],
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    "健康": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750442495.3338597,
+      "last_modified": 1750442495.3338597
+    },
+    "饮食": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750442495.3338597,
+      "last_modified": 1750442495.3338597
+    },
+    "包括": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750442495.3338597,
+      "last_modified": 1750442495.3338597
+    },
+    "多种": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750442495.3338597,
+      "last_modified": 1750442495.3338597
+    },
+    "蔬菜水果": {
+      "memory_items": [
+        "健康饮食包括多种蔬菜水果、全谷物和优质蛋白质，减少加工食品和糖的摄入"
+      ],
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    "区块": {
+      "memory_items": [
+        "区块链技术是一种分布式账本技术，通过密码学保证交易的安全性和不可篡改性 比特币是第一个基于区块链的加密货币"
+      ],
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    "一种": {
+      "memory_items": [
+        "区块链技术是一种分布式账本技术，通过密码学保证交易的安全性和不可篡改性"
+      ],
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    "分布式": {
+      "memory_items": [
+        "区块链技术是一种分布式账本技术，通过密码学保证交易的安全性和不可篡改性"
+      ],
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    "账本": {
+      "memory_items": [
+        "区块链技术是一种分布式账本技术，通过密码学保证交易的安全性和不可篡改性"
+      ],
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    "量子": {
+      "memory_items": [
+        "量子计算利用量子力学原理，如叠加和纠缠，进行计算 量子计算机有潜力解决传统计算机难以处理的复杂问题"
+      ],
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    "计算": {
+      "memory_items": [
+        "量子计算利用量子力学原理，如叠加和纠缠，进行计算 量子计算机有潜力解决传统计算机难以处理的复杂问题"
+      ],
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    "计算机": {
+      "memory_items": [
+        "量子计算机有潜力解决传统计算机难以处理的复杂问题"
+      ],
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    "利用": {
+      "memory_items": [
+        "量子计算利用量子力学原理，如叠加和纠缠，进行计算",
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442498.409395
+    },
+    "量子力学": {
+      "memory_items": [
+        "量子计算利用量子力学原理，如叠加和纠缠，进行计算"
+      ],
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    "处理": {
+      "memory_items": [
+        "自然语言处理是人工智能的一个分支，专注于让计算机理解和处理人类语言"
+      ],
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    "自然语言": {
+      "memory_items": [
+        "自然语言处理是人工智能的一个分支，专注于让计算机理解和处理人类语言"
+      ],
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    "一个": {
+      "memory_items": [
+        "自然语言处理是人工智能的一个分支，专注于让计算机理解和处理人类语言"
+      ],
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    "分支": {
+      "memory_items": [
+        "自然语言处理是人工智能的一个分支，专注于让计算机理解和处理人类语言"
+      ],
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    "深圳": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，是一座现代化的国际化城市 深圳毗邻香港，是中国重要的科技创新中心"
+      ],
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    "改革开放": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，是一座现代化的国际化城市"
+      ],
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    "窗口": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，是一座现代化的国际化城市"
+      ],
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    "一座": {
+      "memory_items": [
+        "深圳是中国改革开放的窗口，是一座现代化的国际化城市"
+      ],
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    "杭州": {
+      "memory_items": [
+        "杭州是浙江省省会，以西湖风景名胜而闻名，也是电子商务巨头阿里巴巴的总部所在地"
+      ],
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    "浙江省": {
+      "memory_items": [
+        "杭州是浙江省省会，以西湖风景名胜而闻名，也是电子商务巨头阿里巴巴的总部所在地"
+      ],
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    "省会": {
+      "memory_items": [
+        "杭州是浙江省省会，以西湖风景名胜而闻名，也是电子商务巨头阿里巴巴的总部所在地",
+        "成都是四川省省会，以美食和熊猫而闻名于世，是中国西南地区重要的经济中心"
+      ],
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3913836
+    },
+    "西湖": {
+      "memory_items": [
+        "杭州是浙江省省会，以西湖风景名胜而闻名，也是电子商务巨头阿里巴巴的总部所在地"
+      ],
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    "风景名胜": {
+      "memory_items": [
+        "杭州是浙江省省会，以西湖风景名胜而闻名，也是电子商务巨头阿里巴巴的总部所在地"
+      ],
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    "成都": {
+      "memory_items": [
+        "成都是四川省省会，以美食和熊猫而闻名于世，是中国西南地区重要的经济中心"
+      ],
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    "四川省": {
+      "memory_items": [
+        "成都是四川省省会，以美食和熊猫而闻名于世，是中国西南地区重要的经济中心"
+      ],
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    "美食": {
+      "memory_items": [
+        "成都是四川省省会，以美食和熊猫而闻名于世，是中国西南地区重要的经济中心"
+      ],
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    "熊猫": {
+      "memory_items": [
+        "成都是四川省省会，以美食和熊猫而闻名于世，是中国西南地区重要的经济中心"
+      ],
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    "智能": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    "系统": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 人工智能在智能城市中扮演着重要角色，\n    例如智能交通系统可以利用AI分析交通流量，优化信号灯控制，减少拥堵；\n    智能电网系统可以预测用电需求，平衡供需关系，提高能源利用效率；\n    城市安全监控系统可以利用计算机视觉技..."
+      ],
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    "发展": {
+      "memory_items": [
+        "\n    智能城市是利用各种信息技术或创新概念，将城市的系统和服务连接起来，以提高资源利用效率，\n    优化城市管理和服务，以及改善市民生活质量的城市发展模式 \n    与此同时，随着气候变化的加剧，城市规划也需要考虑可持续发展因素，\n    包括绿色建筑、可再生能源利用、以及应对极端天气的韧性设计等"
+      ],
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    }
+  },
+  "edges": [
+    {
+      "source": "中国",
+      "target": "文化遗产",
+      "strength": 1,
+      "created_time": 1750442495.3132179,
+      "last_modified": 1750442495.3132179
+    },
+    {
+      "source": "中国",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "中国",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "中国",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "中国",
+      "target": "上海",
+      "strength": 1,
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    {
+      "source": "中国",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "中国",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "中国",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "中国",
+      "target": "深圳",
+      "strength": 1,
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    {
+      "source": "中国",
+      "target": "改革开放",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "中国",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "中国",
+      "target": "一座",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "文化遗产",
+      "target": "北京",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "文化遗产",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "文化遗产",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "北京",
+      "target": "首都",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "北京",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "首都",
+      "target": "有着",
+      "strength": 1,
+      "created_time": 1750442495.3137164,
+      "last_modified": 1750442495.3137164
+    },
+    {
+      "source": "上海",
+      "target": "最大",
+      "strength": 1,
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    {
+      "source": "上海",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750442495.3167205,
+      "last_modified": 1750442495.3167205
+    },
+    {
+      "source": "上海",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "最大",
+      "target": "城市",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "最大",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "城市",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750442495.3172197,
+      "last_modified": 1750442495.3172197
+    },
+    {
+      "source": "城市",
+      "target": "智能",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "城市",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "城市",
+      "target": "系统",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "城市",
+      "target": "发展",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "学习",
+      "target": "人工智能",
+      "strength": 1,
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    {
+      "source": "学习",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    {
+      "source": "学习",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    {
+      "source": "学习",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442495.3197348,
+      "last_modified": 1750442495.3197348
+    },
+    {
+      "source": "人工智能",
+      "target": "技术",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "人工智能",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "人工智能",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "人工智能",
+      "target": "处理",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "人工智能",
+      "target": "自然语言",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "人工智能",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "人工智能",
+      "target": "分支",
+      "strength": 1,
+      "created_time": 1750442495.3566236,
+      "last_modified": 1750442495.3566236
+    },
+    {
+      "source": "技术",
+      "target": "正在",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "技术",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "技术",
+      "target": "区块",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "技术",
+      "target": "一种",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "技术",
+      "target": "分布式",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "技术",
+      "target": "账本",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "正在",
+      "target": "迅速",
+      "strength": 1,
+      "created_time": 1750442495.320235,
+      "last_modified": 1750442495.320235
+    },
+    {
+      "source": "探索",
+      "target": "人类",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "探索",
+      "target": "太空",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "探索",
+      "target": "宇宙",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "探索",
+      "target": "奥秘",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "人类",
+      "target": "太空",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "人类",
+      "target": "宇宙",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "人类",
+      "target": "奥秘",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "太空",
+      "target": "宇宙",
+      "strength": 1,
+      "created_time": 1750442495.323773,
+      "last_modified": 1750442495.323773
+    },
+    {
+      "source": "太空",
+      "target": "奥秘",
+      "strength": 1,
+      "created_time": 1750442495.3242607,
+      "last_modified": 1750442495.3242607
+    },
+    {
+      "source": "宇宙",
+      "target": "奥秘",
+      "strength": 1,
+      "created_time": 1750442495.3242607,
+      "last_modified": 1750442495.3242607
+    },
+    {
+      "source": "气候变化",
+      "target": "当今世界",
+      "strength": 1,
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    {
+      "source": "气候变化",
+      "target": "面临",
+      "strength": 1,
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    {
+      "source": "气候变化",
+      "target": "严峻",
+      "strength": 1,
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    {
+      "source": "气候变化",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    {
+      "source": "当今世界",
+      "target": "面临",
+      "strength": 1,
+      "created_time": 1750442495.3282344,
+      "last_modified": 1750442495.3282344
+    },
+    {
+      "source": "当今世界",
+      "target": "严峻",
+      "strength": 1,
+      "created_time": 1750442495.3287628,
+      "last_modified": 1750442495.3287628
+    },
+    {
+      "source": "当今世界",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750442495.3287628,
+      "last_modified": 1750442495.3287628
+    },
+    {
+      "source": "面临",
+      "target": "严峻",
+      "strength": 1,
+      "created_time": 1750442495.3287628,
+      "last_modified": 1750442495.3287628
+    },
+    {
+      "source": "面临",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750442495.3287628,
+      "last_modified": 1750442495.3287628
+    },
+    {
+      "source": "严峻",
+      "target": "挑战",
+      "strength": 1,
+      "created_time": 1750442495.3287628,
+      "last_modified": 1750442495.3287628
+    },
+    {
+      "source": "健康",
+      "target": "饮食",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "健康",
+      "target": "包括",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "健康",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "健康",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "饮食",
+      "target": "包括",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "饮食",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "饮食",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "包括",
+      "target": "多种",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "包括",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "多种",
+      "target": "蔬菜水果",
+      "strength": 1,
+      "created_time": 1750442495.334369,
+      "last_modified": 1750442495.334369
+    },
+    {
+      "source": "区块",
+      "target": "一种",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "区块",
+      "target": "分布式",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "区块",
+      "target": "账本",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "一种",
+      "target": "分布式",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "一种",
+      "target": "账本",
+      "strength": 1,
+      "created_time": 1750442495.340412,
+      "last_modified": 1750442495.340412
+    },
+    {
+      "source": "分布式",
+      "target": "账本",
+      "strength": 1,
+      "created_time": 1750442495.3414416,
+      "last_modified": 1750442495.3414416
+    },
+    {
+      "source": "量子",
+      "target": "计算",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "量子",
+      "target": "计算机",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "量子",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "量子",
+      "target": "量子力学",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "计算",
+      "target": "计算机",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "计算",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "计算",
+      "target": "量子力学",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "计算机",
+      "target": "利用",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "计算机",
+      "target": "量子力学",
+      "strength": 1,
+      "created_time": 1750442495.3479612,
+      "last_modified": 1750442495.3479612
+    },
+    {
+      "source": "利用",
+      "target": "量子力学",
+      "strength": 1,
+      "created_time": 1750442495.3484874,
+      "last_modified": 1750442495.3484874
+    },
+    {
+      "source": "利用",
+      "target": "智能",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "利用",
+      "target": "系统",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "利用",
+      "target": "发展",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "处理",
+      "target": "自然语言",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "处理",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "处理",
+      "target": "分支",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "自然语言",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "自然语言",
+      "target": "分支",
+      "strength": 1,
+      "created_time": 1750442495.3561404,
+      "last_modified": 1750442495.3561404
+    },
+    {
+      "source": "一个",
+      "target": "分支",
+      "strength": 1,
+      "created_time": 1750442495.3566236,
+      "last_modified": 1750442495.3566236
+    },
+    {
+      "source": "深圳",
+      "target": "改革开放",
+      "strength": 1,
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    {
+      "source": "深圳",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    {
+      "source": "深圳",
+      "target": "一座",
+      "strength": 1,
+      "created_time": 1750442498.368352,
+      "last_modified": 1750442498.368352
+    },
+    {
+      "source": "改革开放",
+      "target": "窗口",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "改革开放",
+      "target": "一座",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "窗口",
+      "target": "一座",
+      "strength": 1,
+      "created_time": 1750442498.3688505,
+      "last_modified": 1750442498.3688505
+    },
+    {
+      "source": "杭州",
+      "target": "浙江省",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "杭州",
+      "target": "省会",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "杭州",
+      "target": "西湖",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "杭州",
+      "target": "风景名胜",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "浙江省",
+      "target": "省会",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "浙江省",
+      "target": "西湖",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "浙江省",
+      "target": "风景名胜",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "省会",
+      "target": "西湖",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "省会",
+      "target": "风景名胜",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "省会",
+      "target": "成都",
+      "strength": 1,
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    {
+      "source": "省会",
+      "target": "四川省",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "省会",
+      "target": "美食",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "省会",
+      "target": "熊猫",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "西湖",
+      "target": "风景名胜",
+      "strength": 1,
+      "created_time": 1750442498.3788505,
+      "last_modified": 1750442498.3788505
+    },
+    {
+      "source": "成都",
+      "target": "四川省",
+      "strength": 1,
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    {
+      "source": "成都",
+      "target": "美食",
+      "strength": 1,
+      "created_time": 1750442498.3913836,
+      "last_modified": 1750442498.3913836
+    },
+    {
+      "source": "成都",
+      "target": "熊猫",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "四川省",
+      "target": "美食",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "四川省",
+      "target": "熊猫",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "美食",
+      "target": "熊猫",
+      "strength": 1,
+      "created_time": 1750442498.3918836,
+      "last_modified": 1750442498.3918836
+    },
+    {
+      "source": "智能",
+      "target": "系统",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "智能",
+      "target": "发展",
+      "strength": 1,
+      "created_time": 1750442498.409395,
+      "last_modified": 1750442498.409395
+    },
+    {
+      "source": "系统",
+      "target": "发展",
+      "strength": 1,
+      "created_time": 1750442498.4098997,
+      "last_modified": 1750442498.4098997
+    }
+  ]
+}

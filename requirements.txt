@@ -1,7 +1,10 @@
 requests
-flask
-flask_cors
-waitress
+networkx
+numpy
 jieba
+Pillow
 beautifulsoup4
 zhipuai
+flask
+flask-cors
+waitress

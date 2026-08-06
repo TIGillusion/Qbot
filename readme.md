@@ -1,199 +1,434 @@
-﻿# 11.12更新：
-1.加入更多管理员指令：
+# Qbot1.5 — AI 聊天机器人完整使用教程
 
-    触发词#addid 群友id：将群友添加为当前群qbot管理员，有权限使用几乎所有指令
+## 项目简介
 
-    触发词#forcememory 记忆内容：强制AI添加本群中期记忆
+Qbot1.5 是一个基于大语言模型的 AI 聊天机器人，由**幻日**编写。
+它通过 LLOneBot 桥接 QQ，支持群聊/私聊自动回复、AI 语音合成、AI 绘画、
+海龟汤（情境推理游戏）等丰富功能，并具备记忆系统与多模型支持。
 
-    触发词#forceallmemory 记忆内容：强制AI在所有群添加中期记忆（只有set里面配置的id可使用此指令）
+- **开源协议**：MIT
+- **联系方式**：QQ 2141073363
+- **适用平台**：Windows（内置 Python 运行时）
 
-2.简化配置难度，将更多配置整合在set.json中（说话人，歌者以及是否启用相应能力配置等）
+> **极简使用**：本项目设计为开箱即用。你只需要在 `set.json` 中修改人设提示词，然后双击 `双击启动Qbot1.5.bat` 就可以让 AI 在 QQ 上陪你聊天了。不需要安装 Python，不需要配置复杂环境，项目自带运行时。
 
-3.兼容某些AI接口流式传输时一个流传输多个token的情况，修复相关bug
+### 极简三步走
 
-4.修改AI自动切换设定及情感的相关参数为更合适的值
+1. **改人设**：编辑 `set.json`，修改 `system_prompts` 中的角色设定为你想要的 AI 人设；项目已内置基础AI模型，可以直接使用
+2. **启动**：双击 `双击启动Qbot1.5.bat`
+3. **聊天**：在 QQ 群或私聊中 @机器人 或发送触发词，AI 自动回复
 
-5.修复已知bug
+> 更多高级功能（语音、绘画、翻唱、海龟汤）需额外配置，但基础聊天开箱即用。
 
-# 10.28更新：
-1.加入管理员功能和指令：在set.json里面填写管理员qq号列表即可，指令包括：“触发词#mood 情绪”（设置本群AI的情绪，相关情绪在set里面的系统人设里面修改或添加），“触发词#random 整数”（修改本群AI无触发词的触发概率，整数小于等于0关闭当前群AI）
-
-2.加入多情绪系统提示词功能，可由AI自行切换或管理员手动切换单群的AI情绪模式，即“触发词#mood 情绪”（设置本群AI的情绪，相关情绪在set里面的系统人设里面修改或添加）指令
-
-3.加入单群AI无触发词触发概率修改指令，可修改当前群的触发概率，若设置为0或负值，即可关闭AI在本群的所有能力，后续再设置为正值恢复工作，即“触发词#random 整数”（修改本群AI无触发词的触发概率，整数小于等于0关闭当前群AI）
-
-4.略微增加记忆容量和上下文轮数，限制长期记忆总量
-
-5.修复私聊切换情绪bug
-
-6.将私聊下的歌唱功能改为从群聊翻唱产生的音频中检索歌唱文件，所以群里唱过的歌就可以在私聊中唱了
-
-# 10.25更新：
-1.兼容了智谱清言的绘画模型（可以白嫖）
-
-2.加入模型图兜底机制，将模型团首个模型作为兜底模型，用于弥补模型团中若有模型有问题导致偶尔AI不回复的问题，因此首个模型应以稳定为主
-
-3.新功能歌曲AI翻唱：引入一键AI翻唱方案，实现AI自动抓取网易云音乐并预处理后采用svc翻唱（同样由AI自动确定触发时机，只适用于群聊，可自行修改代码扩展至私聊）新功能需要下载工具整合包链接：[https://pan.quark.cn/s/ecae6ee123b4](https://pan.quark.cn/s/ecae6ee123b4)
-（下载好后按照配置或训练svc的方法就行配置或训练，然后启动文件夹下的启动服务端.bat，最后在qbot源代码里面修改歌唱者为svc对应歌唱者名就可以了，注意训练好的模型放在翻唱整合包的logs文件夹下，目录结构参考logs下的illue）【如果报错缺少"wcwidth"库，就进入翻唱整合包里面的workenv下打开cmd输入 python -m pip install wcwidth即可解决】
-
-
-# 往次更新：
-1.采用模型团方案，可以填写多个模型，根据权重调用，建议选取一个高性能模型和两个便宜模型，既可以在保证能力的同时节省费用，还可以避免大模型回复模板化的问题
-
-2.允许AI自己在适当的时候发送data/smusic文件夹内的歌曲【本功能已在10.25次更新中被AI翻唱功能取代】
-
-3.允许多个触发词（在set.json里配置）
-
-4.允许多个屏蔽名称（在set.json里配置）
-
-5.增加更多set.json可配置内容
-
-6.增加由AI自己驱动总结的中期记忆能力（效果明显）[写入记忆]
-
-7.允许AI拒绝回答不相干问题[pass]
-
-8.将file.py集成在Qbot中，不需要再手动启动
-
-9.AI自己根据需要和对应情绪发送表情包图片
-
-10.添加char.txt，用于主人手动填写让ai记住的角色设定或者特别警示，由于在遇到相应的对话时，使用正则表达式匹配特定剧情或警示。如：剧情太长，塞到记忆里容易被删，但塞到这里面就不会被删，而且还会选择性匹配。
-
-
-# 前言：
-    感谢大家使用本开源项目，本项目旨在快速帮助大家构建一个自己的QQ机器人
-
-    本项目部署的qq机器人拥有以下能力：
-        1.智能断句：利用AI能力为输出打上断句标签，合理断句，既可以保证长内容回复的完整性，
-            也可以避免AI回复长段内容
-        2.智能意图判断：利用AI能力给输出打上标签，实现不同回复内容经过特殊函数处理，例如
-            文本转语音，AI绘图等
-        3.拥有语音回复，AI绘画回复等常见的回复形式，让回复更加多样化
-        4.由AI自己选择或决定何时播放播放本地歌曲
-        5.由AI自己决定发送表情包的时机
-
-    本项目站在巨人的肩膀上，使用了其他的一些开源项目，大家可以给对应项目点一个star哦~
-# 准备：
-
-1. 首先，下载并安装NTQQ（一种新架构的QQ电脑端）：
-
-官网：
-   [NTQQ下载链接](https://im.qq.com/pcqq/index.shtml)
-
-旧版：
-   [NTQQ下载链接](https://bbs.pcbeta.com/viewthread-1969561-1-1.html)
----
-- 旧版插件教程
-
-2.1 安装LLonebot的NTQQ插件：
-   [NTQQ插件链接](https://github.com/LLOneBot/LLOneBot/releases)
-   安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
-
-   如果是Windows系统，注意下载4.9.9版本的llob_install.exe：
-    ![NTQQ插件安装图](source/1.png)
-
-3.1 配置LLonebot插件：
-
-   安装好插件后，打开ntqq进入插件设置
-
-   填写各种信息（千万不要忘记填写端口号）后，**注意保存！！！**
-
-    ![NTQQ插件安装图](source/2.png)
----
-- 新版独立程序教程
-
-2.2 LLOneBot独立程序：
-   [LLOneBot程序链接](https://github.com/LLOneBot/LLOneBot/releases)
-   安装方法：[点击查看](https://llonebot.github.io/zh-CN/guide/getting-started)
-
-   下载最新版zip文件，如果需要语音合成，则下载带有ffmpeg的版本。定期注意更新。
-
-3.2 配置LLonebot程序：
-   安装好程序后，先启动插件目录中的主程序（LLOneBot.exe）
-
-   插件会自动启动新版QQ，正常登录后，即可生成配置文件
-
-   进入插件目录的.../data/config_<你的QQ号>.json配置文件，开始填写设置，**注意检查端口号是否冲突，并关闭正向websocket**
-
-   填写各种信息（千万不要忘记填写端口号）后，**注意保存！！！**
-    ![NTQQ插件安装图](source/5.png)
 ---
 
-# 开始：
+## 目录
 
-1. 配置：
-   进入此文件
-   
-    ![NTQQ插件安装图](source/3.png)
-    ![NTQQ插件安装图](source/4.png)
+1. [环境准备](#1-环境准备)
+2. [项目结构](#2-项目结构)
+3. [快速启动](#3-快速启动)
+4. [配置说明](#4-配置说明)
+5. [功能模块](#5-功能模块)
+6. [自定义角色](#6-自定义角色)
+7. [常见问题](#7-常见问题)
+8. [开发者指南](#8-开发者指南)
 
-   解释：
-   - `triggers`后面填入触发词列表，可设置多个触发词，如果用户发送的消息里包含这个词，会触发回复。
-   - `system_prompt`后面填的就是AI人设，建议参考默认人设的格式，效果会更好。
-   - `chat_models`后面填模型团列表信息，其中每个模型信息需要填写请求api，模型名称，请求key；切忌自己编造，需查看模型官方开发者文档，按照官方模型名称严格填写，此项将影响请求模型对象。
-   - 其他的配置项大家应该可以看懂是什么，画图模型配置类比文本模型。
+---
 
-2. 修改：
-   - 进入`Qbot.py`源代码编辑页面。
+## 1. 环境准备
 
-3. 启动：  
-   打开命令行（win+r，输入cmd并回车），先cd到Qbot-main根目录。
-   
-   可选，推荐大佬/开发者：
-   cmd：
-   使用venv来避免污染全局环境  
-   创建venv：
-   ```cmd
-   python -m venv .venv
-   ```
-   激活venv：
-   ```cmd
-   .venv/Scripts/activate.bat
-   ```
-   PowerShell：
-   激活venv：
-   ```PowerShell
-   .venv/Scripts/activate.ps1
-   ```
-   （如果PowerShell报不允许执行）修改该PowerShell实例脚本执行策略：  
-   ```PowerShell
-   Set-ExecutionPolicy RemoteSigned -Scope Process
-   ```
-   必须：安装必要的库：  
-   ```cmd
-   python -m pip install -r requirements.txt
-   ```
-   保持NTQQ的运行状态，然后使用`python Qbot.py`完成启动。  
-   （如果使用venv请先激活venv）  
-   （遇到问题可以联系开发者幻日QQ：2141073363，可选venv遇到问题可以联系观赏鱼QQ：2082895869）
+### 1.1 Python 环境
 
-# 补充：
-将音乐放在data/smusic文件夹下，AI适当的时候会自己从中选取合适歌曲发送（音乐不适宜太多（<20个），否则AI可能不按要求选取歌曲）【本功能已在10.25次更新中被AI翻唱功能取代】
-表情包放在data/image/情绪对应文件夹下，目前只有happy,angry,sad,bored,fear五个情绪，可以自行向文件夹中添加表情包，某些格式文件可能不支持
+项目自带 `py/` 目录（含 `python.exe` 及依赖包），**无需额外安装 Python**。
+如需自行安装，请使用 **Python 3.10+**。
 
-由于我的服务器可能无法支撑大量的语音合成请求，所以大家需要自己部署本地语音合成。本地语音合成可以使用AI桌宠的语音合成服务（即箱庭GPT-Sovits整合包，使用花火模型，双击starttts.bat即可），二者接口格式一样。
+### 1.2 LLOneBot（QQ 桥接）
 
-[箱庭GPT-Sovits整合包项目](https://github.com/X-T-E-R/GPT-SoVITS-Inference)
-[箱庭GPT-Sovits整合包文档](https://www.yuque.com/xter/zibxlp/kkicvpiogcou5lgp)
+Qbot 依赖 LLOneBot 对接 QQ 消息。
 
-部署好之后，只需要启动其中的后端并在根目录按照格式建立空文件夹（[Qbot根目录]\data\voice）即可，本项目会自动使用本地语音合成进行语音输出。
+1. 打开 `tools/llonebot/llbot.exe`
+2. 按提示登录你的 QQ 机器人账号
+3. LLOneBot 会自动在 `tools/llonebot/bin/llbot/data/` 生成配置文件
+4. Qbot 启动时会自动写入 LLOneBot 的对接配置
 
-**如果启用了绘画或者语音合成等需要发送文件到QQ的服务时，不需要同时启动另一个名为`file.py`的程序。此程序已经内置于Qbot中**
-**注意：需要等待`Qbot.py`加载完记忆再启动，否则有概率导致`Qbot.py`无法收发信息！！！**
+### 1.3 大模型 API
 
-# 命令说明:
-1. `#reset`：清空当前聊天（群聊/私聊）短期记忆。
-2. `#clear`：清空当前聊天（群聊/私聊）的长期记忆。
-3. `#erase`：清空全部聊天（群聊/私聊）的长期记忆。
-4. `#random -x`：将消息触发概率设置为1/x，x≤0即关机。
-5. `#addid -x`：将QQ号x设置为当前聊天管理员。
+Qbot 支持多种 LLM 后端，需在 `set.json` 中配置：
 
-# 常见问题：
-1. 程序闪退：很可能是因为`set.json`的编码格式不对，推测因为经常使用windows记事本编辑导致编码格式自动转换为UTF-8 with BOM，此处建议安装VScode，然后用VScode打开json，在右下角点击`UTF-8 with BOM`，在顶部的选项栏中选择`保存为编码格式`，点击`UTF-8`即可。
-2. 无法接收发送消息且无报错：建议检查QQ插件设置项填写是否完整，尤其是请求地址。
-3. 语音合成失败：玄学问题，建议关了重开。
-4. 语音合成提示无需重复启动（桌宠用户常见问题）：建议把所有Python后台都删掉再试试（推荐）；或者直接修改`starttts.bat`，将其后台进程检测判断逻辑删除即可（不建议）。
-5. “由于远程主机积极拒绝，无法连接”：可能是请求次数过多，超过了每分钟或每天的请求次数限制，等一等就好。
-6. `break limitless turn`：正常行为。AI之间防刷屏的代码。
+| 功能 | 支持的模型/API | 配置字段 |
+|------|----------------|-----------|
+| 聊天 | GLM-4-Flash / Qwen / 其他 OpenAI 兼容 API | `chat_models` |
+| 搜索 | GLM-4-Flash（网络搜索工具） | `glm_search()` |
+| 绘画 | CogView / StabilityAI / ModelScope / SiliconFlow | `draw_url`, `draw_key`, `draw_model` |
+| 多模态视觉 | GLM-4V-Flash | `see_url`, `see_key`, `see_model` |
 
-# 请求：
-***觉得本项目有用的话就点一个star吧~***
+> **注意**：请在 `set.json` 中填入你自己的 API Key。
+
+---
+
+## 2. 项目结构
+
+```
+qbot1.5/
+├── Qbot.py                  # 主程序入口
+├── set.json                   # 核心配置文件
+├── soups.json                 # 海龟汤（情境推理）题库
+├── 双击启动Qbot1.5.bat       # 一键启动脚本
+├── py/                          # 内置 Python 运行时
+├── module/                        # 核心模块
+│   ├── sfunc.py             # 消息过滤、记忆摘要工具
+│   ├── receive.py             # 消息接收（Socket 监听）
+│   ├── soup_ai.py           # 海龟汤游戏模块
+│   ├── key_memory.py        # 关键词记忆系统
+│   ├── memory_interface.py   # 记忆接口
+│   ├── memory_system.py      # 记忆系统核心
+│   ├── indextts.py         # IndexTTS 语音合成
+│   ├── mem_i.py           # 记忆接口 v2
+│   └── write_llbot_config.py  # LLOneBot 配置写入
+├── data/                          # 数据目录
+│   ├── llbot_config/             # LLOneBot 配置
+│   ├── msface/                   # QQ 表情包目录
+│   └── voice/                    # 语音模型目录
+├── memory/                        # 记忆存储
+│   ├── AI幻蓝/
+│   │   ├── auto_memory.json     # 自动记忆
+│   │   └── user_memory.json     # 用户记忆
+│   └── mem_i/
+│       └── memory.json          # 索引记忆
+├── user/                          # 用户/群聊记忆数据
+│   ├── furina/                    # 角色专属目录
+│   ├── g<群号>/                   # 群聊记忆
+│   │   ├── memory.txt
+│   │   └── memory.json
+│   └── ...
+├── tools/                         # 工具目录
+│   └── llonebot/                  # LLOneBot QQ 桥接工具
+│       ├── llbot.exe
+│       └── 使用说明.txt
+└── module/simple_memory/             # 简易记忆系统（含独立 README）
+```
+
+---
+
+## 3. 快速启动
+
+### 3.1 一键启动
+
+双击 **`双击启动Qbot1.5.bat`** 即可运行。
+
+### 3.2 手动启动
+
+```bash
+.\py\python.exe Qbot.py
+```
+
+### 3.3 启动流程
+
+1. Qbot 读取 `set.json` 中的配置（角色、端口、模型等）
+2. 自动写入 LLOneBot 的对接配置
+3. 启动 Socket 监听，等待 LLOneBot 推送消息
+4. 收到消息后，触发 AI 回复流程：
+   - 关键词记忆匹配 → 调用 LLM 生成回复 → 发送回复消息
+   - 可选：语音合成、AI 绘画、海龟汤游戏等
+
+---
+
+## 4. 配置说明
+
+### 4.1 `set.json` 核心配置
+
+```json
+{
+  "role": {
+    "furina": {
+      "AI_name": "芙宁娜",
+      "qq_id": "1963196536",
+      "triggers": ["芙芙", "芙宁娜"],
+      "system_prompts": {
+        "default": "...",
+        "unhappy": "...",
+        "happy": "...",
+        "angry": "...",
+        "gentle": "..."
+      },
+      "send_port": 3050,
+      "listen_port": 3051,
+      "debug": false,
+      "random_trigger": 30,
+      "max_turn_group": 14,
+      "max_turn_private": 10,
+      "root_ids": [2141073363, 1610410288],
+      "song": true,
+      "singer": "furina",
+      "is_voice": true,
+      "speaker": "fufuvoice",
+      "send_debug": false,
+      "is_ban_set": true,
+      "think": false
+    }
+  },
+  "ban_names": ["幻蓝", "芙芙", "AI", ...],
+  "think_keywords": [["```thinking", "```"], ["<think>", "</think>"]],
+  "tts_version": 2,
+  "tts_url": "<你的TTS服务地址>",
+  "draw_url": "...",
+  "draw_key": "在这里配置密钥",
+  "draw_model": "...",
+  "see_url": "...",
+  "see_key": "...",
+  "see_model": "...",
+  "chat_models": [
+    {
+      "model_api": "...",
+      "model_key": "...",
+      "model_name": "...",
+      "weight": 10
+    }
+  ]
+}
+```
+
+### 4.2 配置项详解
+
+| 配置项 | 说明 |
+|---------|------|
+| `role` | 角色定义，支持多角色（如 `furina`） |
+| `AI_name` | AI 在对话中使用的名字 |
+| `qq_id` | 机器人登录的 QQ 号 |
+| `triggers` | 触发词，消息包含这些词时 AI 会回复 |
+| `system_prompts` | 不同情感状态的系统提示词（default/unhappy/happy/angry/gentle） |
+| `send_port` | 发送消息的端口（对接 LLOneBot） |
+| `listen_port` | 监听 QQ 消息的 Socket 端口 |
+| `debug` | 是否开启调试模式 |
+| `random_trigger` | 无触发词时自动回复的概率分母（1/n） |
+| `max_turn_group` | 群聊历史对话轮数上限 |
+| `max_turn_private` | 私聊历史对话轮数上限 |
+| `root_ids` | 管理员 QQ 号列表 |
+| `song` | 是否启用 AI 翻唱 |
+| `singer` | 翻唱歌手的模型名称 |
+| `is_voice` | 是否启用语音合成 |
+| `speaker` | 语音合成的说话人名称 |
+| `send_debug` | 是否发送调试信息到 QQ |
+| `is_ban_set` | 是否启用禁言功能 |
+| `think` | 是否启用思考模型 |
+| `ban_names` | 屏蔽的用户名/关键词（防止 AI 互刷） |
+| `think_keywords` | 思考模型的标记关键词对 |
+| `tts_version` | 语音合成版本（1=GPTSoVITS, 2=IndexTTS v2） |
+| `tts_url` | 语音合成服务地址 |
+| `chat_models` | 聊天模型列表（支持多模型加权轮询） |
+
+### 4.3 `soups.json` — 海龟汤题库
+
+```json
+{
+  "soups": [
+    {
+      "id": "soup-004",
+      "标题": "墓碑上的名字",
+      "汤面": "...",
+      "汤底": "...",
+      "任务目标": "...",
+      "提问次数": 20,
+      "允许提示": true,
+      "提示列表": ["提示1", "提示2"]
+    }
+  ]
+}
+```
+
+---
+
+## 5. 功能模块
+
+### 5.1 智能聊天
+
+- 支持群聊和私聊自动回复
+- 自动根据上下文和情感状态切换系统提示词
+- 多模型加权选择（`chat_models` 权重配置）
+- 短期记忆：最近 N 轮对话上下文
+- 长期记忆：关键词匹配 + 文件记忆检索
+
+### 5.2 记忆系统
+
+Qbot 具备三层记忆架构：
+
+1. **关键词记忆（KeyMemory）**：`auto_memory.json` / `user_memory.json`
+   - 自动提取并存储对话中的关键信息
+   - 命中时增加权重，未命中时递减
+2. **文件记忆（get_memory）**：从 `user/<角色>/memory.txt` 中按关键词检索相关文段
+3. **简易记忆（SimpleMemory）**：基于图的语义记忆系统，支持增删查遗
+
+### 5.3 AI 语音合成（TTS）
+
+- 支持 GPT-SoVITS（v1）和 IndexTTS v2
+- 配置 `tts_url` 指向本地语音服务
+- 在对话中 AI 自动判断何时输出语音
+
+### 5.4 AI 绘画
+
+- 支持 CogView / StabilityAI / ModelScope / SiliconFlow
+- 群聊/私聊均可触发
+- 图片保存到 `data/image/<角色>/` 并通过 QQ 发送
+
+### 5.5 AI 翻唱
+
+- 对接本地翻唱服务（需提前配置好模型）
+- 启用 `song: true` 后，AI 在合适时机自动唱歌
+
+### 5.6 海龟汤（情境推理游戏）
+
+- 基于 `soups.json` 题库
+- AI 作为主持人，玩家通过是/否提问推理真相
+- 支持提示、提问次数限制、最终猜测验证
+- 需要在module/soup_ai.py文件开头独立配置AI模型
+
+### 5.7 网络搜索
+
+- 三级搜索策略：openinterpreter API → GLM-4-Flash → Bing 搜索
+- 自动提取搜索结果摘要和详细内容
+
+### 5.8 群管理
+
+- **禁言**：`is_ban_set: true` 时 AI 可对骚扰用户执行禁言
+- **Ban 名单**：`ban_names` 屏蔽指定用户或 AI 互刷
+- **管理员**：`root_ids` 中的 QQ 号拥有管理权限
+
+---
+
+## 6. 自定义角色
+
+### 6.1 添加新角色
+
+在 `set.json` 的 `role` 对象中添加新角色配置：
+
+```json
+"role": {
+  "furina": { ... },
+  "your_new_role": {
+    "AI_name": "你的AI名字",
+    "qq_id": "你的机器人QQ号",
+    "triggers": ["触发词1", "触发词2"],
+    "system_prompts": {
+      "default": "你的人设提示词..."
+    },
+    "send_port": 3050,
+    "listen_port": 3051,
+    "random_trigger": 30,
+    "max_turn_group": 14,
+    "max_turn_private": 10,
+    "root_ids": [管理员QQ号],
+    "song": false,
+    "is_voice": false,
+    "think": false
+  }
+}
+```
+
+### 6.2 人设提示词编写建议
+
+```
+[Character setting]
+你是<角色名>，描述性格、背景、说话风格...
+
+[example]
+场景1回复
+场景2回复
+
+[impression]
+对特定人的印象和态度
+
+[mood]default / happy / unhappy / angry / gentle
+```
+
+### 6.3 创建用户数据目录
+
+```bash
+# 为每个角色/群创建独立的记忆存储
+mkdir user/<角色名>/all/I_memory.txt
+mkdir user/g<群号>/
+```
+
+---
+
+## 7. 常见问题
+
+### Q1: 启动后没有反应？
+- 确认 `tools/llonebot/llbot.exe` 已启动并登录了 QQ
+- 检查 `send_port` 和 `listen_port` 是否与 LLOneBot 配置一致
+- 确认端口未被占用
+
+### Q2: AI 不回复消息？
+- 检查消息是否包含 `triggers` 中的触发词
+- 确认 `random_trigger` 概率触发是否命中
+- 检查 `chat_models` 中的 API 是否正常
+
+### Q3: 语音/绘画不工作？
+- 确认本地 TTS 服务已启动，`tts_url` 地址正确
+- 确认绘画 API Key 已配置
+
+### Q4: 记忆系统不生效？
+- 确认 `memory/` 目录下的 JSON 文件格式正确
+- 确认 `user/` 目录下有对应的角色文件夹
+
+### Q5: 想更换大模型？
+- 在 `set.json` 的 `chat_models` 中添加/修改模型配置
+- 支持任意 OpenAI 兼容 API 端点的模型
+
+### Q6: 如何添加海龟汤题目？
+- 编辑 `soups.json`，按照现有格式添加新的汤面/汤底
+
+---
+
+## 8. 开发者指南
+
+### 8.1 项目架构
+
+```
+LLOneBot → Socket → Qbot.py
+                              ├── 消息解析 (request_to_json)
+                              ├── 关键词匹配 (KeyMemory)
+                              ├── 记忆检索 (get_memory)
+                              ├── LLM 调用 (多模型加权)
+                              ├── 回复生成
+                              └── 消息发送 (send_msg / send_image)
+```
+
+### 8.2 二次开发注意事项
+
+- 修改代码后请在文件头部留下你的联系方式
+- 遵守 MIT 开源协议
+- 不可用于不合法不合规的行为
+
+### 8.3 核心模块说明
+
+| 模块 | 功能 |
+|------|------|
+| `Qbot.py` | 主程序：消息收发、搜索、绘画、TTS 调度 |
+| `sfunc.py` | 消息过滤、系统提示词增强、对话摘要 |
+| `receive.py` | Socket 消息接收 |
+| `soup_ai.py` | 海龟汤主持人逻辑 |
+| `key_memory.py` | 关键词记忆（自动/用户记忆） |
+| `indextts.py` | IndexTTS 语音合成请求 |
+| `write_llbot_config.py` | 自动生成 LLOneBot 配置 |
+| `memory_system.py` | 图结构语义记忆 |
+
+### 8.4 添加自定义功能
+
+```python
+# 在 Qbot.py 中添加新功能
+def my_custom_feature(query):
+    # 你的逻辑
+    return result
+
+# 在消息处理循环中调用
+```
+
+---
+
+## 联系方式
+
+- **作者**：幻日
+- **QQ**：2141073363
+- **开源地址**：MIT 协议
+
+> 本项目仅供交流学习，不可进行不合法不合规的行为。

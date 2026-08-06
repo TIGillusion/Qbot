@@ -1,0 +1,634 @@
+{
+  "nodes": {
+    "Python": {
+      "memory_items": [
+        "Python是一种高级编程语言，以其简洁、易读的语法著称 Python支持多种编程范式，包括面向对象、命令式、函数式和过程式编程"
+      ],
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    "编程": {
+      "memory_items": [
+        "Python是一种高级编程语言，以其简洁、易读的语法著称 Python支持多种编程范式，包括面向对象、命令式、函数式和过程式编程"
+      ],
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    "一种": {
+      "memory_items": [
+        "Python是一种高级编程语言，以其简洁、易读的语法著称",
+        "图结构是一种由节点和连接节点的边组成的数据结构"
+      ],
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5652378
+    },
+    "高级": {
+      "memory_items": [
+        "Python是一种高级编程语言，以其简洁、易读的语法著称"
+      ],
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    "编程语言": {
+      "memory_items": [
+        "Python是一种高级编程语言，以其简洁、易读的语法著称"
+      ],
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    "学习": {
+      "memory_items": [
+        "机器学习是人工智能的一个子领域，主要研究如何让计算机不通过明确编程而自主学习 机器学习算法通常基于样本数据（训练集）来进行预测或决策"
+      ],
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    "机器": {
+      "memory_items": [
+        "机器学习是人工智能的一个子领域，主要研究如何让计算机不通过明确编程而自主学习 机器学习算法通常基于样本数据（训练集）来进行预测或决策"
+      ],
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    "人工智能": {
+      "memory_items": [
+        "机器学习是人工智能的一个子领域，主要研究如何让计算机不通过明确编程而自主学习",
+        "自然语言处理(NLP)是计算机科学和人工智能的一个子领域，专注于让计算机理解、解释和生成人类语言"
+      ],
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5582454
+    },
+    "一个": {
+      "memory_items": [
+        "机器学习是人工智能的一个子领域，主要研究如何让计算机不通过明确编程而自主学习"
+      ],
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    "领域": {
+      "memory_items": [
+        "机器学习是人工智能的一个子领域，主要研究如何让计算机不通过明确编程而自主学习"
+      ],
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    "自然语言": {
+      "memory_items": [
+        "自然语言处理(NLP)是计算机科学和人工智能的一个子领域，专注于让计算机理解、解释和生成人类语言"
+      ],
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    "处理": {
+      "memory_items": [
+        "自然语言处理(NLP)是计算机科学和人工智能的一个子领域，专注于让计算机理解、解释和生成人类语言"
+      ],
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    "NLP": {
+      "memory_items": [
+        "自然语言处理(NLP)是计算机科学和人工智能的一个子领域，专注于让计算机理解、解释和生成人类语言"
+      ],
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    "计算机科学": {
+      "memory_items": [
+        "自然语言处理(NLP)是计算机科学和人工智能的一个子领域，专注于让计算机理解、解释和生成人类语言"
+      ],
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    "记忆系统": {
+      "memory_items": [
+        "记忆系统在AI中非常重要，可以帮助模型保持上下文连贯性和记住过去的交互"
+      ],
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    "AI": {
+      "memory_items": [
+        "记忆系统在AI中非常重要，可以帮助模型保持上下文连贯性和记住过去的交互"
+      ],
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    "非常": {
+      "memory_items": [
+        "记忆系统在AI中非常重要，可以帮助模型保持上下文连贯性和记住过去的交互"
+      ],
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    "重要": {
+      "memory_items": [
+        "记忆系统在AI中非常重要，可以帮助模型保持上下文连贯性和记住过去的交互 这对于构建更自然的对话系统至关重要"
+      ],
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    "可以": {
+      "memory_items": [
+        "记忆系统在AI中非常重要，可以帮助模型保持上下文连贯性和记住过去的交互"
+      ],
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    "节点": {
+      "memory_items": [
+        "图结构是一种由节点和连接节点的边组成的数据结构"
+      ],
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    "结构": {
+      "memory_items": [
+        "图结构是一种由节点和连接节点的边组成的数据结构"
+      ],
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    "连接": {
+      "memory_items": [
+        "图结构是一种由节点和连接节点的边组成的数据结构"
+      ],
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    "组成": {
+      "memory_items": [
+        "图结构是一种由节点和连接节点的边组成的数据结构"
+      ],
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    "cd": {
+      "memory_items": [
+        "cd simple_memory && python demo",
+        "cd simple_memory && python test_simple",
+        "cd simple_memory && python file_output_test"
+      ],
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    "simple": {
+      "memory_items": [
+        "cd simple_memory && python demo",
+        "cd simple_memory && python test_simple",
+        "cd simple_memory && python file_output_test"
+      ],
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    "memory": {
+      "memory_items": [
+        "cd simple_memory && python demo",
+        "cd simple_memory && python test_simple",
+        "cd simple_memory && python file_output_test"
+      ],
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    "&&": {
+      "memory_items": [
+        "cd simple_memory && python demo",
+        "cd simple_memory && python test_simple",
+        "cd simple_memory && python file_output_test"
+      ],
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    "python": {
+      "memory_items": [
+        "cd simple_memory && python demo",
+        "cd simple_memory && python test_simple",
+        "cd simple_memory && python file_output_test"
+      ],
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    }
+  },
+  "edges": [
+    {
+      "source": "Python",
+      "target": "编程",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "Python",
+      "target": "一种",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "Python",
+      "target": "高级",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "Python",
+      "target": "编程语言",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "编程",
+      "target": "一种",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "编程",
+      "target": "高级",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "编程",
+      "target": "编程语言",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "一种",
+      "target": "高级",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "一种",
+      "target": "编程语言",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "一种",
+      "target": "节点",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "一种",
+      "target": "结构",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "一种",
+      "target": "连接",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "一种",
+      "target": "组成",
+      "strength": 1,
+      "created_time": 1750438292.565756,
+      "last_modified": 1750438292.565756
+    },
+    {
+      "source": "高级",
+      "target": "编程语言",
+      "strength": 1,
+      "created_time": 1750438292.5537071,
+      "last_modified": 1750438292.5537071
+    },
+    {
+      "source": "学习",
+      "target": "机器",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "学习",
+      "target": "人工智能",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "学习",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "学习",
+      "target": "领域",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "机器",
+      "target": "人工智能",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "机器",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "机器",
+      "target": "领域",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "人工智能",
+      "target": "一个",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "人工智能",
+      "target": "领域",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "人工智能",
+      "target": "自然语言",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "人工智能",
+      "target": "处理",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "人工智能",
+      "target": "NLP",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "人工智能",
+      "target": "计算机科学",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "一个",
+      "target": "领域",
+      "strength": 1,
+      "created_time": 1750438292.5562217,
+      "last_modified": 1750438292.5562217
+    },
+    {
+      "source": "自然语言",
+      "target": "处理",
+      "strength": 1,
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    {
+      "source": "自然语言",
+      "target": "NLP",
+      "strength": 1,
+      "created_time": 1750438292.5582454,
+      "last_modified": 1750438292.5582454
+    },
+    {
+      "source": "自然语言",
+      "target": "计算机科学",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "处理",
+      "target": "NLP",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "处理",
+      "target": "计算机科学",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "NLP",
+      "target": "计算机科学",
+      "strength": 1,
+      "created_time": 1750438292.5587277,
+      "last_modified": 1750438292.5587277
+    },
+    {
+      "source": "记忆系统",
+      "target": "AI",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "记忆系统",
+      "target": "非常",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "记忆系统",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "记忆系统",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "AI",
+      "target": "非常",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "AI",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "AI",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "非常",
+      "target": "重要",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "非常",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "重要",
+      "target": "可以",
+      "strength": 1,
+      "created_time": 1750438292.5617378,
+      "last_modified": 1750438292.5617378
+    },
+    {
+      "source": "节点",
+      "target": "结构",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "节点",
+      "target": "连接",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "节点",
+      "target": "组成",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "结构",
+      "target": "连接",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "结构",
+      "target": "组成",
+      "strength": 1,
+      "created_time": 1750438292.5652378,
+      "last_modified": 1750438292.5652378
+    },
+    {
+      "source": "连接",
+      "target": "组成",
+      "strength": 1,
+      "created_time": 1750438292.565756,
+      "last_modified": 1750438292.565756
+    },
+    {
+      "source": "cd",
+      "target": "simple",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    {
+      "source": "cd",
+      "target": "memory",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    {
+      "source": "cd",
+      "target": "&&",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    {
+      "source": "cd",
+      "target": "python",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    {
+      "source": "simple",
+      "target": "memory",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.6186996
+    },
+    {
+      "source": "simple",
+      "target": "&&",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.619199
+    },
+    {
+      "source": "simple",
+      "target": "python",
+      "strength": 3,
+      "created_time": 1750441878.1539075,
+      "last_modified": 1750442043.619199
+    },
+    {
+      "source": "memory",
+      "target": "&&",
+      "strength": 3,
+      "created_time": 1750441878.154408,
+      "last_modified": 1750442043.619199
+    },
+    {
+      "source": "memory",
+      "target": "python",
+      "strength": 3,
+      "created_time": 1750441878.154408,
+      "last_modified": 1750442043.619199
+    },
+    {
+      "source": "&&",
+      "target": "python",
+      "strength": 3,
+      "created_time": 1750441878.154408,
+      "last_modified": 1750442043.619199
+    }
+  ]
+}
