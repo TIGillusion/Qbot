@@ -14,9 +14,9 @@ jobs:
         python-version: ["3.12", "3.13"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -40,12 +40,12 @@ jobs:
       env:
         CI: false
     - name: Upload the binary
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ format('Qbot-{0}-Python{1}.exe', runner.os, matrix.python-version) }}
         path: dist/Qbot.exe
     - name: Upload the code
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ format('Qbot-{0}-Python{1}.py', runner.os, matrix.python-version) }}
         path: Qbot.py
@@ -66,7 +66,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --statistics
     - name: Upload the formatted code
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ format('Qbot-{0}-Python{1}-Isort-Black.py', runner.os, matrix.python-version) }}
         path: Qbot.py
@@ -76,7 +76,7 @@ jobs:
       env:
         CI: false
     - name: Upload the binary with the formatted code
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ format('Qbot-{0}-Python{1}-Isort-Black.exe', runner.os, matrix.python-version) }}
         path: dist/Qbot.exe
